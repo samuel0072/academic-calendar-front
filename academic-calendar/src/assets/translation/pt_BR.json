@@ -1,0 +1,6 @@
+{
+    "server_generic_error": "Não foi possivel contatar o servidor remoto. Tente novamente mais tarde.",
+    "login_username_input_label": "Digite seu username",
+    "login_password_input_label": "Digite sua senha",
+    "login_loading_message": "Carregando..."
+}
