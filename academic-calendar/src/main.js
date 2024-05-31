@@ -15,7 +15,10 @@ new Vue({
   pinia: createPinia(),
   render: (h) => h(App),
   beforeMount: function() {
-    this.apiInfoStore = useAPIInfoStore()
+    // joga o cara pra página de login com o path atual com o qs param next
+    // var tryingToReachPath = this.$route.path
+    // console.log(tryingToReachPath)
+    // this.$router.push({ name:"login", query: { next: tryingToReachPath } })
   },
   // provide: {
   //   apiInfoStore: useAPIInfoStore()
@@ -38,3 +41,4 @@ new Vue({
 //https://v2.vuejs.org/v2/cookbook/client-side-storage.html?redirect=true
 //https://v2.vuejs.org/v2/cookbook/using-axios-to-consume-apis
 //fazer um proxy em prpdução https://stackoverflow.com/questions/71618204/is-there-any-solution-to-solve-cors-error-in-vite-js
+//https://stackoverflow.com/questions/66247988/how-to-store-jwt-tokens-in-httponly-cookies-with-drf-djangorestframework-simplej

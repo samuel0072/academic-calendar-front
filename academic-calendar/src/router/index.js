@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import LoginView from '../views/LoginView.vue'
 import LoadingView from '../views/LoadingView.vue'
+import LogoutView from '../views/LogoutView.vue'
 
 Vue.use(VueRouter)
 
@@ -33,6 +34,11 @@ const router = new VueRouter({
       name: 'loading-page',
       component: LoadingView
     },
+    {
+      path: '/logout',
+      name: 'logout',
+      component: LogoutView
+    }
   ]
 })
 

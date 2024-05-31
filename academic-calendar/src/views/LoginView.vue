@@ -58,9 +58,18 @@ export default {
                 store.changeAuthenticateState(true)
                 store.setAuthToken(response.data.access)
                 store.setRefreshToken(response.data.refresh)
+                localStorage.setItem("authToken", response.data.access)
+                localStorage.setItem("refreshToken", response.data.refresh)
+                
+                if(this.$route.query.next !== null && this.$route.query.next !== undefined) {
+                    this.$router.push({path: this.$route.query.next})
+                }
+                else {
+                    this.$router.push({name: 'home'})
+                }
+                
             })
             .catch(error => {
-                console.log(error)
                 this.errored = true
                 if(error.request.status == 401) {
                     this.errorMsg = error.response.data.detail
@@ -72,15 +81,11 @@ export default {
             })
             .finally(() => this.loading = false)
             
-            //this.$router.push({name: 'home'})
+            
 		}
 	},
     computed: {
         ...mapStores(useUserAuthInfoStore)
-    },
-    mounted: function() {
-        console.log("Login montado!!")
     }
-    // inject: ['apiInfoStore']
 }
 </script>
