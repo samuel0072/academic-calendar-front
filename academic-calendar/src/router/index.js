@@ -4,6 +4,7 @@ import HomeView from '../views/HomeView.vue'
 import LoginView from '../views/LoginView.vue'
 import LoadingView from '../views/LoadingView.vue'
 import LogoutView from '../views/LogoutView.vue'
+import RefreshView from '../views/RefreshView.vue'
 
 Vue.use(VueRouter)
 
@@ -38,6 +39,11 @@ const router = new VueRouter({
       path: '/logout',
       name: 'logout',
       component: LogoutView
+    },
+    {
+      path: '/refresh',
+      name: 'refresh',
+      component: RefreshView
     }
   ]
 })
