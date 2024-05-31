@@ -9,9 +9,8 @@
     export default {
         methods: {
             refreshToken() {
-                var authToken = localStorage.getItem('authToken')
                 var refreshToken = localStorage.getItem('refreshToken')
-                refreshUserAuthToken(authToken, refreshToken)
+                refreshUserAuthToken(refreshToken)
                 .catch( (error ) => {
                     if(error.cause === "APIError") {
                         localStorage.removeItem("authToken")

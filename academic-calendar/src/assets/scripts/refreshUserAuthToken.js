@@ -1,8 +1,7 @@
 import axios from 'axios';
 
-async function refreshUserAuthToken(authToken, refreshToken) {
+async function refreshUserAuthToken(refreshToken) {
     return axios.post('api/auth/jwt_token/refresh', {
-        access: authToken,
         refresh: refreshToken
     }).then(response  => {
         localStorage.setItem("authToken", response.data.access)
