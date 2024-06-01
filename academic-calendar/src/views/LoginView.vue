@@ -58,8 +58,6 @@ export default {
                 store.changeAuthenticateState(true)
                 store.setAuthToken(response.data.access)
                 store.setRefreshToken(response.data.refresh)
-                localStorage.setItem("authToken", response.data.access)
-                localStorage.setItem("refreshToken", response.data.refresh)
                 
                 if(this.$route.query.next !== null && this.$route.query.next !== undefined) {
                     this.$router.push({path: this.$route.query.next})

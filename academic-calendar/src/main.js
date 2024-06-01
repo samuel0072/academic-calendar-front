@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { createPinia, PiniaVuePlugin } from 'pinia'
-import { useAPIInfoStore } from './stores/APIInfo.js'
+import { useUserAuthInfoStore } from '@/stores/userAuthInfo.js'
 //import { env } from 'node:process';
 
 import App from './App.vue'
@@ -14,15 +14,25 @@ new Vue({
   router,
   pinia: createPinia(),
   render: (h) => h(App),
-  beforeMount: function() {
-    // joga o cara pra página de login com o path atual com o qs param next
-    // var tryingToReachPath = this.$route.path
-    // console.log(tryingToReachPath)
-    // this.$router.push({ name:"login", query: { next: tryingToReachPath } })
-  },
-  // provide: {
-  //   apiInfoStore: useAPIInfoStore()
-  // }
+  mounted: function() {
+    
+    var authToken = localStorage.getItem("authToken")
+    var refreshtoken = localStorage.getItem("refreshToken")
+
+    if( authToken === undefined || authToken === null || authToken.length === 0) {
+      //se estiver vazio, manda o usuário pra tela de login com o parametro next igual ao path atual
+      this.$router.push({ name:"login", query: { next: this.$route.path } })
+    }
+    else {
+      // senão, carrega o token na store
+      var store = useUserAuthInfoStore()
+      store.changeAuthenticateState(true)
+      store.setAuthToken(authToken)
+      store.setRefreshToken(refreshtoken)
+    }
+    
+    
+  }
 }).$mount('#app')
 
 //colocar aqui o lifeclycle created pra jogar o cara pra loading page

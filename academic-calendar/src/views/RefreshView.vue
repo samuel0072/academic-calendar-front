@@ -5,12 +5,13 @@
 </template>
 <script> 
     import refreshUserAuthToken from '@/assets/scripts/refreshUserAuthToken.js';
+    import { useUserAuthInfoStore } from '@/stores/userAuthInfo.js';
 
     export default {
         methods: {
             refreshToken() {
-                var refreshToken = localStorage.getItem('refreshToken')
-                refreshUserAuthToken(refreshToken)
+                var store = useUserAuthInfoStore()
+                refreshUserAuthToken(store.refreshToken)
                 .catch( (error ) => {
                     if(error.cause === "APIError") {
                         localStorage.removeItem("authToken")

@@ -5,6 +5,7 @@ import LoginView from '../views/LoginView.vue'
 import LoadingView from '../views/LoadingView.vue'
 import LogoutView from '../views/LogoutView.vue'
 import RefreshView from '../views/RefreshView.vue'
+import AboutView from '../views/AboutView.vue'
 
 Vue.use(VueRouter)
 
@@ -28,7 +29,7 @@ const router = new VueRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue')
+      component: AboutView
     },
     {
       path: '/loading',
