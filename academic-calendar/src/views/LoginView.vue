@@ -12,7 +12,7 @@
                 <input id="password" type="password" v-model="password" required />
             </div>
             <div v-if="!loading">
-                <input type="submit" value = "Entrar">
+                <BaseButton type="submit" label="Entrar" />
             </div>
             <div v-else>
                 carregando...
@@ -32,6 +32,7 @@
 import { useUserAuthInfoStore } from '../stores/userAuthInfo.js'
 import { mapStores } from 'pinia'
 import axios from 'axios';
+import BaseButton from '@/components/BaseButton.vue';
 
 export default {
     data: function() {
@@ -84,6 +85,9 @@ export default {
 	},
     computed: {
         ...mapStores(useUserAuthInfoStore)
+    },
+    components: {
+        'BaseButton': BaseButton
     }
 }
 </script>
