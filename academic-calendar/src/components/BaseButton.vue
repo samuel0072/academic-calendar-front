@@ -1,5 +1,5 @@
 <template>
-    <button :type="type"> {{ label }} </button>
+    <button :type="type" @click="$emit( 'baseButtonClick' )"> {{ label }} </button>
 </template>
 
 <script>

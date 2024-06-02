@@ -4,7 +4,7 @@
         <span> {{ startDate }} </span>
         <span> {{ endDate }} </span>
 
-        <BaseButton label="Acessar" type="button"></BaseButton>
+        <BaseButton label="Acessar" type="button" @baseButtonClick="itemClick"></BaseButton>
     </div>
 </template>
 
@@ -27,6 +27,11 @@
         },
         components: {
             'BaseButton': BaseButton
+        },
+        methods: {
+            itemClick() {
+                console.log(this.description)
+            }
         }
     }
 

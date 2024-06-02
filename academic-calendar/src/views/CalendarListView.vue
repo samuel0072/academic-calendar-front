@@ -4,8 +4,8 @@
             Obtendo os caléndários...
         </div>
         <div v-else>
-            <div v-if="!loading && calendars.lengh === 0">
-                Nenhum calendário foi obtido
+            <div v-if="!loading && calendars.length === 0">
+                <EmptyState msg="Não há calendários para exibir" :displayButton="true" buttonLabel="Crie um calendário"/>
             </div>
             <div v-else>
                 <CalendarList :calendars="calendars" />
@@ -19,6 +19,7 @@
     import { mapStores } from 'pinia'
     import { useUserAuthInfoStore } from '@/stores/userAuthInfo'
     import CalendarList  from '@/components/CalendarList.vue'
+    import EmptyState from '@/components/EmptyState.vue'
     
     export default {
         data: function() {
@@ -33,11 +34,11 @@
                     headers: {
                         'Authorization': 'Bearer ' + this.userAuthInfoStore.token
                     }
-                }).then( response => {
+                }).then( (response) => {
                     this.loading = false
                     this.calendars = response.data
                     console.log(this.calendars)
-                }).catch( error => {
+                }).catch( (error) => {
                     console.log(error)
                 })
             }
@@ -49,7 +50,8 @@
             ...mapStores(useUserAuthInfoStore)
         },
         components: {
-            'CalendarList': CalendarList
+            'CalendarList': CalendarList,
+            'EmptyState': EmptyState
         }
     }
 </script>
