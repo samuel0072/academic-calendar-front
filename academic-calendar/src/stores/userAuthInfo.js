@@ -9,13 +9,17 @@ export const useUserAuthInfoStore = defineStore({
         changeAuthenticateState(newState) {
             this.isAuthenticated = newState
         },
-        setAuthToken(newToken) {
+        setAuthToken(newToken, writeStorage = true) {
             //mudar para setar o token no localstorage
-            localStorage.setItem("authToken", newToken)
+            if(writeStorage) {
+                localStorage.setItem("authToken", newToken)
+            }
             this.token = newToken
         },
-        setRefreshToken(newRefreshToken) {
-            localStorage.setItem("refreshToken", newRefreshToken)
+        setRefreshToken(newRefreshToken, writeStorage = true) {
+            if(writeStorage) {
+                localStorage.setItem("refreshToken", newRefreshToken)
+            }
             this.refreshToken = newRefreshToken
         }
     }

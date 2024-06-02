@@ -27,8 +27,8 @@ new Vue({
       // senão, carrega o token na store
       var store = useUserAuthInfoStore()
       store.changeAuthenticateState(true)
-      store.setAuthToken(authToken)
-      store.setRefreshToken(refreshtoken)
+      store.setAuthToken(authToken, false)
+      store.setRefreshToken(refreshtoken, false)
     }
     
     
