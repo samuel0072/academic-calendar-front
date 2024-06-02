@@ -14,7 +14,7 @@ new Vue({
   router,
   pinia: createPinia(),
   render: (h) => h(App),
-  mounted: function() {
+  created: function() {
     
     var authToken = localStorage.getItem("authToken")
     var refreshtoken = localStorage.getItem("refreshToken")
@@ -52,3 +52,4 @@ new Vue({
 //https://v2.vuejs.org/v2/cookbook/using-axios-to-consume-apis
 //fazer um proxy em prpdução https://stackoverflow.com/questions/71618204/is-there-any-solution-to-solve-cors-error-in-vite-js
 //https://stackoverflow.com/questions/66247988/how-to-store-jwt-tokens-in-httponly-cookies-with-drf-djangorestframework-simplej
+//botar esse interceptor https://github.com/axios/axios#interceptors

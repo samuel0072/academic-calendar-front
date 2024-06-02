@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 
 export const useUserAuthInfoStore = defineStore({
-    id: 'user-auth-info',
+    id: 'userAuthInfo',
     state: () => ({
         token: null, refreshToken: null, isAuthenticated: false
     }),
