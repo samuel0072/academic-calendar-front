@@ -8,6 +8,7 @@
                 <EmptyState msg="Não há calendários para exibir" :displayButton="true" buttonLabel="Crie um calendário"/>
             </div>
             <div v-else>
+                <button @click="getCalendars">Obter calendários</button>
                 <CalendarList :calendars="calendars" />
             </div>
         </div>
@@ -20,6 +21,7 @@
     import { useUserAuthInfoStore } from '@/stores/userAuthInfo'
     import CalendarList  from '@/components/CalendarList.vue'
     import EmptyState from '@/components/EmptyState.vue'
+    import refreshUserAuthToken from '@/assets/scripts/refreshUserAuthToken.js'
     
     export default {
         data: function() {
@@ -37,9 +39,16 @@
                 }).then( (response) => {
                     this.loading = false
                     this.calendars = response.data
-                    console.log(this.calendars)
                 }).catch( (error) => {
-                    console.log(error)
+                    if(error.request.status == 401) {
+                        refreshUserAuthToken(this.getCalendars)
+                    }
+                    else {
+                        //tratar erros que podem vim do servidor
+                    }
+                })
+                .finally( () => {
+                    this.loading = false
                 })
             }
         },

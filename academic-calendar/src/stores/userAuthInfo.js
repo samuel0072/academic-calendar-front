@@ -21,6 +21,14 @@ export const useUserAuthInfoStore = defineStore({
                 localStorage.setItem("refreshToken", newRefreshToken)
             }
             this.refreshToken = newRefreshToken
+        },
+        reset() {
+            this.token = null
+            this.token = null
+            this.refreshToken = null
+
+            localStorage.removeItem("authToken")
+            localStorage.removeItem("refreshToken")
         }
     }
 })
