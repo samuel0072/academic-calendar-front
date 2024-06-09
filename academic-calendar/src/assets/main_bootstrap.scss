@@ -1,0 +1,16 @@
+@import "bootstrap/scss/bootstrap";
+@import "@/assets/base.css";
+
+:root {
+    --bs-body-bg: var(--color-background);
+    --bs-border-color: var(--color-border);
+}
+
+.btn-close {
+    --bs-btn-close-bg: none;
+    --bs-btn-close-color: var(--color-text);
+    text-align : center;
+    display: flex;
+    place-items: center;
+    place-content: center;
+}

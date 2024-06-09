@@ -8,7 +8,23 @@
                 <EmptyState msg="Não há calendários para exibir" :displayButton="true" buttonLabel="Crie um calendário"/>
             </div>
             <div v-else>
+                <button type="button" class="" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    Launch demo modal
+                </button>
+                <BaseModal modal_id="exampleModal">
+                    <template v-slot:modal-title>
+                        <h5>Crie um novo calendário acadêmico</h5>
+                    </template>
+                    <template v-slot:modal-body>
+                        <h1>Here might be a page title</h1>
+                    </template>
+                    <template v-slot:modal-footer>
+                        <h1>Here might be a page title</h1>
+                    </template>
+                </BaseModal>
+
                 <button @click="getCalendars">Obter calendários</button>
+
                 <CalendarList :calendars="calendars" />
             </div>
         </div>
@@ -22,6 +38,7 @@
     import CalendarList  from '@/components/CalendarList.vue'
     import EmptyState from '@/components/EmptyState.vue'
     import refreshUserAuthToken from '@/assets/scripts/refreshUserAuthToken.js'
+    import BaseModal from '@/components/BaseModal.vue'
     
     export default {
         data: function() {
@@ -60,7 +77,8 @@
         },
         components: {
             'CalendarList': CalendarList,
-            'EmptyState': EmptyState
+            'EmptyState': EmptyState,
+            'BaseModal': BaseModal
         }
     }
 </script>

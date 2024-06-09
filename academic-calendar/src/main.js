@@ -53,3 +53,4 @@ new Vue({
 //fazer um proxy em prpdução https://stackoverflow.com/questions/71618204/is-there-any-solution-to-solve-cors-error-in-vite-js
 //https://stackoverflow.com/questions/66247988/how-to-store-jwt-tokens-in-httponly-cookies-with-drf-djangorestframework-simplej
 //botar esse interceptor https://github.com/axios/axios#interceptors
+//https://www.codeandweb.com/babeledit/tutorials/how-to-translate-your-vue-app-with-vue-i18n
