@@ -1,8 +1,16 @@
 <template>
-    <button :type="type" @click="$emit( 'baseButtonClick' )"> {{ label }} </button>
+    <button :type="type" @click="$emit( 'baseButtonClick' )" class="btn"> {{ label }} </button>
 </template>
+<style scoped>
+    .btn {
+        color: var(--color-text);
+    }
+</style>
 
 <script>
+    import "@/assets/main_bootstrap.scss";
+    import * as bootstrap from 'bootstrap';
+
     export default {
         name: 'BaseButton',
         props: {

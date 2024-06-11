@@ -14,3 +14,15 @@
     place-items: center;
     place-content: center;
 }
+
+.form-floating > .form-control:focus ~ label {
+    color: var(--color-text);
+}
+
+.form-control {
+    color: var(--color-text);
+}
+
+.form-control:focus {
+    color: var(--color-text);
+}
