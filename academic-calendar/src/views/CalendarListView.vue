@@ -1,5 +1,76 @@
 <template>
     <div>
+        <BaseModal :modal_id="calendarCreationModalId">
+            <template v-slot:modal-title>
+                <h5>Crie um novo calendário acadêmico</h5>
+            </template>
+
+            <template v-slot:modal-body>
+                <div>
+                    <form id="calendar_creation_form" @submit.prevent="createCalendar" class="needs-validation">
+                        <div class="form-floating mb-3">
+                            <input 
+                                v-model="calendarFormValues.description" 
+                                type="text" 
+                                class="form-control" 
+                                :id="calendarFormIds.descriptionInput" 
+                                required 
+                                placeholder="" 
+                                maxlength="500"/>
+                            <label for="calendar_description_input">Nome do calendário</label>
+                            <div class="invalid-feedback">
+                                Esse nome não é válido. Tente informar um nome com até 500 caracteres.
+                            </div>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input 
+                                v-model="calendarFormValues.start_date" 
+                                type="date" 
+                                class="form-control" 
+                                :id="calendarFormIds.startDateInput" 
+                                required />
+                            <label for="calendar_start_date_input">Data de ínicio do calendário</label>
+                            <div class="invalid-feedback">
+                                Essa data não é válida. Verifique se é menor que a data de fim.
+                            </div>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input 
+                                v-model="calendarFormValues.end_date" 
+                                type="date" 
+                                class="form-control" 
+                                :id="calendarFormIds.endDateInput" 
+                                required />
+                            <label for="calendar_end_date_input">Data final do calendário</label>
+                            <div class="invalid-feedback">
+                                Essa data não é válida. Verifique se é maior que a data de ínicio.
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </template>
+
+            <template v-slot:modal-footer>
+                <div>
+                    <BaseButton type="submit" form="calendar_creation_form" label="Criar" class="btn btn-primary"/>
+                </div>
+            </template>
+        </BaseModal>
+
+        <BaseToastContainer class="position-fixed bottom-0 end-0 p-3">
+            <BaseToast 
+                title="Sucesso" 
+                message="O calendário foi criado com sucesso!" 
+                id="sucess-toast" 
+                class="text-bg-success" />
+
+            <BaseToast 
+                title="Erro" 
+                message="Não foi possível criar esse calendário. Tente novamente." 
+                id="fail-toast" 
+                class="text-bg-danger" />    
+        </BaseToastContainer>
+
         <div v-if="loading">
             Obtendo os caléndários...
         </div>
@@ -8,62 +79,6 @@
                 <EmptyState msg="Não há calendários para exibir" :displayButton="true" buttonLabel="Crie um calendário"/>
             </div>
             <div v-else>
-                <BaseModal :modal_id="calendarCreationModalId">
-                    <template v-slot:modal-title>
-                        <h5>Crie um novo calendário acadêmico</h5>
-                    </template>
-
-                    <template v-slot:modal-body>
-                        <div>
-                            <form id="calendar_creation_form" @submit.prevent="createCalendar" class="needs-validation">
-                                <div class="form-floating mb-3">
-                                    <input 
-                                        v-model="calendarFormValues.description" 
-                                        type="text" 
-                                        class="form-control" 
-                                        :id="calendarFormIds.descriptionInput" 
-                                        required 
-                                        placeholder="" 
-                                        maxlength="500"/>
-                                    <label for="calendar_description_input">Nome do calendário</label>
-                                    <div class="invalid-feedback">
-                                        Esse nome não é válido. Tente informar um nome com até 500 caracteres.
-                                    </div>
-                                </div>
-                                <div class="form-floating mb-3">
-                                    <input 
-                                        v-model="calendarFormValues.start_date" 
-                                        type="date" 
-                                        class="form-control" 
-                                        :id="calendarFormIds.startDateInput" 
-                                        required />
-                                    <label for="calendar_start_date_input">Data de ínicio do calendário</label>
-                                    <div class="invalid-feedback">
-                                        Essa data não é válida. Verifique se é menor que a data de fim.
-                                    </div>
-                                </div>
-                                <div class="form-floating mb-3">
-                                    <input 
-                                        v-model="calendarFormValues.end_date" 
-                                        type="date" 
-                                        class="form-control" 
-                                        :id="calendarFormIds.endDateInput" 
-                                        required />
-                                    <label for="calendar_end_date_input">Data final do calendário</label>
-                                    <div class="invalid-feedback">
-                                        Essa data não é válida. Verifique se é maior que a data de ínicio.
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </template>
-
-                    <template v-slot:modal-footer>
-                        <div>
-                            <BaseButton type="submit" form="calendar_creation_form" label="Criar" />
-                        </div>
-                    </template>
-                </BaseModal>
 
                 <button type="button" class="btn" data-bs-toggle="modal" :data-bs-target="'#' + calendarCreationModalId">
                     Crie um calendário
@@ -86,6 +101,8 @@
     import refreshUserAuthToken from '@/assets/scripts/refreshUserAuthToken.js'
     import BaseModal from '@/components/BaseModal.vue'
     import BaseButton from '@/components/BaseButton.vue'
+    import BaseToastContainer from '@/components/BaseToastContainer.vue'
+    import BaseToast from '@/components/BaseToast.vue'
     import * as bootstrap from 'bootstrap';
     
     export default {
@@ -129,7 +146,7 @@
             },
             createCalendar() {
                 
-                //var calendarCreationModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('#' + this.calendarCreationModalId));
+                var calendarCreationModal = bootstrap.Modal.getOrCreateInstance(`#${this.calendarCreationModalId}`);
 
                 var descriptionInput = document.getElementById(this.calendarFormIds.descriptionInput);
                 var startDateInput = document.getElementById(this.calendarFormIds.startDateInput);
@@ -145,9 +162,13 @@
                     }
                 }).then( (response) => {
                     this.calendars.push(response.data)
-                    //calendarCreationModal.hide();
-                    alert("Calendário Criado com sucesso!");
+
+                    var toast = bootstrap.Toast.getOrCreateInstance("#sucess-toast");
+                    toast.show();
+                    calendarCreationModal.hide();
+                    //alert("Calendário Criado com sucesso!");
                 }).catch( (error) => {
+                    var toast = bootstrap.Toast.getOrCreateInstance("#fail-toast");
                     if(error.response) {
                         if(error.request.status === 401) {
                             refreshUserAuthToken(this.createCalendar)
@@ -169,12 +190,14 @@
                     }
                     else if(error.request) {
                         if(error.code === "ERR_NETWORK") {
-                            alert("Esse cliente não consegue se conectar com a internet.");
+                            //alert("Esse cliente não consegue se conectar com a internet.");
+                            toast.show()
                         }
                     }
                     else {
                         console.log(error)
-                        alert("Um erro inesperado aconteceu. Por favor, recarregue a página e tente novamente.")
+                        toast.show()
+                        //alert("Um erro inesperado aconteceu. Por favor, recarregue a página e tente novamente.")
                     }
                     
                 })
@@ -193,7 +216,9 @@
             'CalendarList': CalendarList,
             'EmptyState': EmptyState,
             'BaseModal': BaseModal,
-            'BaseButton': BaseButton
+            'BaseButton': BaseButton,
+            'BaseToastContainer': BaseToastContainer,
+            'BaseToast': BaseToast
         }
     }
 </script>
