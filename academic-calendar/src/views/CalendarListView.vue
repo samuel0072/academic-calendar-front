@@ -52,35 +52,26 @@
 
             <template v-slot:modal-footer>
                 <div>
-                    <BaseButton type="submit" form="calendar_creation_form" label="Criar" class="btn btn-primary"/>
+                    <BaseButton type="submit" form="calendar_creation_form"  class="btn btn-primary">
+                        Criar
+                    </BaseButton>
                 </div>
             </template>
         </BaseModal>
 
         <BaseToastContainer class="position-fixed bottom-0 end-0 p-3">
             <BaseToast 
-                title="Sucesso" 
-                message="O calendário foi criado com sucesso!" 
+                :title="sucessToastTitle" 
+                :message="sucessToastMsg" 
                 id="sucess-toast" 
                 class="text-bg-success" />
 
             <BaseToast 
-                title="Erro" 
-                message="Não foi possível criar esse calendário. Tente novamente." 
+                :title="errorToastTitle" 
+                :message="errorToastMsg" 
                 id="fail-toast" 
                 class="text-bg-danger" />    
 
-            <BaseToast 
-                title="Erro" 
-                message="Não foi possível excluir esse calendário. Tente novamente." 
-                id="delete-fail-toast" 
-                class="text-bg-danger" />
-
-            <BaseToast 
-                title="Sucesso" 
-                message="O calendário foi excluído com sucesso!" 
-                id="delete-sucess-toast" 
-                class="text-bg-success" />
         </BaseToastContainer>
 
         <div v-if="loading">
@@ -120,7 +111,9 @@
     import BaseToastContainer from '@/components/BaseToastContainer.vue'
     import BaseToast from '@/components/BaseToast.vue'
     import * as bootstrap from 'bootstrap';
-    
+    //
+    //Não foi possível criar esse calendário. Tente novamente.
+
     export default {
         data: function() {
             return {
@@ -136,7 +129,11 @@
                     startDateInput: 'calendar_start_date_input',
                     endDateInput: 'calendar_end_date_input'
                 },
-                calendarCreationModalId: 'calendarCreationModal'
+                calendarCreationModalId: 'calendarCreationModal',
+                sucessToastTitle: 'Sucesso',
+                sucessToastMsg: '',
+                errorToastTitle: 'Erro',
+                errorToastMsg: ''
             }
         },
         methods: {
@@ -180,9 +177,11 @@
                     this.calendars.push(response.data)
 
                     var toast = bootstrap.Toast.getOrCreateInstance("#sucess-toast");
+                    this.sucessToastMsg = "O calendário foi criado com sucesso!"
+
                     toast.show();
                     calendarCreationModal.hide();
-                    //alert("Calendário Criado com sucesso!");
+
                 }).catch( (error) => {
                     var toast = bootstrap.Toast.getOrCreateInstance("#fail-toast");
                     if(error.response) {
@@ -201,19 +200,20 @@
                             }
                         }
                         else if(error.request.status === 500){
-                            console.log("Não foi possível se conectar com o servidor")
+                            this.errorToastMsg = "Não foi possível se conectar com o servidor."
+                            toast.show()
                         }
                     }
                     else if(error.request) {
                         if(error.code === "ERR_NETWORK") {
-                            //alert("Esse cliente não consegue se conectar com a internet.");
+                            this.errorToastMsg = "Esse cliente não consegue se conectar com a internet."
                             toast.show()
                         }
                     }
                     else {
                         console.log(error)
+                        this.errorToastMsg = "Um erro inesperado aconteceu. Por favor, recarregue a página e tente novamente."
                         toast.show()
-                        //alert("Um erro inesperado aconteceu. Por favor, recarregue a página e tente novamente.")
                     }
                     
                 })
@@ -226,7 +226,8 @@
             },
             deleteCalendar(id) {
                 //falta implementar esse método na API
-                var toast = bootstrap.Toast.getOrCreateInstance("#delete-fail-toast");
+                var toast = bootstrap.Toast.getOrCreateInstance("#fail-toast");
+                this.errorToastMsg = "Não foi possível excluir esse calendário. Tente novamente."
                 toast.show();
             }
         },
