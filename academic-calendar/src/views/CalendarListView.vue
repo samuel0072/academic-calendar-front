@@ -69,6 +69,18 @@
                 message="Não foi possível criar esse calendário. Tente novamente." 
                 id="fail-toast" 
                 class="text-bg-danger" />    
+
+            <BaseToast 
+                title="Erro" 
+                message="Não foi possível excluir esse calendário. Tente novamente." 
+                id="delete-fail-toast" 
+                class="text-bg-danger" />
+
+            <BaseToast 
+                title="Sucesso" 
+                message="O calendário foi excluído com sucesso!" 
+                id="delete-sucess-toast" 
+                class="text-bg-success" />
         </BaseToastContainer>
 
         <div v-if="loading">
@@ -86,7 +98,11 @@
 
                 <button @click="getCalendars">Obter calendários</button>
 
-                <CalendarList :calendars="calendars" />
+                <CalendarList 
+                :calendars="calendars" 
+                @calendar-item-view="viewCalendar($event)"
+                @calendar-item-delete="deleteCalendar($event)"
+                />
             </div>
         </div>
     </div>
@@ -205,6 +221,14 @@
                     this.loading = false
                 })
             },
+            viewCalendar(id) {
+                this.$router.push({ name: 'calendar-view', params: { 'id': id} })
+            },
+            deleteCalendar(id) {
+                //falta implementar esse método na API
+                var toast = bootstrap.Toast.getOrCreateInstance("#delete-fail-toast");
+                toast.show();
+            }
         },
         mounted: function() {
             this.getCalendars()
