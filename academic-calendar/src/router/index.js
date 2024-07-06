@@ -7,6 +7,7 @@ import LogoutView from '../views/LogoutView.vue'
 import RefreshView from '../views/RefreshView.vue'
 import AboutView from '../views/AboutView.vue'
 import CalendarList from '../views/CalendarListView.vue'
+import CalendarDetail from '../views/CalendarDetail.vue'
 
 Vue.use(VueRouter)
 
@@ -51,6 +52,11 @@ const router = new VueRouter({
       path: '/calendars',
       name: 'calendars',
       component: CalendarList
+    },
+    {
+      path: '/calendar/:id/view',
+      name: 'calendar-view',
+      component: CalendarDetail
     }
   ]
 })

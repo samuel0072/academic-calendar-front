@@ -3,7 +3,7 @@
         <span>{{ description }}</span>
         <span> {{ startDate }} </span>
         <span> {{ endDate }} </span>
-
+        <router-link :to="{ name: 'calendar-view', params: { id: calendarId }}">Ver um calendário</router-link>
         <BaseButton label="Acessar" type="button" @baseButtonClick="itemClick"></BaseButton>
     </div>
 </template>
@@ -22,6 +22,9 @@
                 required: true
             },
             endDate: {
+                required: true
+            },
+            calendarId: {
                 required: true
             }
         },

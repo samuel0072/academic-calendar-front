@@ -5,7 +5,8 @@
                 <CalendarItem 
                 :description="calendar.description" 
                 :startDate="calendar.start_date" 
-                :endDate="calendar.end_date" />
+                :endDate="calendar.end_date"
+                :calendarId="calendar.id"/>
             </li>
         </ul>
     </div>
