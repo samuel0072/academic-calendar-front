@@ -204,7 +204,7 @@
                 .finally( () => {
                     this.loading = false
                 })
-            }
+            },
         },
         mounted: function() {
             this.getCalendars()

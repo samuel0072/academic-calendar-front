@@ -3,8 +3,12 @@
         <span>{{ description }}</span>
         <span> {{ startDate }} </span>
         <span> {{ endDate }} </span>
-        <router-link :to="{ name: 'calendar-view', params: { id: calendarId }}">Ver um calendário</router-link>
-        <BaseButton label="Acessar" type="button" @baseButtonClick="itemClick"></BaseButton>
+        <BaseButton type="button" @click.native="$emit('calendar-item-view')" >
+            Visualizar Calendário
+        </BaseButton>
+        <BaseButton type="button" @click.native="$emit('calendar-item-delete')" >
+            Excluir
+        </BaseButton>
     </div>
 </template>
 
@@ -30,11 +34,6 @@
         },
         components: {
             'BaseButton': BaseButton
-        },
-        methods: {
-            itemClick() {
-                console.log(this.description)
-            }
         }
     }
 

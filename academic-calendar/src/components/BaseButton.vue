@@ -1,6 +1,10 @@
 <template>
-    <button :type="type" @click="$emit( 'baseButtonClick' )" class="btn"> {{ label }} </button>
+    <button :type="type" class="btn" >
+        <slot>
+        </slot>
+     </button>
 </template>
+
 <style scoped>
     .btn {
         color: var(--color-text);
@@ -14,10 +18,6 @@
     export default {
         name: 'BaseButton',
         props: {
-            label: {
-                type: String,
-                required: true
-            },
             type: {
                 type: String,
                 required: true
