@@ -12,7 +12,7 @@
                 <input id="password" type="password" v-model="password" required />
             </div>
             <div v-if="!loading">
-                <BaseButton type="submit" label="Entrar" />
+                <BaseButton type="submit"> Entrar </BaseButton>
             </div>
             <div v-else>
                 carregando...
