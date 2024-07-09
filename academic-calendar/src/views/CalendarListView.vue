@@ -87,12 +87,14 @@
                     Crie um calendário
                 </button>
 
+                <SearchInput id="searchInput"/>
+
                 <button @click="getCalendars">Obter calendários</button>
 
                 <CalendarList 
-                :calendars="calendars" 
-                @calendar-item-view="viewCalendar($event)"
-                @calendar-item-delete="deleteCalendar($event)"
+                    :calendars="calendars" 
+                    @calendar-item-view="viewCalendar($event)"
+                    @calendar-item-delete="deleteCalendar($event)"
                 />
             </div>
         </div>
@@ -110,6 +112,8 @@
     import BaseButton from '@/components/BaseButton.vue'
     import BaseToastContainer from '@/components/BaseToastContainer.vue'
     import BaseToast from '@/components/BaseToast.vue'
+    import BaseTextInput from '@/components/BaseTextInput.vue'
+    import SearchInput from '@/components/SearchInput.vue'
     import * as bootstrap from 'bootstrap';
     //
     //Não foi possível criar esse calendário. Tente novamente.
@@ -133,7 +137,8 @@
                 sucessToastTitle: 'Sucesso',
                 sucessToastMsg: '',
                 errorToastTitle: 'Erro',
-                errorToastMsg: ''
+                errorToastMsg: '',
+                inputValue: 'Teste'
             }
         },
         methods: {
@@ -243,7 +248,9 @@
             'BaseModal': BaseModal,
             'BaseButton': BaseButton,
             'BaseToastContainer': BaseToastContainer,
-            'BaseToast': BaseToast
+            'BaseToast': BaseToast,
+            'BaseTextInput': BaseTextInput,
+            'SearchInput': SearchInput
         }
     }
 </script>

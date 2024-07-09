@@ -1,6 +1,6 @@
 <template>
     <div>
-        <label :for="id" class="form-label"> {{label}} </label>
+        <label :for="id" class="form-label" v-if="label !== '' "> {{label}} </label>
         <input 
             :id="id" 
             :type="type" 
@@ -35,14 +35,12 @@
             placeholder: {
                 type: String,
                 required: true
-            }
+            },
+            value: String
         },
         model: {
             prop: 'value',
             event: 'input'
         },
-        props: {
-            value: String
-        }
     }
 </script>
