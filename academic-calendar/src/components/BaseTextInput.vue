@@ -1,16 +1,11 @@
 <template>
-    <div>
-        <label :for="id" class="form-label" v-if="label !== '' "> {{label}} </label>
-        <input 
-            :id="id" 
-            :type="type" 
-            class="form-control" 
-            :placeholder="placeholder" 
-            :value="value"
-            @input="$emit('input', $event.target.value)"
-        >
-    </div>
-
+    <input 
+        :id="id" 
+        :type="type" 
+        class="form-control" 
+        :placeholder="placeholder" 
+        :value="value"
+        @input="$emit('input', $event.target.value)" >
 </template>
 
 <script>
@@ -24,17 +19,13 @@
                 type: String,
                 required: true
             },
-            label: {
-                type: String,
-                required: true
-            },
             id: {
                 type: String,
                 required: true
             },
             placeholder: {
                 type: String,
-                required: true
+                required: false
             },
             value: String
         },
