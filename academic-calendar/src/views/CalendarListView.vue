@@ -87,9 +87,9 @@
                     Crie um calendário
                 </button>
 
-                <SearchInput id="searchInput"/>
-
-                <button @click="getCalendars">Obter calendários</button>
+                <div class="col-1">
+                    <SearchInput id="searchInput" @search-triggered="getCalendars($event)"/>
+                </div>               
 
                 <CalendarList 
                     :calendars="calendars" 
@@ -142,10 +142,13 @@
             }
         },
         methods: {
-            getCalendars() {
+            getCalendars(searchValue=null) {
                 axios.get('api/academic-calendar/search_calendar', {
                     headers: {
                         'Authorization': 'Bearer ' + this.userAuthInfoStore.token
+                    },
+                    params: {
+                        description: searchValue
                     }
                 }).then( (response) => {
                     this.loading = false

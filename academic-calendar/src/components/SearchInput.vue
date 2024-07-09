@@ -1,12 +1,14 @@
 <template>
-    <div class="input-group">
-        <BaseTextInput :id="id" type="text" placeholder="Digite aqui para buscar..." label="" v-model="searchValue"/>
-        <BaseButton type="submit"  title="buscar">
-            <i>
-                <SearchIcon /> 
-            </i>
-        </BaseButton>
-    </div>
+    <form @submit.prevent="searchTrigger">
+        <div class="input-group">
+            <BaseTextInput :id="id" type="text" placeholder="Digite aqui para buscar..." v-model="searchValue"/>
+            <BaseButton type="submit"  title="buscar">
+                <i>
+                    <SearchIcon /> 
+                </i>
+            </BaseButton>
+        </div>
+    </form>
 </template>
 
 <style scoped>
@@ -50,6 +52,11 @@ i {
             'BaseButton': BaseButton,
             'BaseTextInput': BaseTextInput,
             'SearchIcon': SearchIcon
+        },
+        methods: {
+            searchTrigger() {
+                this.$emit("search-triggered", this.searchValue)
+            }
         }
     }
 </script>
