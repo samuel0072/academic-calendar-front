@@ -1,6 +1,6 @@
 <template>
     <select class="form-select" @change="$emit('change', $event.target.value)">
-        <option v-for="option in options" :value="option.value"> {{ option.label }} </option>
+        <option v-for="option in options" :value="option.value" :selected="option.selected"> {{ option.label }} </option>
     </select>
 </template>
 

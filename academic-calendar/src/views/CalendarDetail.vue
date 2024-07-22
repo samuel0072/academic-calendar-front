@@ -60,7 +60,7 @@
         <template v-slot:modal-body>
             <BaseForm @submit="" id="event-creation-form">
                 <FloatingInput 
-                  id="event_name"
+                  id="event-name"
                   v-model="newEvent.description"
                   label="Digite o nome do evento"
                   type="text"
@@ -73,7 +73,24 @@
                   :options="eventLabels" 
                   v-model="newEvent.label"
                 />
-                <ColorPicker v-model="newEvent.bgColor"/>
+
+                <BaseLabel for="event-bg-color"> Escolha a cor de fundo: </BaseLabel>
+                <ColorPicker v-model="newEvent.bgColor" id="event-bg-color"/>
+
+                <FloatingInput 
+                  id="event-start-date"
+                  v-model="newEvent.startDate"
+                  label="Digite a data de ínicio *"
+                  type="date"
+                />
+
+                <FloatingInput 
+                  id="event-end-date"
+                  v-model="newEvent.endDate"
+                  label="Digite a data de fim"
+                  type="date"
+                />
+
             </BaseForm>
         </template>
 
@@ -158,8 +175,8 @@ export default {
         description: "",
         startDate: "",
         endDate: "",
-        label: "",
-        bgColor: "",
+        label: "SD",
+        bgColor: "#3473b7",
         campi: []
       },
       eventLabels: [
@@ -167,7 +184,7 @@ export default {
         {value: 'RH', label: 'Feriado Local'},
         {value: 'NSS', label: 'Sábado não-letivo'},
         {value: 'NSD', label: 'Dia(s) não-letivo(s)'},
-        {value: 'SD', label: 'Dia(s) letivo(s)'},
+        {value: 'SD', label: 'Dia(s) letivo(s)', selected: true},
       ]
     };
   },
