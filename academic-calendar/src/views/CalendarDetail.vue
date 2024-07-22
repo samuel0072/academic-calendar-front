@@ -185,7 +185,21 @@ export default {
         {value: 'NSS', label: 'Sábado não-letivo'},
         {value: 'NSD', label: 'Dia(s) não-letivo(s)'},
         {value: 'SD', label: 'Dia(s) letivo(s)', selected: true},
-      ]
+      ],
+      monthsNames: {
+        1: "Janeiro",
+        2: "Fevereiro",
+        3: "Março",
+        4: "Abril",
+        5: "Maio",
+        6: "Junho",
+        7: "Julho",
+        8: "Agosto",
+        9: "Setembro",
+        10: "Outubro",
+        11: "Novembro",
+        12: "Dezembro",
+      }
     };
   },
   computed: {
@@ -298,7 +312,6 @@ export default {
       console.log("Event Info : ", event);
       console.groupEnd();
     },
-
     onClickTimezonesCollapseBtn(timezoneCollapsed) {
       console.group("onClickTimezonesCollapseBtn");
       console.log("Is Timezone Collapsed?: ", timezoneCollapsed);
@@ -321,30 +334,8 @@ export default {
     },
     setDateRangeText() {
       const date = this.calendarInstance.getDate();
-      const start = this.calendarInstance.getDateRangeStart();
-      const end = this.calendarInstance.getDateRangeEnd();
 
-      const startYear = start.getFullYear();
-      const endYear = end.getFullYear();
-
-      switch (this.selectedView) {
-        case "month":
-          this.dateRangeText = `${date.getFullYear()}.${date.getMonth() + 1}`;
-
-          return;
-        case "day":
-          this.dateRangeText = `${date.getFullYear()}.${
-            date.getMonth() + 1
-          }.${date.getDate()}`;
-
-          return;
-        default:
-          this.dateRangeText = `${startYear}.${
-            start.getMonth() + 1
-          }.${start.getDate()} - ${startYear !== endYear ? `${endYear}.` : ""}${
-            end.getMonth() + 1
-          }.${end.getDate()}`;
-      }
+      this.dateRangeText = `${this.monthsNames[date.getMonth() + 1]} de ${date.getFullYear()}`;
     },
   },
   components: {
