@@ -73,6 +73,7 @@
                   :options="eventLabels" 
                   v-model="newEvent.label"
                 />
+                <ColorPicker v-model="newEvent.bgColor"/>
             </BaseForm>
         </template>
 
@@ -108,6 +109,7 @@ import BaseForm from '@/components/BaseForm.vue'
 import FloatingInput from '@/components/FloatingInput.vue'
 import BaseSelectInput from '@/components/BaseSelectInput.vue'
 import BaseLabel from '@/components/BaseLabel.vue'
+import ColorPicker from '@/components/ColorPicker.vue'
 
 
 export default {
@@ -335,7 +337,8 @@ export default {
     BaseForm: BaseForm,
     FloatingInput: FloatingInput,
     BaseSelectInput: BaseSelectInput,
-    BaseLabel: BaseLabel
+    BaseLabel: BaseLabel,
+    ColorPicker: ColorPicker
   },
 };
 </script>
