@@ -112,7 +112,7 @@
     import BaseButton from '@/components/BaseButton.vue'
     import BaseToastContainer from '@/components/BaseToastContainer.vue'
     import BaseToast from '@/components/BaseToast.vue'
-    import BaseTextInput from '@/components/BaseTextInput.vue'
+    import BaseInput from '@/components/BaseInput.vue'
     import SearchInput from '@/components/SearchInput.vue'
     import * as bootstrap from 'bootstrap';
     //
@@ -252,7 +252,7 @@
             'BaseButton': BaseButton,
             'BaseToastContainer': BaseToastContainer,
             'BaseToast': BaseToast,
-            'BaseTextInput': BaseTextInput,
+            'BaseInput': BaseInput,
             'SearchInput': SearchInput
         }
     }

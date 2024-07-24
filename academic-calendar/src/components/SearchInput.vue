@@ -1,7 +1,7 @@
 <template>
     <form @submit.prevent="searchTrigger">
         <div class="input-group">
-            <BaseTextInput :id="id" type="text" placeholder="Digite aqui para buscar..." v-model="searchValue"/>
+            <BaseInput :id="id" type="text" placeholder="Digite aqui para buscar..." v-model="searchValue"/>
             <BaseButton type="submit"  title="buscar">
                 <i>
                     <SearchIcon /> 
@@ -30,7 +30,7 @@ i {
 
 <script>
     import "@/assets/main_bootstrap.scss";
-    import BaseTextInput from '@/components/BaseTextInput.vue'
+    import BaseInput from '@/components/BaseInput.vue'
     import BaseButton from '@/components/BaseButton.vue'
     import SearchIcon from '@/components/icons/IconMagnifyingGlass.vue'
     import * as bootstrap from 'bootstrap';
@@ -50,7 +50,7 @@ i {
         },
         components: {
             'BaseButton': BaseButton,
-            'BaseTextInput': BaseTextInput,
+            'BaseInput': BaseInput,
             'SearchIcon': SearchIcon
         },
         methods: {

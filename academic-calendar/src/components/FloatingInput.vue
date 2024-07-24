@@ -1,6 +1,6 @@
 <template>
     <div class="form-floating">
-        <BaseTextInput 
+        <BaseInput 
             v-model="inputValue"
             :placeholder="placeholder"
             :maxlength="maxlength" 
@@ -17,7 +17,7 @@
 </template>
 
 <script>
-    import BaseTextInput from '@/components/BaseTextInput.vue'
+    import BaseInput from '@/components/BaseInput.vue'
     import BaseLabel from '@/components/BaseLabel.vue'
 
     import "@/assets/main_bootstrap.scss";
@@ -59,7 +59,7 @@
             }
         },
         components: {
-            BaseTextInput,
+            BaseInput,
             BaseLabel
         }
     }
