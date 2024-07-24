@@ -9,7 +9,7 @@
                 <div>
                     <form id="calendar_creation_form" @submit.prevent="createCalendar" class="needs-validation">
                         <div class="form-floating mb-3">
-                            <input 
+                            <BaseInput 
                                 v-model="calendarFormValues.description" 
                                 type="text" 
                                 class="form-control" 
@@ -23,7 +23,7 @@
                             </div>
                         </div>
                         <div class="form-floating mb-3">
-                            <input 
+                            <BaseInput 
                                 v-model="calendarFormValues.start_date" 
                                 type="date" 
                                 class="form-control" 
@@ -35,7 +35,7 @@
                             </div>
                         </div>
                         <div class="form-floating mb-3">
-                            <input 
+                            <BaseInput 
                                 v-model="calendarFormValues.end_date" 
                                 type="date" 
                                 class="form-control" 
@@ -87,7 +87,7 @@
                     Crie um calendário
                 </button>
 
-                <div class="col-1">
+                <div class="col-4">
                     <SearchInput id="searchInput" @search-triggered="getCalendars($event)"/>
                 </div>               
 
