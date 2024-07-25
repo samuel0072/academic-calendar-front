@@ -58,7 +58,7 @@
         </template>
 
         <template v-slot:modal-body>
-            <BaseForm @submit="" id="event-creation-form">
+            <BaseForm @submit="createEvent" id="event-creation-form">
                 <FloatingInput 
                   id="event-name"
                   v-model="newEvent.description"
@@ -90,6 +90,17 @@
                   label="Digite a data de fim"
                   type="date"
                 />
+
+                <div v-if="newEvent.label != 'H'">
+                  <BaseLabel for="event-campi"> Esse evento é válido para os campi: </BaseLabel>
+                  <BaseSelectInput 
+                    id="event-campi" 
+                    :options="campi" 
+                    v-model="newEvent.campi"
+                    :multiple="true"
+                  />
+                </div>
+                
 
             </BaseForm>
         </template>
@@ -128,6 +139,10 @@ import BaseSelectInput from '@/components/BaseSelectInput.vue'
 import BaseLabel from '@/components/BaseLabel.vue'
 import ColorPicker from '@/components/ColorPicker.vue'
 
+/*
+* TODO: Adicionar a lista de campi no form de criação
+* Adicionar uma requisição para pegar todos os campi da org
+*/
 
 export default {
   data() {
@@ -177,7 +192,7 @@ export default {
         endDate: "",
         label: "SD",
         bgColor: "#3473b7",
-        campi: []
+        campi: [1, 2, 3]
       },
       eventLabels: [
         {value: 'H', label: 'Feriado Nacional'},
@@ -199,7 +214,24 @@ export default {
         10: "Outubro",
         11: "Novembro",
         12: "Dezembro",
-      }
+      },
+      campi: [
+        {
+          value: 1,
+          label: 'A.C. Simões',
+          selected: true
+        },
+        {
+          value: 2,
+          label: 'Campus Viçosa',
+          selected: true
+        },
+        {
+          value: 3,
+          label: 'Campus Rio Largo',
+          selected: true
+        }
+      ]
     };
   },
   computed: {
@@ -213,6 +245,9 @@ export default {
       this.calendarInstance.changeView(newView);
       this.setDateRangeText();
     },
+    // newEvent(value) {
+    //   if(value.label == 'H')
+    // }
   },
   mounted() {
     this.setDateRangeText();
@@ -241,13 +276,33 @@ export default {
               start: event.start_date,
               end: event.end_date,
               label: event.label,
-              backgroundColor: `#${event.hexadecimal_color}`,
+              backgroundColor: event.hexadecimal_color,
               campi: event.campi,
               organization: event.organization,
               isAllday: true,
             });
           });
         });
+    },
+    createEvent() {
+      axios.post(`/api/academic-calendar/event/create`, {
+        'academic_calendar': this.$route.params.id,
+        'label': this.newEvent.label,
+        'description': this.newEvent.description,
+        'hexadecimal_color': this.newEvent.bgColor,
+        'start_date': this.newEvent.startDate,
+        'end_date': this.newEvent.endDate,
+        'campi': [1]
+      }, 
+      {
+        headers: {
+          Authorization: "Bearer " + this.userAuthInfoStore.token
+        },
+      }).then((response) => {
+         console.log(response)
+      }).catch((error) => {
+        console.log(err)
+      })
     },
     getTemplateForMilestone(event) {
       return `<span style="color: #fff; background-color: ${event.backgroundColor};">${event.title}</span>`;
