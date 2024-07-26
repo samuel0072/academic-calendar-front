@@ -245,9 +245,14 @@ export default {
       this.calendarInstance.changeView(newView);
       this.setDateRangeText();
     },
-    // newEvent(value) {
-    //   if(value.label == 'H')
-    // }
+    'newEvent.label': function(value, oldValue) {
+      if(value == "H") {
+        this.newEvent.campi = []
+      }
+      else {
+        this.newEvent.campi = this.campi
+      }
+    }
   },
   mounted() {
     this.setDateRangeText();
