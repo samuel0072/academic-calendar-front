@@ -9,7 +9,7 @@
 </template>
 
 <script>
-//precisa rever a forma de enviar o evento pois no tipo multiple não ta enviando como array
+//precisa rever a forma de selecionar os elementos na renderização
     import "@/assets/main_bootstrap.scss";
 
     export default {
@@ -45,6 +45,13 @@
             if(this.multiple) {
                 this.$refs.mainSelect.setAttribute('multiple', '');
                 this.selectedValue = this.value        
+                
+                // Nesse tipo de select o código abaixo tem que ser usado para selecionar as opções na primeira vez que o componente é renderizado
+                this.$refs.mainSelect.childNodes.forEach((option) => {
+                    if(this.selectedValue.includes(option._value)) {
+                        option.selected = true
+                    }
+                })
             }
         }
     }
