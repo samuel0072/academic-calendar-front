@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import { createPinia, PiniaVuePlugin } from 'pinia'
 import { useUserAuthInfoStore } from '@/stores/userAuthInfo.js'
-//import { env } from 'node:process';
+import { useOrganizationInfoStore } from "@/stores/organizationInfo"
+import axios from "axios"
 
 import App from './App.vue'
 import router from './router'
@@ -25,10 +26,24 @@ new Vue({
     }
     else {
       // senão, carrega o token na store
-      var store = useUserAuthInfoStore()
-      store.changeAuthenticateState(true)
-      store.setAuthToken(authToken, false)
-      store.setRefreshToken(refreshtoken, false)
+      var authStore = useUserAuthInfoStore()
+      authStore.changeAuthenticateState(true)
+      authStore.setAuthToken(authToken, false)
+      authStore.setRefreshToken(refreshtoken, false)
+
+      var orgStore = useOrganizationInfoStore()
+
+      axios.get('/api/academic-calendar/campus/list', {
+        headers: {
+          Authorization: "Bearer " + authStore.token
+        }
+      })
+      .then((response) => {
+        orgStore.$patch({ campi: response.data })
+      })
+      //TODO: adicionar tratamento de erro
+      //TODO: colocar em uma função e jogar essa chamada pra depois do login também
+
     }
     
     
