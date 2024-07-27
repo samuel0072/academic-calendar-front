@@ -2,6 +2,7 @@
     <form @submit.prevent="searchTrigger">
         <div class="input-group">
             <BaseInput :id="id" type="text" placeholder="Digite aqui para buscar..." v-model="searchValue"/>
+            <!--  colocar esses title e placeholder como uma prop no no translation? -->
             <BaseButton type="submit"  title="buscar">
                 <i>
                     <SearchIcon /> 

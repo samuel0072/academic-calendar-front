@@ -4,6 +4,7 @@
             {{ msg }}
         </div>
         <div v-if="displayButton">
+        <!-- Adequar ao novo componente do botão -->
             <BaseButton type="button" :label="buttonLabel" />
         </div>
     </div>

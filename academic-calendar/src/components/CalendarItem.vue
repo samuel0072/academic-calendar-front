@@ -4,9 +4,11 @@
         <span> {{ startDate }} </span>
         <span> {{ endDate }} </span>
         <BaseButton type="button" @click.native="$emit('calendar-item-view')" >
+            <!-- TODO: botar no tranlation ou colocar como um slot? -->
             Visualizar Calendário
         </BaseButton>
         <BaseButton type="button" @click.native="$emit('calendar-item-delete')" >
+         <!-- TODO: botar no tranlation ou colocar como um slot? -->
             Excluir
         </BaseButton>
     </div>

@@ -9,6 +9,7 @@
         <BaseLabel :for="id">
             {{label}}
         </BaseLabel>
+        <!-- mover para um componente isolado -->
         <div class="invalid-feedback">
             <slot  name="invalid-feedback">
             </slot>

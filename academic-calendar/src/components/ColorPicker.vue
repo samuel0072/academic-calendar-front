@@ -5,6 +5,7 @@
         :value="value"
         @input="$emit('input', $event.target.value)" 
         title="Escolha uma cor">
+        <!-- TODO: botar o title no tranlation ou colocar como uma prop? -->
 </template>
 <script>
     export default {
