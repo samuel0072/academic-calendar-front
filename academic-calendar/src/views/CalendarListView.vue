@@ -158,7 +158,7 @@
                         refreshUserAuthToken(this.getCalendars)
                     }
                     else {
-                        //tratar erros que podem vim do servidor
+                        //TODO: tratar erros que podem vim do servidor
                     }
                 })
                 .finally( () => {
