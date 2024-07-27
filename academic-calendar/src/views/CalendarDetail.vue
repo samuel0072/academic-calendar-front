@@ -139,6 +139,7 @@
 	export default {
 		data() {
 			return {
+				//TODO: retirar esse mock
 				calendars: [
 					{
 						id: "0",
@@ -150,6 +151,7 @@
 				],
 				events: [],
 				zones: [
+					//TODO: verificar pra que isso serve
 					{
 						timezoneName: "Asia/Seoul",
 						displayLabel: "Seoul",
@@ -164,6 +166,7 @@
 				theme,
 				selectedView: "month",
 				viewOptions: [
+					//TODO: remover outras opções além de mês
 					{
 						title: "Monthly",
 						value: "month",
@@ -179,12 +182,12 @@
 				],
 				dateRangeText: "",
 				newEvent: {
-				description: "",
-				startDate: "",
-				endDate: "",
-				label: "SD",
-				bgColor: "#3473b7",
-				campi: []
+					description: "",
+					startDate: "",
+					endDate: "",
+					label: "SD",
+					bgColor: "#3473b7",
+					campi: []
 				},
 				eventLabels: [
 					{value: 'H', label: 'Feriado Nacional'},

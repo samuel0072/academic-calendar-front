@@ -2,7 +2,9 @@
 
 <template>
     <div>
+    <!-- TODO: aplicar componente form -->
         <form @submit.prevent="login">
+        <!-- TODO: aplicar componente floating input -->
             <div>
                 <label for="username">Digite seu username</label>
                 <input id="username" type="text" v-model="username" required/>
@@ -15,10 +17,12 @@
                 <BaseButton type="submit"> Entrar </BaseButton>
             </div>
             <div v-else>
+            <!-- TODO: criar componente próprio -->
                 carregando...
             </div>
-
+            
             <div v-if="errored">
+            <!-- TODO: criar componente próprio -->
                 {{ errorMsg }}
             </div>
             

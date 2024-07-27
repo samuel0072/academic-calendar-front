@@ -2,12 +2,15 @@
     <div>
         <BaseModal :modal_id="calendarCreationModalId">
             <template v-slot:modal-title>
+            <!-- TODO: criar componente title -->
                 <h5>Crie um novo calendário acadêmico</h5>
             </template>
 
             <template v-slot:modal-body>
                 <div>
+                    <!-- TODO: usar componente form -->
                     <form id="calendar_creation_form" @submit.prevent="createCalendar" class="needs-validation">
+                        <!-- TODO: usar componente FloatingInput -->
                         <div class="form-floating mb-3">
                             <BaseInput 
                                 v-model="calendarFormValues.description" 
@@ -17,7 +20,9 @@
                                 required 
                                 placeholder="" 
                                 maxlength="500"/>
+                                =
                             <label for="calendar_description_input">Nome do calendário</label>
+                            <!-- TODO: criar componente InputFeedback -->
                             <div class="invalid-feedback">
                                 Esse nome não é válido. Tente informar um nome com até 500 caracteres.
                             </div>
@@ -75,6 +80,7 @@
         </BaseToastContainer>
 
         <div v-if="loading">
+        <!-- TODO: criar um componente próprio -->
             Obtendo os caléndários...
         </div>
         <div v-else>
@@ -82,7 +88,7 @@
                 <EmptyState msg="Não há calendários para exibir" :displayButton="true" buttonLabel="Crie um calendário"/>
             </div>
             <div v-else>
-
+                <!-- TODO: aplicar componente basebutton -->
                 <button type="button" class="btn" data-bs-toggle="modal" :data-bs-target="'#' + calendarCreationModalId">
                     Crie um calendário
                 </button>
