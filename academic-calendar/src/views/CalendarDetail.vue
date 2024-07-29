@@ -118,6 +118,7 @@
 	/* eslint-disable no-console */
 	import ToastUICalendar from "@/components/ToastUICalendar.vue"
 	import "@toast-ui/calendar/toastui-calendar.css"
+	import { TZDate } from '@toast-ui/calendar';
 
 	import { theme } from "@/views/assets/theme.js"
 
@@ -225,7 +226,10 @@
 				this.setDateRangeText();
 			},
 			campi(value) {
-				this.newEvent.campi = value
+				value.forEach((campus) => {
+					this.newEvent.campi.push(campus.value)
+				})
+				
 			}
 		},
 		mounted() {
@@ -291,23 +295,22 @@
 						},
 					}
 				).then((response) => {
-					console.log(response)
 					this.events.push({
 						id: response.data.id,
 						calendarId: "0",
 						title: this.newEvent.description,
 						category: "allday",
-						start: this.newEvent.start_date,
-						end: this.newEvent.end_date,
+						start: this.newEvent.startDate,
+						end: this.newEvent.endDate,
 						label: this.newEvent.label,
 						backgroundColor: this.newEvent.bgColor,
 						campi: this.newEvent.campi,
-						organization: this.newEvent.organization,
+						organization: response.data.organization,
 						isAllday: true,
 					});
 				}).catch((error) => {
 					// TODO: Adicionar tratamento de erro
-					console.log(err)
+					console.log(error)
 				})
 			},
 			getTemplateForMilestone(event) {
@@ -323,18 +326,19 @@
 				console.groupEnd();
 			},
 			onBeforeCreateEvent(eventData) {
+				console.log(eventData);
 				const event = {
 					calendarId: eventData.calendarId || "",
-					id: String(Math.random()),
+					id: eventData.id,
 					title: eventData.title,
 					isAllday: eventData.isAllday,
 					start: eventData.start,
 					end: eventData.end,
 					category: eventData.isAllday ? "allday" : "time",
-					dueDateClass: "",
-					location: eventData.location,
-					state: eventData.state,
-					isPrivate: eventData.isPrivate,
+					label: eventData.label,
+					backgroundColor: eventData.bgColor,
+					campi: eventData.campi,
+					organization: eventData.organization
 				};
 
 				this.calendarInstance.createEvents([event]);
