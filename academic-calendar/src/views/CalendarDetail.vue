@@ -279,20 +279,21 @@
 				// TODO: Adicionar tratamento de erro
 			},
 			createEvent() {
-				axios.post(`/api/academic-calendar/event/create`, 
-					{
-						'academic_calendar': this.$route.params.id,
-						'label': this.newEvent.label,
-						'description': this.newEvent.description,
-						'hexadecimal_color': this.newEvent.bgColor,
-						'start_date': this.newEvent.startDate,
-						'end_date': this.newEvent.endDate,
-						'campi': this.newEvent.campi
-					}, 
+				var payload = {
+					'academic_calendar': this.$route.params.id,
+					'label': this.newEvent.label,
+					'description': this.newEvent.description,
+					'hexadecimal_color': this.newEvent.bgColor,
+					'start_date': this.newEvent.startDate,
+					'campi': this.newEvent.campi,
+					'end_date': this.newEvent.endDate !== ""? this.newEvent.endDate : this.newEvent.startDate
+				}
+
+				axios.post(`/api/academic-calendar/event/create`, payload, 
 					{
 						headers: {
 							Authorization: "Bearer " + this.userAuthInfoStore.token
-						},
+						}
 					}
 				).then((response) => {
 					this.events.push({
@@ -301,7 +302,7 @@
 						title: this.newEvent.description,
 						category: "allday",
 						start: this.newEvent.startDate,
-						end: this.newEvent.endDate,
+						end: response.data.end_date,
 						label: this.newEvent.label,
 						backgroundColor: this.newEvent.bgColor,
 						campi: this.newEvent.campi,
