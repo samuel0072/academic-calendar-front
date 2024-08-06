@@ -32,7 +32,7 @@
 				taskView: true,
 			}"
 			:month="{ startDayOfWeek: 7 }"
-			:timezone="{ zones }"
+			:timezone="{  }"
 			:theme="theme"
 			:template="{
 				milestone: getTemplateForMilestone,
@@ -200,19 +200,6 @@
 					},
 				],
 				events: [],
-				zones: [
-					//TODO: verificar pra que isso serve
-					{
-						timezoneName: "Asia/Seoul",
-						displayLabel: "Seoul",
-						tooltip: "UTC+09:00",
-					},
-					{
-						timezoneName: "Pacific/Guam",
-						displayLabel: "Guam",
-						tooltip: "UTC+10:00",
-					},
-				],
 				theme,
 				selectedView: "month",
 				viewOptions: [
@@ -386,8 +373,6 @@
 						isAllday: true,
 					});
 				}).catch((error) => {
-					// TODO: Adicionar tratamento de erro
-					console.log(error)
 					if(error.response) {
                         if(error.request.status === 401) {
                             refreshUserAuthToken(this.createEvent)
@@ -436,20 +421,20 @@
 							}
                         }
                         else if(error.request.status === 500){
-                            this.errorToastMsg = "Não foi possível se conectar com o servidor."
-                            toast.show()
+                            this.errorToast.msg = "Não foi possível se conectar com o servidor."
+                            this.errorToast.el.show()
                         }
                     }
                     else if(error.request) {
                         if(error.code === "ERR_NETWORK") {
-                            this.errorToastMsg = "Esse cliente não consegue se conectar com a internet."
-                            toast.show()
+                            this.errorToast.msg = "Esse cliente não consegue se conectar com a internet."
+                            this.errorToast.el.show()
                         }
                     }
                     else {
                         console.log(error)
-                        this.errorToastMsg = "Um erro inesperado aconteceu. Por favor, recarregue a página e tente novamente."
-                        toast.show()
+                        this.errorToast.msg = "Um erro inesperado aconteceu. Por favor, recarregue a página e tente novamente."
+                        this.errorToast.el.show()
                     }
 				})
 			},
