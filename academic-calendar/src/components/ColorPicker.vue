@@ -1,5 +1,6 @@
 <template>
     <input 
+        ref="input"
         type="color" 
         class="form-control form-control-color" 
         :value="value"
@@ -19,6 +20,21 @@
         model: {
             prop: 'value',
             event: 'input'
+        },
+        methods: {
+            validate(type) {
+                if(type === "valid") {
+                    this.$refs.input.classList.add("is-valid")
+                }
+                else if(type === "invalid") {
+                    this.$refs.input.classList.add("is-invalid")
+                }                
+            },
+            resetValidation() {
+                this.$refs.input.classList.remove("is-valid")
+                this.$refs.input.classList.remove("is-invalid")
+            }
         }
+       
     }
 </script>

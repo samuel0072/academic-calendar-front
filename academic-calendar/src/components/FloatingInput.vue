@@ -1,6 +1,7 @@
 <template>
     <div class="form-floating">
         <BaseInput 
+            ref="baseInput"
             v-model="inputValue"
             :placeholder="placeholder"
             :maxlength="maxlength" 
@@ -9,11 +10,8 @@
         <BaseLabel :for="id">
             {{label}}
         </BaseLabel>
-        <!-- TODO: mover para um componente isolado -->
-        <div class="invalid-feedback">
-            <slot  name="invalid-feedback">
-            </slot>
-        </div>
+        <slot>
+        </slot>
     </div>
 </template>
 
@@ -62,6 +60,14 @@
         components: {
             BaseInput,
             BaseLabel
+        },
+        methods: {
+            validate(type) {
+                this.$refs.baseInput.validate(type);
+            },
+            resetValidation() {
+                this.$refs.baseInput.resetValidation();
+            }
         }
     }
 </script>

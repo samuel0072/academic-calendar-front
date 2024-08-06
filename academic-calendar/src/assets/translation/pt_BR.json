@@ -52,7 +52,8 @@
         "monthLabel11": "Novembro",
         "monthLabel12": "Dezembro",
         "label3": "[All day]",
-        "label4": "de"
+        "label4": "de",
+        "sucessLabel1": "Evento criado com sucesso!"
     },
     "serverGenericError1": "Não foi possivel contatar o servidor remoto. Tente novamente mais tarde.",
     "clientNetworkError1": "Esse cliente não consegue se conectar com a internet.",

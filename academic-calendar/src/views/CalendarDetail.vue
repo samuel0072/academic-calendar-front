@@ -1,5 +1,6 @@
 <template>
 	<div>
+
 		<nav>
 			<span>ir para</span>
 			<div class="btn-group" role="group">
@@ -56,48 +57,76 @@
 			</template>
 
 			<template v-slot:modal-body>
-				<BaseForm @submit="createEvent" id="event-creation-form">
+				<BaseForm @submit="createEvent" id="event-creation-form" type="feedback" ref="eCForm" novalidate>
 					<FloatingInput 
-						id="event-name"
+						ref="eCDescription"
+						id="event-description"
 						v-model="newEvent.description"
 						label="Digite o nome do evento"
 						type="text"
 						maxlength="500"
-					/>
+					>
+						<FormInputFeedback type="invalid">
+							{{ eCFormInputFeedbacks.description }}
+						</FormInputFeedback>
+					</FloatingInput>
+					
 
 					<BaseLabel for="event-label"> Escolha o tipo do evento: </BaseLabel>
 					<BaseSelectInput 
+						ref="ecLabel"
 						id="event-label" 
 						:options="eventLabels" 
 						v-model="newEvent.label"
 					/>
+					<FormInputFeedback type="invalid">
+						{{ eCFormInputFeedbacks.label }}
+					</FormInputFeedback>
 
 					<BaseLabel for="event-bg-color"> Escolha a cor de fundo: </BaseLabel>
-					<ColorPicker v-model="newEvent.bgColor" id="event-bg-color"/>
+					<ColorPicker v-model="newEvent.bgColor" id="event-bg-color" ref="eCColor"/>
+					<FormInputFeedback type="invalid">
+						{{ eCFormInputFeedbacks.bgColor }}
+					</FormInputFeedback>
 
 					<FloatingInput 
 						id="event-start-date"
 						v-model="newEvent.startDate"
 						label="Digite a data de ínicio *"
 						type="date"
-					/>
+						ref="eCStartDate"
+					>
+						<FormInputFeedback type="invalid">
+							{{ eCFormInputFeedbacks.startDate }}
+						</FormInputFeedback>
+					</FloatingInput>
 
 					<FloatingInput 
 						id="event-end-date"
 						v-model="newEvent.endDate"
 						label="Digite a data de fim"
 						type="date"
-					/>
+						ref="eCEndDate"
+					>
+						<FormInputFeedback type="invalid">
+							{{ eCFormInputFeedbacks.endDate }}
+						</FormInputFeedback>
+					</FloatingInput>
 
 					<div v-if="newEvent.label != 'H'">
-					<BaseLabel for="event-campi"> Esse evento é válido para os campi: </BaseLabel>
-					<BaseSelectInput 
-						id="event-campi" 
-						:options="campi" 
-						v-model="newEvent.campi"
-						:multiple="true"
-					/>
+						<BaseLabel for="event-campi"> Esse evento é válido para os campi: </BaseLabel>
+						<BaseSelectInput 
+							id="event-campi" 
+							:options="campi" 
+							v-model="newEvent.campi"
+							:multiple="true"
+							ref="eCCampi"
+						/>
+						<FormInputFeedback type="invalid">
+							{{ eCFormInputFeedbacks.campi }}
+						</FormInputFeedback>
 					</div>
+					
 					
 
 				</BaseForm>
@@ -111,6 +140,21 @@
 				</div>
 			</template>
 		</BaseModal>
+
+		<BaseToastContainer class="position-fixed bottom-0 end-0 p-3">
+            <BaseToast 
+                title="Sucesso" 
+                :message="sucessToast.msg" 
+                id="sucess-toast" 
+                class="text-bg-success" />
+
+            <BaseToast 
+                title="Erro" 
+                :message="errorToast.msg" 
+                id="fail-toast" 
+                class="text-bg-danger" />    
+
+        </BaseToastContainer>
 	</div>
 </template>
 
@@ -136,6 +180,11 @@
 	import BaseSelectInput from '@/components/BaseSelectInput.vue'
 	import BaseLabel from '@/components/BaseLabel.vue'
 	import ColorPicker from '@/components/ColorPicker.vue'
+	import BaseToastContainer from '@/components/BaseToastContainer.vue'
+    import BaseToast from '@/components/BaseToast.vue'
+	import FormInputFeedback from '@/components/FormInputFeedback.vue'
+
+	import refreshUserAuthToken from '@/assets/scripts/refreshUserAuthToken.js'
 
 	export default {
 		data() {
@@ -211,7 +260,24 @@
 					11: "Novembro",
 					12: "Dezembro",
 				},
-				campi: []
+				campi: [],
+				eventCreationModal: null,
+				sucessToast: {
+					el: null,
+					msg: ""
+				},
+				errorToast: {
+					el: null,
+					msg: ""
+				},
+				eCFormInputFeedbacks: {
+					description: "",
+					startDate: "",
+					endDate: "",
+					label: "",
+					bgColor: "",
+					campi: ""
+				}
 			}
 		},
 		computed: {
@@ -246,6 +312,10 @@
 					})
 				})
 			})
+
+			this.eventCreationModal = bootstrap.Modal.getOrCreateInstance('#createEvents');
+			this.sucessToast.el = bootstrap.Toast.getOrCreateInstance("#sucess-toast");
+			this.errorToast.el = bootstrap.Toast.getOrCreateInstance("#fail-toast");
 		},
 		methods: {
 			getEvents() {
@@ -296,6 +366,12 @@
 						}
 					}
 				).then((response) => {
+					this.eventCreationModal.hide()
+
+					this.sucessToast.msg = "Evento criado com sucesso!"
+
+					this.sucessToast.el.show()
+
 					this.events.push({
 						id: response.data.id,
 						calendarId: "0",
@@ -312,6 +388,69 @@
 				}).catch((error) => {
 					// TODO: Adicionar tratamento de erro
 					console.log(error)
+					if(error.response) {
+                        if(error.request.status === 401) {
+                            refreshUserAuthToken(this.createEvent)
+							//TODO Exibir um toast quando o usuário for redirecionado pro login
+                        }
+                        else if(error.request.status === 422 ){
+							if(Object.hasOwn(error.response.data, 'description')) {
+								error.response.data["description"].forEach( (msg) => {
+									this.eCFormInputFeedbacks.description += `${msg}\n`
+								})
+								this.$refs.eCDescription.validate("invalid")
+                            }
+							if(Object.hasOwn(error.response.data, 'label')) {
+								error.response.data["label"].forEach( (msg) => {
+									this.eCFormInputFeedbacks.label += `${msg}\n`
+								})
+								this.$refs.ecLabel.validate("invalid")
+                            }
+                            if(Object.hasOwn(error.response.data, 'campi')) {
+								error.response.data["campi"].forEach( (msg) => {
+									this.eCFormInputFeedbacks.campi += `${msg}\n`
+								})
+								this.$refs.eCCampi.validate("invalid")
+                            }
+                            if(Object.hasOwn(error.response.data, 'end_date')) {
+								error.response.data["end_date"].forEach( (msg) => {
+									this.eCFormInputFeedbacks.endDate += `${msg}\n`
+								})
+								this.$refs.eCEndDate.validate("invalid")
+                            }
+                            if(Object.hasOwn(error.response.data, 'start_date')) {
+								error.response.data["start_date"].forEach( (msg) => {
+									this.eCFormInputFeedbacks.startDate += `${msg}\n`
+								})
+								this.$refs.eCStartDate.validate("invalid")
+                            }
+							if(Object.hasOwn(error.response.data, 'hexadecimal_color')) {
+								error.response.data["hexadecimal_color"].forEach( (msg) => {
+									this.eCFormInputFeedbacks.bgColor += `${msg}\n`
+								})
+								this.$refs.eCColor.validate("invalid")
+                            }
+							if(Object.hasOwn(error.response.data, 'academic_calendar')) {
+								this.errorToast.msg = "Não foi possível criar esse evento nesse calendário!"
+								this.errorToast.el.show()
+							}
+                        }
+                        else if(error.request.status === 500){
+                            this.errorToastMsg = "Não foi possível se conectar com o servidor."
+                            toast.show()
+                        }
+                    }
+                    else if(error.request) {
+                        if(error.code === "ERR_NETWORK") {
+                            this.errorToastMsg = "Esse cliente não consegue se conectar com a internet."
+                            toast.show()
+                        }
+                    }
+                    else {
+                        console.log(error)
+                        this.errorToastMsg = "Um erro inesperado aconteceu. Por favor, recarregue a página e tente novamente."
+                        toast.show()
+                    }
 				})
 			},
 			getTemplateForMilestone(event) {
@@ -411,7 +550,10 @@
 			FloatingInput: FloatingInput,
 			BaseSelectInput: BaseSelectInput,
 			BaseLabel: BaseLabel,
-			ColorPicker: ColorPicker
+			ColorPicker: ColorPicker,
+			BaseToastContainer: BaseToastContainer,
+			BaseToast: BaseToast,
+			FormInputFeedback: FormInputFeedback
 		},
 	};
 </script>

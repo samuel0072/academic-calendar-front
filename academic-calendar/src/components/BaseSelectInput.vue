@@ -53,6 +53,20 @@
                     }
                 })
             }
+        },
+        methods: {
+            validate(type) {
+                if(type === "valid") {
+                    this.$refs.mainSelect.classList.add("is-valid")
+                }
+                else if(type === "invalid") {
+                    this.$refs.mainSelect.classList.add("is-invalid")
+                }                
+            },
+            resetValidation() {
+                this.$refs.mainSelect.classList.remove("is-valid")
+                this.$refs.mainSelect.classList.remove("is-invalid")
+            }
         }
     }
 </script>
