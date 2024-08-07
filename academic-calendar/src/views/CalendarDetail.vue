@@ -1,6 +1,6 @@
 <template>
 	<div>
-
+		<DropdownButton defaultLabel="Exportar como planilha" defaultValue="xlsx" :options="[{label: 'exportar como arquivo .csv', value: 'csv'}]" />
 		<nav>
 			<span>ir para</span>
 			<div class="btn-group" role="group">
@@ -183,6 +183,7 @@
 	import BaseToastContainer from '@/components/BaseToastContainer.vue'
     import BaseToast from '@/components/BaseToast.vue'
 	import FormInputFeedback from '@/components/FormInputFeedback.vue'
+    import DropdownButton from '@/components/DropdownButton.vue'
 
 	import refreshUserAuthToken from '@/assets/scripts/refreshUserAuthToken.js'
 
@@ -538,7 +539,8 @@
 			ColorPicker: ColorPicker,
 			BaseToastContainer: BaseToastContainer,
 			BaseToast: BaseToast,
-			FormInputFeedback: FormInputFeedback
+			FormInputFeedback: FormInputFeedback,
+            DropdownButton: DropdownButton
 		},
 	};
 </script>
