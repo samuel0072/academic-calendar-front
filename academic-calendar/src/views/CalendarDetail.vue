@@ -1,5 +1,8 @@
 <template>
 	<div>
+		<TextTitle1 ref="calendarTitle">
+			{{ calendar.description }}
+		</TextTitle1>
 		<DropdownButton defaultLabel="Exportar como planilha" defaultValue="xlsx" :options="[{label: 'exportar como arquivo .csv', value: 'csv'}]" />
 		<nav>
 			<span>ir para</span>
@@ -184,6 +187,7 @@
     import BaseToast from '@/components/BaseToast.vue'
 	import FormInputFeedback from '@/components/FormInputFeedback.vue'
     import DropdownButton from '@/components/DropdownButton.vue'
+	import TextTitle1 from '@/components/text-components/TextTitle1.vue'
 
 	import refreshUserAuthToken from '@/assets/scripts/refreshUserAuthToken.js'
 
@@ -200,6 +204,13 @@
 						dragBackgroundColor: "#9e5fff",
 					},
 				],
+				calendar: {
+					id: null,
+					description: null,
+					startDate: null,
+					endDate: null,
+					organization: null
+				},
 				events: [],
 				theme,
 				selectedView: "month",
@@ -287,7 +298,9 @@
 			}
 		},
 		mounted() {
+			this.calendar.id = this.$route.params.id;
 			this.setDateRangeText();
+			this.getCalendarDetail();
 			this.getEvents();
 
 			this.organizationInfoStore.$subscribe((mutation, state) => {
@@ -439,6 +452,45 @@
                     }
 				})
 			},
+			getCalendarDetail() {
+				axios.get(`/api/academic-calendar/calendar/detail/${this.calendar.id}`, {
+					headers: {
+						Authorization: "Bearer " + this.userAuthInfoStore.token,
+					}
+				})
+				.then((res) => {
+					this.calendar.description =  res.data.description
+					this.calendar.startDate =  res.data.start_date
+					this.calendar.endDate =  res.data.end_date
+					this.calendar.organization =  res.data.organization
+				})
+				.catch( (error) => {
+					if(error.response) {
+                        if(error.request.status === 401) {
+                            refreshUserAuthToken(this.getCalendarDetail)
+							//TODO Exibir um toast quando o usuário for redirecionado pro login
+                        }
+                        else if(error.request.status === 404 ){
+							this.$router.push({ name: 'not-found' })
+                        }
+                        else if(error.request.status === 500){
+                            this.errorToast.msg = "Não foi possível se conectar com o servidor."
+                            this.errorToast.el.show()
+                        }
+                    }
+                    else if(error.request) {
+                        if(error.code === "ERR_NETWORK") {
+                            this.errorToast.msg = "Esse cliente não consegue se conectar com a internet."
+                            this.errorToast.el.show()
+                        }
+                    }
+                    else {
+                        console.log(error)
+                        this.errorToast.msg = "Um erro inesperado aconteceu. Por favor, recarregue a página e tente novamente."
+                        this.errorToast.el.show()
+                    }
+				})
+			},
 			getTemplateForMilestone(event) {
 				return `<span style="color: #fff; background-color: ${event.backgroundColor};">${event.title}</span>`;
 			},
@@ -540,7 +592,8 @@
 			BaseToastContainer: BaseToastContainer,
 			BaseToast: BaseToast,
 			FormInputFeedback: FormInputFeedback,
-            DropdownButton: DropdownButton
+            DropdownButton: DropdownButton,
+			TextTitle1: TextTitle1
 		},
 	};
 </script>

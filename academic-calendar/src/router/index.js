@@ -8,6 +8,7 @@ import RefreshView from '../views/RefreshView.vue'
 import AboutView from '../views/AboutView.vue'
 import CalendarList from '../views/CalendarListView.vue'
 import CalendarDetail from '../views/CalendarDetail.vue'
+import Error404 from '../views/Error404.vue'
 
 Vue.use(VueRouter)
 
@@ -57,6 +58,11 @@ const router = new VueRouter({
       path: '/calendar/:id/view',
       name: 'calendar-view',
       component: CalendarDetail
+    },
+    {
+      path: '/not-found',
+      name: 'not-found',
+      component: Error404
     }
   ]
 })
