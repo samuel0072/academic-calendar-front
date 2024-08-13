@@ -299,19 +299,18 @@
 		},
 		mounted() {
 			this.calendar.id = this.$route.params.id;
+			
+			this.parseCampiFromStore(this.organizationInfoStore.campi);
+
 			this.setDateRangeText();
+
 			this.getCalendarDetail();
+
 			this.getEvents();
 
 			this.organizationInfoStore.$subscribe((mutation, state) => {
 				this.campi = [];
-
-				state.campi.forEach( (campus) => {
-					this.campi.push({
-						value: campus.id,
-						label: campus.name
-					})
-				})
+				this.parseCampiFromStore(state.campi);
 			})
 
 			this.eventCreationModal = bootstrap.Modal.getOrCreateInstance('#createEvents');
@@ -579,6 +578,14 @@
 
 				this.dateRangeText = `${this.monthsNames[date.getMonth() + 1]} de ${date.getFullYear()}`;
 			},
+			parseCampiFromStore(campiList) {
+				campiList.forEach( (campus) => {
+					this.campi.push({
+						value: campus.id,
+						label: campus.name
+					})
+				})
+			}
 		},
 		components: {
 			ToastUICalendar: ToastUICalendar,
