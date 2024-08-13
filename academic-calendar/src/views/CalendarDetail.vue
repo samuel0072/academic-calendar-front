@@ -19,6 +19,10 @@
 		<BaseButton data-bs-toggle="modal" data-bs-target="#createEvents" type="button">
 			Crie um evento
 		</BaseButton>
+
+		<BaseButton data-bs-toggle="modal" data-bs-target="#editEvent" type="button">
+			Edite um evento
+		</BaseButton>
 		
 		<h1 class="date-range">{{ dateRangeText }}</h1>
 
@@ -144,6 +148,95 @@
 			</template>
 		</BaseModal>
 
+		<BaseModal modal_id="editEvent">
+			<template v-slot:modal-title>
+				<TextTitle5>
+					{{selectedEvent.description}}
+				</TextTitle5>
+			</template>
+
+			<template v-slot:modal-body>
+				<BaseForm @submit="" id="event-edit-form" type="feedback" ref="eEForm" novalidate>
+					<FloatingInput 
+						ref="eEDescription"
+						id="selected-event-description"
+						v-model="selectedEvent.description"
+						label="Digite o nome do evento"
+						type="text"
+						maxlength="500"
+					>
+						<FormInputFeedback type="invalid">
+							{{ eEFormInputFeedbacks.description }}
+						</FormInputFeedback>
+					</FloatingInput>
+					
+
+					<BaseLabel for="selected-event-label"> Escolha o tipo do evento: </BaseLabel>
+					<BaseSelectInput 
+						ref="eELabel"
+						id="event-label" 
+						:options="eventLabels" 
+						v-model="selectedEvent.label"
+					/>
+					<FormInputFeedback type="invalid">
+						{{ eEFormInputFeedbacks.label }}
+					</FormInputFeedback>
+
+					<BaseLabel for="selected-event-bg-color"> Escolha a cor de fundo: </BaseLabel>
+					<ColorPicker v-model="selectedEvent.bgColor" id="selected-event-bg-color" ref="eEColor"/>
+					<FormInputFeedback type="invalid">
+						{{ eEFormInputFeedbacks.bgColor }}
+					</FormInputFeedback>
+
+					<FloatingInput 
+						id="selected-event-start-date"
+						v-model="selectedEvent.startDate"
+						label="Digite a data de ínicio *"
+						type="date"
+						ref="eEStartDate"
+					>
+						<FormInputFeedback type="invalid">
+							{{ eEFormInputFeedbacks.startDate }}
+						</FormInputFeedback>
+					</FloatingInput>
+
+					<FloatingInput 
+						id="selected-event-end-date"
+						v-model="selectedEvent.endDate"
+						label="Digite a data de fim"
+						type="date"
+						ref="eEEndDate"
+					>
+						<FormInputFeedback type="invalid">
+							{{ eEFormInputFeedbacks.endDate }}
+						</FormInputFeedback>
+					</FloatingInput>
+
+					<div v-if="selectedEvent.label != 'H'">
+						<BaseLabel for="selected-event-campi"> Esse evento é válido para os campi: </BaseLabel>
+						<BaseSelectInput 
+							id="selected-event-campi" 
+							:options="campi" 
+							v-model="selectedEvent.campi"
+							:multiple="true"
+							ref="eECampi"
+						/>
+						<FormInputFeedback type="invalid">
+							{{ eEFormInputFeedbacks.campi }}
+						</FormInputFeedback>
+					</div>
+				</BaseForm>
+			</template>
+
+			<template v-slot:modal-footer>
+				<div>
+					<BaseButton type="submit" form="editEvent"  class="btn btn-primary">
+						Editar
+					</BaseButton>
+				</div>
+			</template>
+		</BaseModal>
+
 		<BaseToastContainer class="position-fixed bottom-0 end-0 p-3">
             <BaseToast 
                 title="Sucesso" 
@@ -188,6 +281,7 @@
 	import FormInputFeedback from '@/components/FormInputFeedback.vue'
     import DropdownButton from '@/components/DropdownButton.vue'
 	import TextTitle1 from '@/components/text-components/TextTitle1.vue'
+	import TextTitle5 from '@/components/text-components/TextTitle1.vue'
 
 	import refreshUserAuthToken from '@/assets/scripts/refreshUserAuthToken.js'
 
@@ -276,7 +370,25 @@
 					label: "",
 					bgColor: "",
 					campi: ""
-				}
+				},
+				selectedEvent: {
+					description: "",
+					startDate: "",
+					endDate: "",
+					label: "SD",
+					bgColor: "#3473b7",
+					campi: [],
+					TUIEvent: null
+				},
+				eEFormInputFeedbacks: {
+					description: "",
+					startDate: "",
+					endDate: "",
+					label: "",
+					bgColor: "",
+					campi: ""
+				},
+				eventEditModal: null
 			}
 		},
 		computed: {
@@ -314,6 +426,7 @@
 			})
 
 			this.eventCreationModal = bootstrap.Modal.getOrCreateInstance('#createEvents');
+			this.eventEditModal = bootstrap.Modal.getOrCreateInstance('#editEvent');
 			this.sucessToast.el = bootstrap.Toast.getOrCreateInstance("#sucess-toast");
 			this.errorToast.el = bootstrap.Toast.getOrCreateInstance("#fail-toast");
 		},
@@ -345,6 +458,10 @@
 							isAllday: true,
 						});
 					});
+
+					this.events.sort(function(e1, e2) {
+						return e1.id - e2.id
+					})
 				}).catch((error) => {
 					if(error.response) {
                         if(error.request.status === 401) {
@@ -569,9 +686,25 @@
 				console.groupEnd();
 			},
 			onClickEvent({ nativeEvent, event }) {
+				this.selectedEvent.TUIEvent = event
+
+				var internalEvent = this.events.find((e) => e.id === event.id)
+				
+				this.selectedEvent.description = internalEvent.title
+				this.selectedEvent.label = internalEvent.label
+				this.selectedEvent.startDate = internalEvent.start
+				this.selectedEvent.endDate = internalEvent.end
+				this.selectedEvent.bgColor = internalEvent.backgroundColor
+				this.selectedEvent.campi = internalEvent.campi
+
+				// Há um problema no floating input. Do jeito que o v-model foi modelado, apenas o componente pode atualizar o v-model. 
+				//Se o valor for atualizado aqui de algum código dessa página o componente não atualiza. Ver como resolver.
+				this.eventEditModal.show()
+
 				console.group("onClickEvent");
 				console.log("MouseEvent : ", nativeEvent);
 				console.log("Event Info : ", event);
+				console.log("Selected event Info : ", this.selectedEvent);
 				console.groupEnd();
 			},
 			onClickTimezonesCollapseBtn(timezoneCollapsed) {
@@ -621,7 +754,8 @@
 			BaseToast: BaseToast,
 			FormInputFeedback: FormInputFeedback,
             DropdownButton: DropdownButton,
-			TextTitle1: TextTitle1
+			TextTitle1: TextTitle1,
+			TextTitle5: TextTitle5
 		},
 	};
 </script>
