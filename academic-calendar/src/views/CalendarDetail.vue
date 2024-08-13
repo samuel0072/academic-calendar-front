@@ -299,7 +299,7 @@
 		},
 		mounted() {
 			this.calendar.id = this.$route.params.id;
-			
+
 			this.parseCampiFromStore(this.organizationInfoStore.campi);
 
 			this.setDateRangeText();
@@ -345,7 +345,28 @@
 							isAllday: true,
 						});
 					});
-				});
+				}).catch((error) => {
+					if(error.response) {
+                        if(error.request.status === 401) {
+                            refreshUserAuthToken(this.getEvents)
+                        }
+                        else if(error.request.status === 500){
+                            this.errorToast.msg = "Não foi possível se conectar com o servidor."
+                            this.errorToast.el.show()
+                        }
+                    }
+                    else if(error.request) {
+                        if(error.code === "ERR_NETWORK") {
+                            this.errorToast.msg = "Esse cliente não consegue se conectar com a internet."
+                            this.errorToast.el.show()
+                        }
+                    }
+                    else {
+                        console.log(error)
+                        this.errorToast.msg = "Um erro inesperado aconteceu. Por favor, recarregue a página e tente novamente."
+                        this.errorToast.el.show()
+                    }
+				})
 				// TODO: Adicionar tratamento de erro
 			},
 			createEvent() {
