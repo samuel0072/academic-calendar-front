@@ -2,7 +2,8 @@
     <div class="form-floating">
         <BaseInput 
             ref="baseInput"
-            v-model="inputValue"
+            :value="customValue"
+            @input="$emit('input', $event)"
             :placeholder="placeholder"
             :maxlength="maxlength" 
             :id="id" 
@@ -50,11 +51,16 @@
             type: {
                 required: true,
                 type: String
-            }
+            },
+            customValue: String
+        },
+        model: {
+            prop: 'customValue',
+            event: 'input'
         },
         watch: {
             inputValue(vlr) {
-                this.$emit('input', vlr);
+                //this.$emit('input', vlr);
             }
         },
         components: {

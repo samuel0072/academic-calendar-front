@@ -214,11 +214,10 @@
 
 					<div v-if="selectedEvent.label != 'H'">
 						<BaseLabel for="selected-event-campi"> Esse evento é válido para os campi: </BaseLabel>
-						<BaseSelectInput 
+						<MultipleSelectInput 
 							id="selected-event-campi" 
 							:options="campi" 
 							v-model="selectedEvent.campi"
-							:multiple="true"
 							ref="eECampi"
 						/>
 						<FormInputFeedback type="invalid">
@@ -282,6 +281,7 @@
     import DropdownButton from '@/components/DropdownButton.vue'
 	import TextTitle1 from '@/components/text-components/TextTitle1.vue'
 	import TextTitle5 from '@/components/text-components/TextTitle1.vue'
+	import MultipleSelectInput from '@/components/MultipleSelectInput.vue'
 
 	import refreshUserAuthToken from '@/assets/scripts/refreshUserAuthToken.js'
 
@@ -755,7 +755,8 @@
 			FormInputFeedback: FormInputFeedback,
             DropdownButton: DropdownButton,
 			TextTitle1: TextTitle1,
-			TextTitle5: TextTitle5
+			TextTitle5: TextTitle5,
+			MultipleSelectInput: MultipleSelectInput
 		},
 	};
 </script>

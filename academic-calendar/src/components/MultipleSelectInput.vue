@@ -1,8 +1,9 @@
 <template>
     <select class="form-select" 
-        @change="$emit('change', $event.target.value)" 
+        @input="$emit('input', $event.target.value)" 
         :value="value" 
-        ref="mainSelect">
+        ref="mainSelect"
+        multiple >
         <option v-for="option in options" 
             :value="option.value" 
             :selected="option.selected"> 
@@ -16,46 +17,24 @@
     import "@/assets/main_bootstrap.scss";
 
     export default {
-        data: function() {
-            return {
-                selectedValue: this.value
-            }
-        },
         props: {
             options: {
                 required: true,
                 type: Array
             },
-            value: {
-                required: false,
-                type: Array|String|Number
-            },
-            multiple: {
-                required: false,
-                default: false
-            }
+            value: Array
         },
         model: {
             prop: 'value',
-            event: 'change'
-        },
-        watch: {
-            selectedValue(value) {
-                this.$emit('change', value)
-            }
+            event: 'input'
         },
         mounted: function() {
-            if(this.multiple) {
-                this.$refs.mainSelect.setAttribute('multiple', '');
-                this.selectedValue = this.value        
-                
-                // Nesse tipo de select o código abaixo tem que ser usado para selecionar as opções na primeira vez que o componente é renderizado
-                this.$refs.mainSelect.childNodes.forEach((option) => {
-                    if(this.selectedValue.includes(option._value)) {
-                        option.selected = true
-                    }
-                })
-            }
+            // // Nesse tipo de select o código abaixo tem que ser usado para selecionar as opções na primeira vez que o componente é renderizado
+            this.$refs.mainSelect.childNodes.forEach((option) => {
+                if(this.selectedValue.includes(option._value)) {
+                    option.selected = true
+                }
+            })
         },
         methods: {
             validate(type) {
