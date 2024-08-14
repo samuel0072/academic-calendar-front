@@ -122,7 +122,7 @@
 
 					<div v-if="newEvent.label != 'H'">
 						<BaseLabel for="event-campi"> Esse evento é válido para os campi: </BaseLabel>
-						<BaseSelectInput 
+						<MultipleSelectInput 
 							id="event-campi" 
 							:options="campi" 
 							v-model="newEvent.campi"

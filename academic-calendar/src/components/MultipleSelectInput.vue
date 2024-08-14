@@ -1,12 +1,13 @@
 <template>
-    <select class="form-select" 
-        @input="$emit('input', $event.target.value)" 
-        :value="value" 
+    <select 
+        class="form-select" 
+        v-model="selectedValues"
         ref="mainSelect"
         multiple >
+        
         <option v-for="option in options" 
             :value="option.value" 
-            :selected="option.selected"> 
+            :key="option.value"> 
             {{ option.label }} 
         </option>
     </select>
@@ -17,6 +18,11 @@
     import "@/assets/main_bootstrap.scss";
 
     export default {
+        data: function() {
+            return { 
+                selectedValues: []
+            }
+        },
         props: {
             options: {
                 required: true,
@@ -26,15 +32,15 @@
         },
         model: {
             prop: 'value',
-            event: 'input'
+            event: 'change'
         },
-        mounted: function() {
-            // // Nesse tipo de select o código abaixo tem que ser usado para selecionar as opções na primeira vez que o componente é renderizado
-            this.$refs.mainSelect.childNodes.forEach((option) => {
-                if(this.selectedValue.includes(option._value)) {
-                    option.selected = true
-                }
-            })
+        watch: {
+            value(newValues) {
+                this.selectedValues = newValues
+            },
+            selectedValues(newValues) {
+                this.$emit('change', newValues);
+            }
         },
         methods: {
             validate(type) {
