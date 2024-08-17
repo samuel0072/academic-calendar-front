@@ -1,13 +1,12 @@
 import Vue from 'vue'
 import { createPinia, PiniaVuePlugin } from 'pinia'
 import { useUserAuthInfoStore } from '@/stores/userAuthInfo.js'
-import { useOrganizationInfoStore } from "@/stores/organizationInfo"
-import axios from "axios"
 
 import App from './App.vue'
 import router from './router'
 
 import './assets/main.css'
+import getOrgCampi from '@/assets/scripts/campi.js'
 
 Vue.use(PiniaVuePlugin)
 
@@ -31,18 +30,7 @@ new Vue({
       authStore.setAuthToken(authToken, false)
       authStore.setRefreshToken(refreshtoken, false)
 
-      var orgStore = useOrganizationInfoStore()
-
-      axios.get('/api/academic-calendar/campus/list', {
-        headers: {
-          Authorization: "Bearer " + authStore.token
-        }
-      })
-      .then((response) => {
-        orgStore.$patch({ campi: response.data })
-      })
-      //TODO: adicionar tratamento de erro
-      //TODO: colocar em uma função e jogar essa chamada pra depois do login também
+      getOrgCampi()
 
     }
     

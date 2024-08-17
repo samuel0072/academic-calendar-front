@@ -36,7 +36,8 @@
 import { useUserAuthInfoStore } from '../stores/userAuthInfo.js'
 import { mapStores } from 'pinia'
 import axios from 'axios';
-import BaseButton from '@/components/BaseButton.vue';
+import BaseButton from '@/components/BaseButton.vue'
+import getOrgCampi from '@/assets/scripts/campi.js'
 
 export default {
     data: function() {
@@ -70,6 +71,8 @@ export default {
                 else {
                     this.$router.push({name: 'home'})
                 }
+
+                getOrgCampi()
                 
             })
             .catch(error => {
