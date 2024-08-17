@@ -676,7 +676,7 @@
 
 							this.$refs.eEDescription.resetValidation()
 							this.$refs.eELabel.resetValidation()
-							
+
 							if(this.selectedEvent.label != "H") {
 								this.$refs.eECampi.resetValidation()
 							}
@@ -820,6 +820,7 @@
 				this.selectedEvent.campi = this.selectedEvent.internalEvent.campi
 				this.selectedEvent.id = this.selectedEvent.internalEvent.id
 
+				this.resetEditForm()
 				this.eventEditModal.show()
 
 				console.group("onClickEvent");
@@ -860,6 +861,25 @@
 						label: campus.name
 					})
 				})
+			},
+			resetEditForm() {
+				this.eEFormInputFeedbacks.description = ""
+				this.eEFormInputFeedbacks.label = ""
+				this.eEFormInputFeedbacks.campi = ""
+				this.eEFormInputFeedbacks.endDate = ""
+				this.eEFormInputFeedbacks.startDate = ""
+				this.eEFormInputFeedbacks.bgColor = ""
+
+				this.$refs.eEDescription.resetValidation()
+				this.$refs.eELabel.resetValidation()
+
+				if(this.selectedEvent.label != "H") {
+					this.$refs.eECampi.resetValidation()
+				}
+				
+				this.$refs.eEEndDate.resetValidation()
+				this.$refs.eEStartDate.resetValidation()
+				this.$refs.eEColor.resetValidation()
 			}
 		},
 		components: {
