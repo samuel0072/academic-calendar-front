@@ -19,10 +19,6 @@
 		<BaseButton data-bs-toggle="modal" data-bs-target="#createEvents" type="button">
 			Crie um evento
 		</BaseButton>
-
-		<BaseButton data-bs-toggle="modal" data-bs-target="#editEvent" type="button">
-			Edite um evento
-		</BaseButton>
 		
 		<h1 class="date-range">{{ dateRangeText }}</h1>
 
@@ -133,9 +129,6 @@
 							{{ eCFormInputFeedbacks.campi }}
 						</FormInputFeedback>
 					</div>
-					
-					
-
 				</BaseForm>
 			</template>
 
@@ -156,7 +149,7 @@
 			</template>
 
 			<template v-slot:modal-body>
-				<BaseForm @submit="" id="event-edit-form" type="feedback" ref="eEForm" novalidate>
+				<BaseForm @submit="editEvent" id="event-edit-form" type="feedback" ref="eEForm" novalidate>
 					<FloatingInput 
 						ref="eEDescription"
 						id="selected-event-description"
@@ -229,7 +222,7 @@
 
 			<template v-slot:modal-footer>
 				<div>
-					<BaseButton type="submit" form="editEvent"  class="btn btn-primary">
+					<BaseButton type="submit" form="event-edit-form"  class="btn btn-primary">
 						Editar
 					</BaseButton>
 				</div>
@@ -288,15 +281,14 @@
 	export default {
 		data() {
 			return {
-				//TODO: retirar esse mock
 				calendars: [
 					{
-						id: "0",
-						name: "Private",
-						backgroundColor: "#9e5fff",
-						borderColor: "#9e5fff",
-						dragBackgroundColor: "#9e5fff",
-					},
+						"name": "Private",
+						"backgroundColor": "#9e5fff",
+						"id": this.$route.params.id,
+						"borderColor": "#9e5fff",
+						"dragBackgroundColor": "#9e5fff"
+					}
 				],
 				calendar: {
 					id: null,
@@ -372,13 +364,14 @@
 					campi: ""
 				},
 				selectedEvent: {
+					id: null,
 					description: "",
 					startDate: "",
 					endDate: "",
 					label: "SD",
 					bgColor: "#3473b7",
 					campi: [],
-					TUIEvent: null
+					internalEvent: null
 				},
 				eEFormInputFeedbacks: {
 					description: "",
@@ -446,7 +439,7 @@
 
 						this.events.push({
 							id: event.id,
-							calendarId: "0",
+							calendarId: this.calendar.id,
 							title: event.description,
 							category: "allday",
 							start: event.start_date,
@@ -512,7 +505,7 @@
 
 					this.events.push({
 						id: response.data.id,
-						calendarId: "0",
+						calendarId: this.calendar.id,
 						title: this.newEvent.description,
 						category: "allday",
 						start: this.newEvent.startDate,
@@ -628,6 +621,134 @@
                     }
 				})
 			},
+			editEvent() {
+				var payload = {
+					'academic_calendar': this.calendar.id,
+					'label': this.selectedEvent.label,
+					'description': this.selectedEvent.description,
+					'hexadecimal_color': this.selectedEvent.bgColor,
+					'start_date': this.selectedEvent.startDate,
+					'campi': this.selectedEvent.campi,
+					'end_date': this.selectedEvent.endDate !== ""? this.selectedEvent.endDate : this.selectedEvent.startDate
+				}
+
+				axios.put(`/api/academic-calendar/event/${this.selectedEvent.id}/edit`, payload, 
+					{
+						headers: {
+							Authorization: "Bearer " + this.userAuthInfoStore.token
+						}
+					}
+				).then((response) => {
+					this.eventEditModal.hide()
+
+					this.sucessToast.msg = "Evento atualizado com sucesso!"
+
+					this.sucessToast.el.show()
+
+					this.selectedEvent.internalEvent.label = this.selectedEvent.label
+					this.selectedEvent.internalEvent.start = this.selectedEvent.startDate
+					this.selectedEvent.internalEvent.end = payload.end_date
+					this.selectedEvent.internalEvent.title = this.selectedEvent.description
+					this.selectedEvent.internalEvent.backgroundColor = this.selectedEvent.bgColor
+					this.selectedEvent.internalEvent.campi = this.selectedEvent.campi
+
+					this.calendarInstance.updateEvent(this.selectedEvent.id, this.calendar.id, {
+						label: this.selectedEvent.label,
+						start: this.selectedEvent.startDate,
+						end:payload.end_date,
+						title: this.selectedEvent.description,
+						backgroundColor: this.selectedEvent.bgColor,
+					});
+
+				}).catch((error) => {
+					if(error.response) {
+                        if(error.request.status === 401) {
+                            refreshUserAuthToken(this.editEvent)
+							//TODO Exibir um toast quando o usuário for redirecionado pro login
+                        }
+                        else if(error.request.status === 422 ){
+							this.eEFormInputFeedbacks.description = ""
+							this.eEFormInputFeedbacks.label = ""
+							this.eEFormInputFeedbacks.campi = ""
+							this.eEFormInputFeedbacks.endDate = ""
+							this.eEFormInputFeedbacks.startDate = ""
+							this.eEFormInputFeedbacks.bgColor = ""
+
+							this.$refs.eEDescription.resetValidation()
+							this.$refs.eELabel.resetValidation()
+							
+							if(this.selectedEvent.label != "H") {
+								this.$refs.eECampi.resetValidation()
+							}
+							
+							this.$refs.eEEndDate.resetValidation()
+							this.$refs.eEStartDate.resetValidation()
+							this.$refs.eEColor.resetValidation()
+
+							if(Object.hasOwn(error.response.data, 'description')) {
+								error.response.data["description"].forEach( (msg) => {
+									this.eEFormInputFeedbacks.description += `${msg}\n`
+								})
+								this.$refs.eEDescription.validate("invalid")
+                            }
+							if(Object.hasOwn(error.response.data, 'label')) {
+								error.response.data["label"].forEach( (msg) => {
+									this.eEFormInputFeedbacks.label += `${msg}\n`
+								})
+								this.$refs.eELabel.validate("invalid")
+                            }
+                            if(Object.hasOwn(error.response.data, 'campi')) {
+								error.response.data["campi"].forEach( (msg) => {
+									this.eEFormInputFeedbacks.campi += `${msg}\n`
+								})
+								this.$refs.eECampi.validate("invalid")
+                            }
+                            if(Object.hasOwn(error.response.data, 'end_date')) {
+								error.response.data["end_date"].forEach( (msg) => {
+									this.eEFormInputFeedbacks.endDate += `${msg}\n`
+								})
+								this.$refs.eEEndDate.validate("invalid")
+                            }
+                            if(Object.hasOwn(error.response.data, 'start_date')) {
+								error.response.data["start_date"].forEach( (msg) => {
+									this.eEFormInputFeedbacks.startDate += `${msg}\n`
+								})
+								this.$refs.eEStartDate.validate("invalid")
+                            }
+							if(Object.hasOwn(error.response.data, 'hexadecimal_color')) {
+								error.response.data["hexadecimal_color"].forEach( (msg) => {
+									this.eEFormInputFeedbacks.bgColor += `${msg}\n`
+								})
+								this.$refs.eEColor.validate("invalid")
+                            }
+							if(Object.hasOwn(error.response.data, 'academic_calendar')) {
+								this.errorToast.msg = "Não foi possível atualizar esse evento nesse calendário"
+								this.errorToast.el.show()
+							}
+                        }
+                        else if(error.request.status === 500){
+                            this.errorToast.msg = "Não foi possível se conectar com o servidor."
+                            this.errorToast.el.show()
+                        }
+                    }
+                    else if(error.request) {
+                        if(error.code === "ERR_NETWORK") {
+                            this.errorToast.msg = "Esse cliente não consegue se conectar com a internet."
+                            this.errorToast.el.show()
+                        }
+						else {
+							console.log(error)
+							this.errorToast.msg = "Um erro inesperado aconteceu. Por favor, recarregue a página e tente novamente."
+							this.errorToast.el.show()
+						}
+                    }
+                    else {
+                        console.log(error)
+                        this.errorToast.msg = "Um erro inesperado aconteceu. Por favor, recarregue a página e tente novamente."
+                        this.errorToast.el.show()
+                    }
+				})
+			},
 			getTemplateForMilestone(event) {
 				return `<span style="color: #fff; background-color: ${event.backgroundColor};">${event.title}</span>`;
 			},
@@ -666,7 +787,9 @@
 				const targetEvent = updateData.event;
 				const changes = { ...updateData.changes };
 
-				this.calendarInstance.updateEvent(targetEvent.id, targetEvent.calendarId, changes);
+				//usar esse método para atualizar somente as datas iniciais e finais
+
+				this.calendarInstance.updateEvent(targetEvent.id, this.calendar.id, changes);
 			},
 			onBeforeDeleteEvent({ title, id, calendarId }) {
 				console.group("onBeforeDeleteEvent");
@@ -686,19 +809,17 @@
 				console.groupEnd();
 			},
 			onClickEvent({ nativeEvent, event }) {
-				this.selectedEvent.TUIEvent = event
 
-				var internalEvent = this.events.find((e) => e.id === event.id)
+				this.selectedEvent.internalEvent = this.events.find((e) => e.id === event.id)
 				
-				this.selectedEvent.description = internalEvent.title
-				this.selectedEvent.label = internalEvent.label
-				this.selectedEvent.startDate = internalEvent.start
-				this.selectedEvent.endDate = internalEvent.end
-				this.selectedEvent.bgColor = internalEvent.backgroundColor
-				this.selectedEvent.campi = internalEvent.campi
+				this.selectedEvent.description = this.selectedEvent.internalEvent.title
+				this.selectedEvent.label = this.selectedEvent.internalEvent.label
+				this.selectedEvent.startDate = this.selectedEvent.internalEvent.start
+				this.selectedEvent.endDate = this.selectedEvent.internalEvent.end
+				this.selectedEvent.bgColor = this.selectedEvent.internalEvent.backgroundColor
+				this.selectedEvent.campi = this.selectedEvent.internalEvent.campi
+				this.selectedEvent.id = this.selectedEvent.internalEvent.id
 
-				// Há um problema no floating input. Do jeito que o v-model foi modelado, apenas o componente pode atualizar o v-model. 
-				//Se o valor for atualizado aqui de algum código dessa página o componente não atualiza. Ver como resolver.
 				this.eventEditModal.show()
 
 				console.group("onClickEvent");
@@ -742,21 +863,21 @@
 			}
 		},
 		components: {
-			ToastUICalendar: ToastUICalendar,
-			BaseButton: BaseButton,
-			BaseModal: BaseModal,
-			BaseForm: BaseForm,
-			FloatingInput: FloatingInput,
-			BaseSelectInput: BaseSelectInput,
-			BaseLabel: BaseLabel,
-			ColorPicker: ColorPicker,
-			BaseToastContainer: BaseToastContainer,
-			BaseToast: BaseToast,
-			FormInputFeedback: FormInputFeedback,
-            DropdownButton: DropdownButton,
-			TextTitle1: TextTitle1,
-			TextTitle5: TextTitle5,
-			MultipleSelectInput: MultipleSelectInput
+			ToastUICalendar,
+			BaseButton,
+			BaseModal,
+			BaseForm,
+			FloatingInput,
+			BaseSelectInput,
+			BaseLabel,
+			ColorPicker,
+			BaseToastContainer,
+			BaseToast,
+			FormInputFeedback,
+            DropdownButton,
+			TextTitle1,
+			TextTitle5,
+			MultipleSelectInput
 		},
 	};
 </script>
