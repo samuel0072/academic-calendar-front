@@ -381,7 +381,8 @@
 					bgColor: "",
 					campi: ""
 				},
-				eventEditModal: null
+				eventEditModal: null,
+				editRequest: null
 			}
 		},
 		computed: {
@@ -780,16 +781,93 @@
 				this.calendarInstance.createEvents([event]);
 			},
 			onBeforeUpdateEvent(updateData) {
-				console.group("onBeforeUpdateEvent");
-				console.log(updateData);
-				console.groupEnd();
+				//coloquei esse if aqui por que o TUI chama esse evento 6 vezes quando atualiza a data final
+				if(this.editRequest === null) {
+					console.group("onBeforeUpdateEvent");
+					console.log(updateData);
+					console.groupEnd();
 
-				const targetEvent = updateData.event;
-				const changes = { ...updateData.changes };
+					const targetEvent = updateData.event;
+					const changes = { ...updateData.changes };
+					
+					var internalEvent = this.events.find((e) => e.id === targetEvent.id)
 
-				//usar esse método para atualizar somente as datas iniciais e finais
+					var payload = {
+						'academic_calendar': this.calendar.id,
+						'label': internalEvent.label,
+						'description': internalEvent.title,
+						'hexadecimal_color': internalEvent.backgroundColor,
+						'start_date': internalEvent.start,
+						'campi': internalEvent.campi,
+						'end_date': internalEvent.end
+					}
 
-				this.calendarInstance.updateEvent(targetEvent.id, this.calendar.id, changes);
+					if(Object.hasOwn(changes, 'start')) {
+						var isoString = changes.start.toDate().toISOString()
+						payload.start_date = isoString.substring(0, isoString.indexOf('T'))
+					}
+
+					if(Object.hasOwn(changes, 'end')) {
+						var isoString = changes.end.toDate().toISOString()
+						payload.end_date = isoString.substring(0, isoString.indexOf('T'))
+					}
+
+					console.log(payload)
+
+					this.editRequest = axios.put(`/api/academic-calendar/event/${internalEvent.id}/edit`, payload, 
+						{
+							headers: {
+								Authorization: "Bearer " + this.userAuthInfoStore.token
+							}
+						}
+					).then((response) => {
+						this.eventEditModal.hide()
+
+						this.sucessToast.msg = "Evento atualizado com sucesso!"
+
+						this.sucessToast.el.show()
+
+						internalEvent.startDate = payload.start_date
+						internalEvent.endDate = payload.end_date
+						
+						this.calendarInstance.updateEvent(targetEvent.id, this.calendar.id, changes);
+
+					}).catch((error) => {
+						if(error.response) {
+							if(error.request.status === 401) {
+								refreshUserAuthToken(this.editEvent)
+							}
+							else if(error.request.status === 422 ){
+								this.errorToast.msg = "Não foi possível atualizar esse evento. Por favor tente novamente."
+								this.errorToast.el.show()
+							}
+							else if(error.request.status === 500){
+								this.errorToast.msg = "Não foi possível se conectar com o servidor."
+								this.errorToast.el.show()
+							}
+						}
+						else if(error.request) {
+							if(error.code === "ERR_NETWORK") {
+								this.errorToast.msg = "Esse cliente não consegue se conectar com a internet."
+								this.errorToast.el.show()
+							}
+							else {
+								console.log(error)
+								this.errorToast.msg = "Um erro inesperado aconteceu. Por favor, recarregue a página e tente novamente."
+								this.errorToast.el.show()
+							}
+						}
+						else {
+							console.log(error)
+							this.errorToast.msg = "Um erro inesperado aconteceu. Por favor, recarregue a página e tente novamente."
+							this.errorToast.el.show()
+						}
+					}).finally(() => {
+						//libera a possibilidade de atualizar novamente
+						this.editRequest = null
+					})
+				}
+				
 			},
 			onBeforeDeleteEvent({ title, id, calendarId }) {
 				console.group("onBeforeDeleteEvent");
@@ -799,9 +877,9 @@
 				this.calendarInstance.deleteEvent(id, calendarId);
 			},
 			onAfterRenderEvent({ title }) {
-				console.group("onAfterRenderEvent");
-				console.log("Event Info : ", title);
-				console.groupEnd();
+				// console.group("onAfterRenderEvent");
+				// console.log("Event Info : ", title);
+				// console.groupEnd();
 			},
 			onClickDayName({ date }) {
 				console.group("onClickDayName");
