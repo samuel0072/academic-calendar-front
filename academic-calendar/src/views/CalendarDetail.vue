@@ -222,8 +222,41 @@
 
 			<template v-slot:modal-footer>
 				<div>
+					<BaseButton data-bs-toggle="modal" data-bs-target="#deleteEvent" type="button">
+						Excluir
+					</BaseButton>
 					<BaseButton type="submit" form="event-edit-form"  class="btn btn-primary">
 						Editar
+					</BaseButton>
+				</div>
+			</template>
+		</BaseModal>
+
+		<BaseModal modal_id="deleteEvent">
+			<template v-slot:modal-title>
+				<TextTitle5>
+					Confirmação de exclusão
+				</TextTitle5>
+			</template>
+
+			<template v-slot:modal-body>
+				<div v-if="['H', 'RH'].includes(selectedEvent.label)">
+					Tem certeza que deseja excluir esse feriado? 
+					Ele também será excluído de todos os outros calendários.
+					<br/>
+					Essa ação não é reversível.
+				</div>
+				<div v-else>
+					Tem certeza que deseja excluir esse evento? 
+					<br/>
+					Essa ação não é reversível.
+				</div>
+			</template>
+
+			<template v-slot:modal-footer>
+				<div>
+					<BaseButton type="button"  class="btn btn-primary" @click.native="deleteEvent(selectedEvent)">
+						Confirmar
 					</BaseButton>
 				</div>
 			</template>
@@ -382,7 +415,8 @@
 					campi: ""
 				},
 				eventEditModal: null,
-				editRequest: null
+				editRequest: null,
+				eventExcludeModal: null,
 			}
 		},
 		computed: {
@@ -421,6 +455,7 @@
 
 			this.eventCreationModal = bootstrap.Modal.getOrCreateInstance('#createEvents');
 			this.eventEditModal = bootstrap.Modal.getOrCreateInstance('#editEvent');
+			this.eventExcludeModal = bootstrap.Modal.getOrCreateInstance('#deleteEvent');
 			this.sucessToast.el = bootstrap.Toast.getOrCreateInstance("#sucess-toast");
 			this.errorToast.el = bootstrap.Toast.getOrCreateInstance("#fail-toast");
 		},
@@ -452,10 +487,6 @@
 							isAllday: true,
 						});
 					});
-
-					this.events.sort(function(e1, e2) {
-						return e1.id - e2.id
-					})
 				}).catch((error) => {
 					if(error.response) {
                         if(error.request.status === 401) {
@@ -748,6 +779,57 @@
                         this.errorToast.msg = "Um erro inesperado aconteceu. Por favor, recarregue a página e tente novamente."
                         this.errorToast.el.show()
                     }
+				})
+			},
+			deleteEvent(event) {
+				axios.delete(`/api/academic-calendar/event/${event.id}/delete`, 
+					{
+						headers: {
+							Authorization: "Bearer " + this.userAuthInfoStore.token
+						}
+					}
+				).then(() => {
+					var eventIndex = this.events.findIndex((ev) => ev.id === event.id)
+
+					this.events.splice(eventIndex, 1);
+
+					this.selectedEvent.internalEvent = null;
+
+					this.eventExcludeModal.hide()
+
+					this.sucessToast.msg = "O evento foi excluído com sucesso."
+
+					this.sucessToast.el.show()
+				}).catch((error) => {
+					if(error.response) {
+							if(error.request.status === 401) {
+								refreshUserAuthToken(this.editEvent)
+							}
+							else if(error.request.status === 404){
+								this.errorToast.msg = "Não foi possível se conectar com o servidor."
+								this.errorToast.el.show()
+							}
+							else if(error.request.status === 500){
+								this.errorToast.msg = "Não foi possível se conectar com o servidor."
+								this.errorToast.el.show()
+							}
+						}
+					else if(error.request) {
+						if(error.code === "ERR_NETWORK") {
+							this.errorToast.msg = "Esse cliente não consegue se conectar com a internet."
+							this.errorToast.el.show()
+						}
+						else {
+							console.log(error)
+							this.errorToast.msg = "Um erro inesperado aconteceu. Por favor, recarregue a página e tente novamente."
+							this.errorToast.el.show()
+						}
+					}
+					else {
+						console.log(error)
+						this.errorToast.msg = "Um erro inesperado aconteceu. Por favor, recarregue a página e tente novamente."
+						this.errorToast.el.show()
+					}
 				})
 			},
 			getTemplateForMilestone(event) {
