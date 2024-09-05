@@ -10,6 +10,7 @@ import CalendarList from '../views/CalendarListView.vue'
 import CalendarDetail from '../views/CalendarDetail.vue'
 import Error404 from '../views/Error404.vue'
 import SemesterCreation from '../views/SemesterCreation.vue'
+import EditSemester from '../views/EditSemester.vue'
 
 Vue.use(VueRouter)
 
@@ -64,6 +65,11 @@ const router = new VueRouter({
       path: '/calendar/:calendar_id/create-semester',
       name: 'semester-creation',
       component: SemesterCreation
+    },
+    {
+      path: '/semester/:id/edit',
+      name: 'semester-update',
+      component: EditSemester
     },
     {
       path: '/not-found',
