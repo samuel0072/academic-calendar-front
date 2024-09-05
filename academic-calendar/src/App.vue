@@ -1,5 +1,7 @@
 <script setup>
 import HelloWorld from './components/HelloWorld.vue'
+import BaseToastContainer from '@/components/BaseToastContainer.vue'
+import BaseToast from '@/components/BaseToast.vue'
 </script>
 
 <template>
@@ -17,7 +19,20 @@ import HelloWorld from './components/HelloWorld.vue'
         <router-view />
       </div>
 
-    
+      <BaseToastContainer class="position-fixed bottom-0 end-0 p-3" id="global-toast-container">
+            <BaseToast 
+                title="Sucesso" 
+                message="" 
+                id="global-sucess-toast" 
+                class="text-bg-success" />
+
+            <BaseToast 
+                title="Erro" 
+                message="" 
+                id="global-fail-toast" 
+                class="text-bg-danger" />    
+
+      </BaseToastContainer>
   </div>
 </template>
 

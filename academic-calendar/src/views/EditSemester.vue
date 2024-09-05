@@ -4,6 +4,7 @@
         <BaseButton type="button" class="btn-close" aria-label="Close" @click.native="$router.go(-1)">
             <IconCloseButton />
         </BaseButton>
+
         <BaseForm @submit="updateSemester" >
             <FloatingInput 
                 ref="description"
@@ -43,6 +44,32 @@
             <BaseButton type="submit"> Editar </BaseButton>
         </BaseForm>
 
+        <BaseButton data-bs-toggle="modal" data-bs-target="#deleteSemester" type="button">
+            Excluir
+        </BaseButton>
+
+        <BaseModal modal_id="deleteSemester">
+			<template v-slot:modal-title>
+				<TextTitle5>
+					Confirmação de exclusão
+				</TextTitle5>
+			</template>
+
+			<template v-slot:modal-body>
+				Tem certeza que deseja excluir esse semestre?
+                <br/>
+                Essa ação não é reversível.
+			</template>
+
+			<template v-slot:modal-footer>
+				<div>
+					<BaseButton type="button"  class="btn btn-primary" @click.native="deleteSemester">
+						Confirmar
+					</BaseButton>
+				</div>
+			</template>
+		</BaseModal>
+
         <BaseToastContainer class="position-fixed bottom-0 end-0 p-3">
             <BaseToast 
                 title="Sucesso" 
@@ -74,7 +101,8 @@
     import TextTitle1 from '@/components/text-components/TextTitle1.vue'
     import BaseToastContainer from '@/components/BaseToastContainer.vue'
     import BaseToast from '@/components/BaseToast.vue'
-    import IconCloseButton from "@/components/icons/IconCloseButton.vue";
+    import IconCloseButton from "@/components/icons/IconCloseButton.vue"
+    import BaseModal from '@/components/BaseModal.vue'
 
     export default {
         data() {
@@ -96,6 +124,9 @@
                     description: "",
                     start_date: "",
                     end_date: ""
+                },
+                globalSucessToast: {
+                    el: null
                 }
             }
         },
@@ -113,7 +144,7 @@
                 }).catch((error) => {
                     if(error.response) {
                         if(error.request.status === 401) {
-                            refreshUserAuthToken(this.createSemester)
+                            refreshUserAuthToken(this.updateSemester)
                         }
                         else if(error.request.status === 422) {
                             console.log(error)
@@ -193,10 +224,41 @@
                 }).catch((error) => {
                      if(error.response) {
                         if(error.request.status === 401) {
-                            refreshUserAuthToken(this.createSemester)
+                            refreshUserAuthToken(this.getSemester)
                         }
                         else if(error.request.status === 404) {
                             this.$router.push({name: "not-found"})
+                        }
+                        else if(error.request.status === 500){
+                            this.errorToast.msg = "Não foi possível se conectar com o servidor."
+                            this.errorToast.el.show()
+                        }
+                    }
+                    else if(error.request) {
+                        if(error.code === "ERR_NETWORK") {
+                            this.errorToast.msg = "Esse cliente não consegue se conectar com a internet."
+                            this.errorToast.el.show()
+                        }
+                    }
+                    else {
+                        console.log(error)
+                        this.errorToast.msg = "Um erro inesperado aconteceu. Por favor, recarregue a página e tente novamente."
+                        this.errorToast.el.show()
+                    }
+                })
+            },
+            deleteSemester() {
+                axios.delete(`/api/academic-calendar/semester/${this.$route.params.id}/delete`, {
+                    headers: {
+						Authorization: `Bearer ${this.userAuthInfoStore.token}`,
+					}
+                }).then((_) => {
+                    this.globalSucessToast.el.show();
+                    this.$router.go(-1)
+                }).catch((error) => {
+                    if(error.response) {
+                        if(error.request.status === 401) {
+                            refreshUserAuthToken(this.deleteSemester)
                         }
                         else if(error.request.status === 500){
                             this.errorToast.msg = "Não foi possível se conectar com o servidor."
@@ -225,13 +287,16 @@
             TextTitle1,
             BaseToastContainer,
             BaseToast,
-            IconCloseButton
+            IconCloseButton,
+            BaseModal
         },
         computed: {
             ...mapStores(useUserAuthInfoStore)
         },
         mounted() {
             this.sucessToast.el = bootstrap.Toast.getOrCreateInstance("#sucess-toast");
+            this.globalSucessToast.el = bootstrap.Toast.getOrCreateInstance("#global-sucess-toast");
+            this.globalSucessToast.el.show();
 			this.errorToast.el = bootstrap.Toast.getOrCreateInstance("#fail-toast");
             this.getSemester();
         }
