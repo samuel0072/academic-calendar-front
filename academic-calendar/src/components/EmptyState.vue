@@ -5,7 +5,9 @@
         </div>
         <div v-if="displayButton">
         <!-- TODO: Adequar ao novo componente do botão -->
-            <BaseButton type="button" :label="buttonLabel" />
+            <BaseButton type="button" @click.native="$emit('btn-click')" >
+                {{ buttonLabel }}
+            </BaseButton>
         </div>
     </div>
 </template>

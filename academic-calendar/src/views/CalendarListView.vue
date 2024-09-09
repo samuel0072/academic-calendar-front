@@ -20,7 +20,6 @@
                                 required 
                                 placeholder="" 
                                 maxlength="500"/>
-                                =
                             <label for="calendar_description_input">Nome do calendário</label>
                             <!-- TODO: criar componente InputFeedback -->
                             <div class="invalid-feedback">
@@ -85,7 +84,12 @@
         </div>
         <div v-else>
             <div v-if="!loading && calendars.length === 0">
-                <EmptyState msg="Não há calendários para exibir" :displayButton="true" buttonLabel="Crie um calendário"/>
+                <EmptyState 
+                    msg="Não há calendários para exibir" 
+                    :displayButton="true" 
+                    buttonLabel="Crie um calendário"
+                    @btn-click="creationModal.show()"
+                />
             </div>
             <div v-else>
                 <!-- TODO: aplicar componente basebutton -->
@@ -144,7 +148,8 @@
                 sucessToastMsg: '',
                 errorToastTitle: 'Erro',
                 errorToastMsg: '',
-                inputValue: 'Teste'
+                inputValue: 'Teste',
+                creationModal: null
             }
         },
         methods: {
@@ -247,6 +252,7 @@
         },
         mounted: function() {
             this.getCalendars()
+            this.creationModal = bootstrap.Modal.getOrCreateInstance(`#${this.calendarCreationModalId}`)
         },
         computed: {
             ...mapStores(useUserAuthInfoStore)
