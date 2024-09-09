@@ -70,6 +70,38 @@
 			</BaseListItem>
 		</BaseUnorderedList>
 
+		<TextTitle5 v-if="semesters.length > 0">
+			<span>DIAS LETIVOS – QUADRO SÍNTESE</span>
+		</TextTitle5>
+
+		<BaseTable>
+			<template v-slot:head>
+				<BaseTHead>
+					<tr>
+						<BaseTH>Local</BaseTH>
+						<BaseTH v-for="semester in summaryTable.semesters">
+							{{ semester.description }}
+						</BaseTH>
+					</tr>
+				</BaseTHead>
+			</template>
+
+			<template  v-slot:body>
+				<BaseTBody>
+					<tr v-for="campus in campi" :key="campus.id">
+						<td> {{ campus.label }}</td>
+						<td v-for="semester in summaryTable.semesters" :key="semester.description">
+							<span v-for="c in semester.campi_school_days_count" :key="semester.description + c.id">
+								<span v-if="c.id === campus.value">
+									{{ c.school_days_count }}
+								</span>
+							</span>
+						</td>
+					</tr>
+				</BaseTBody>
+			</template>
+		</BaseTable>
+
 		<BaseModal modal_id="createEvents">
 			<template v-slot:modal-title>
 				<h5>Crie um evento</h5>
@@ -326,6 +358,10 @@
 	import MultipleSelectInput from '@/components/MultipleSelectInput.vue'
 	import BaseUnorderedList from '@/components/BaseUnorderedList.vue'
 	import BaseListItem from '@/components/BaseListItem.vue'
+	import BaseTable from '@/components/BaseTable.vue'
+	import BaseTHead from '@/components/BaseTHead.vue'
+	import BaseTBody from '@/components/BaseTBody.vue'
+	import BaseTH from '@/components/BaseTH.vue'
 
 	import refreshUserAuthToken from '@/assets/scripts/refreshUserAuthToken.js'
 
@@ -435,7 +471,8 @@
 				eventEditModal: null,
 				editRequest: null,
 				eventExcludeModal: null,
-				semesters: []
+				semesters: [],
+				summaryTable: {}
 			}
 		},
 		computed: {
@@ -468,6 +505,8 @@
 			this.getEvents();
 
 			this.getSemesters();
+
+			this.getCalendarSummary();
 
 			this.organizationInfoStore.$subscribe((mutation, state) => {
 				this.campi = [];
@@ -885,6 +924,37 @@
                     }
 				})
 			},
+			getCalendarSummary(){
+				axios.get(`/api//academic-calendar/${this.$route.params.id}/school_days_count`, {
+					headers: {
+						Authorization: "Bearer " + this.userAuthInfoStore.token,
+					},
+				}).then((res) => {
+					this.summaryTable = res.data;
+
+				}).catch((error) => {
+					if(error.response) {
+                        if(error.request.status === 401) {
+                            refreshUserAuthToken(this.getSemesters)
+                        }
+                        else if(error.request.status === 500){
+                            this.errorToast.msg = "Não foi possível se conectar com o servidor."
+                            this.errorToast.el.show()
+                        }
+                    }
+                    else if(error.request) {
+                        if(error.code === "ERR_NETWORK") {
+                            this.errorToast.msg = "Esse cliente não consegue se conectar com a internet."
+                            this.errorToast.el.show()
+                        }
+                    }
+                    else {
+                        console.log(error)
+                        this.errorToast.msg = "Um erro inesperado aconteceu. Por favor, recarregue a página e tente novamente."
+                        this.errorToast.el.show()
+                    }
+				})
+			},
 			getTemplateForMilestone(event) {
 				return `<span style="color: #fff; background-color: ${event.backgroundColor};">${event.title}</span>`;
 			},
@@ -1112,7 +1182,11 @@
 			TextTitle5,
 			MultipleSelectInput,
 			BaseUnorderedList,
-			BaseListItem
+			BaseListItem,
+			BaseTable,
+			BaseTHead,
+			BaseTBody,
+			BaseTH
 		},
 	};
 </script>
