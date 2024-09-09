@@ -55,6 +55,21 @@
 			@clickTimezonesCollapseBtn="onClickTimezonesCollapseBtn"
 		/>
 
+		<TextTitle5 v-if="semesters.length > 0">
+			Semestres
+		</TextTitle5>
+		<BaseUnorderedList>
+			<BaseListItem v-for="semester in semesters" :key="semester.id">
+				{{ semester.description }} | {{ semester.start_date }} - {{ semester.end_date }}
+
+				<template v-slot:post-item-section>
+					<BaseButton @click.native="$router.push({name: 'semester-update', params: { id: semester.id }})" type="button">
+						Editar
+					</BaseButton>
+				</template>
+			</BaseListItem>
+		</BaseUnorderedList>
+
 		<BaseModal modal_id="createEvents">
 			<template v-slot:modal-title>
 				<h5>Crie um evento</h5>
@@ -309,6 +324,8 @@
 	import TextTitle1 from '@/components/text-components/TextTitle1.vue'
 	import TextTitle5 from '@/components/text-components/TextTitle1.vue'
 	import MultipleSelectInput from '@/components/MultipleSelectInput.vue'
+	import BaseUnorderedList from '@/components/BaseUnorderedList.vue'
+	import BaseListItem from '@/components/BaseListItem.vue'
 
 	import refreshUserAuthToken from '@/assets/scripts/refreshUserAuthToken.js'
 
@@ -418,6 +435,7 @@
 				eventEditModal: null,
 				editRequest: null,
 				eventExcludeModal: null,
+				semesters: []
 			}
 		},
 		computed: {
@@ -448,6 +466,8 @@
 			this.getCalendarDetail();
 
 			this.getEvents();
+
+			this.getSemesters();
 
 			this.organizationInfoStore.$subscribe((mutation, state) => {
 				this.campi = [];
@@ -833,6 +853,38 @@
 					}
 				})
 			},
+			getSemesters(){
+				axios.get(`/api/academic-calendar/calendar/${this.$route.params.id}/semesters`, {
+					headers: {
+						Authorization: "Bearer " + this.userAuthInfoStore.token,
+					},
+				}).then((res) => {
+					//console.log(res);
+					this.semesters = res.data;
+
+				}).catch((error) => {
+					if(error.response) {
+                        if(error.request.status === 401) {
+                            refreshUserAuthToken(this.getSemesters)
+                        }
+                        else if(error.request.status === 500){
+                            this.errorToast.msg = "Não foi possível se conectar com o servidor."
+                            this.errorToast.el.show()
+                        }
+                    }
+                    else if(error.request) {
+                        if(error.code === "ERR_NETWORK") {
+                            this.errorToast.msg = "Esse cliente não consegue se conectar com a internet."
+                            this.errorToast.el.show()
+                        }
+                    }
+                    else {
+                        console.log(error)
+                        this.errorToast.msg = "Um erro inesperado aconteceu. Por favor, recarregue a página e tente novamente."
+                        this.errorToast.el.show()
+                    }
+				})
+			},
 			getTemplateForMilestone(event) {
 				return `<span style="color: #fff; background-color: ${event.backgroundColor};">${event.title}</span>`;
 			},
@@ -1058,7 +1110,9 @@
             DropdownButton,
 			TextTitle1,
 			TextTitle5,
-			MultipleSelectInput
+			MultipleSelectInput,
+			BaseUnorderedList,
+			BaseListItem
 		},
 	};
 </script>

@@ -99,6 +99,7 @@
     import FloatingInput from '@/components/FloatingInput.vue'
     import FormInputFeedback from '@/components/FormInputFeedback.vue'
     import TextTitle1 from '@/components/text-components/TextTitle1.vue'
+    import TextTitle5 from '@/components/text-components/TextTitle5.vue'
     import BaseToastContainer from '@/components/BaseToastContainer.vue'
     import BaseToast from '@/components/BaseToast.vue'
     import IconCloseButton from "@/components/icons/IconCloseButton.vue"
@@ -127,7 +128,8 @@
                 },
                 globalSucessToast: {
                     el: null
-                }
+                },
+                deleteModal: null
             }
         },
         methods: {
@@ -253,6 +255,7 @@
 						Authorization: `Bearer ${this.userAuthInfoStore.token}`,
 					}
                 }).then((_) => {
+                    this.deleteModal.hide();
                     this.globalSucessToast.el.show();
                     this.$router.go(-1)
                 }).catch((error) => {
@@ -288,15 +291,16 @@
             BaseToastContainer,
             BaseToast,
             IconCloseButton,
-            BaseModal
+            BaseModal,
+            TextTitle5
         },
         computed: {
             ...mapStores(useUserAuthInfoStore)
         },
         mounted() {
+            this.deleteModal = bootstrap.Modal.getOrCreateInstance("#deleteSemester");
             this.sucessToast.el = bootstrap.Toast.getOrCreateInstance("#sucess-toast");
             this.globalSucessToast.el = bootstrap.Toast.getOrCreateInstance("#global-sucess-toast");
-            this.globalSucessToast.el.show();
 			this.errorToast.el = bootstrap.Toast.getOrCreateInstance("#fail-toast");
             this.getSemester();
         }
