@@ -83,7 +83,10 @@
             Obtendo os caléndários...
         </div>
         <div v-else>
-            <div v-if="!loading && calendars.length === 0">
+            <div class="col-4">
+                <SearchInput id="searchInput" @search-triggered="getCalendars($event)"/>
+            </div>
+            <div v-if="calendars.length === 0">
                 <EmptyState 
                     msg="Não há calendários para exibir" 
                     :displayButton="true" 
@@ -93,13 +96,9 @@
             </div>
             <div v-else>
                 <!-- TODO: aplicar componente basebutton -->
-                <button type="button" class="btn" data-bs-toggle="modal" :data-bs-target="'#' + calendarCreationModalId">
+                <BaseButton type="button" data-bs-toggle="modal" :data-bs-target="'#' + calendarCreationModalId">
                     Crie um calendário
-                </button>
-
-                <div class="col-4">
-                    <SearchInput id="searchInput" @search-triggered="getCalendars($event)"/>
-                </div>               
+                </BaseButton>               
 
                 <CalendarList 
                     :calendars="calendars" 
