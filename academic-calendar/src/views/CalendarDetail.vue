@@ -15,6 +15,7 @@
 					próximo mês ->
 				</BaseButton>
 			</div>
+			<router-link :to="{ name: 'semester-creation', params: {calendar_id: $route.params.id}}">Criar semestre</router-link>
 		</nav>
 		<BaseButton data-bs-toggle="modal" data-bs-target="#createEvents" type="button">
 			Crie um evento
@@ -836,7 +837,7 @@
 				return `<span style="color: #fff; background-color: ${event.backgroundColor};">${event.title}</span>`;
 			},
 			getTemplateForAllday(event) {
-				return `[All day] ${event.title}`;
+				return `${event.title}`;
 			},
 			onSelectDateTime({ start, end }) {
 				this.calendarInstance.clearGridSelections();
