@@ -39,7 +39,6 @@
 			:timezone="{  }"
 			:theme="theme"
 			:template="{
-				milestone: getTemplateForMilestone,
 				allday: getTemplateForAllday,
 			}"
 			:grid-selection="true"
@@ -49,10 +48,7 @@
 			@beforeCreateEvent="onBeforeCreateEvent"
 			@beforeUpdateEvent="onBeforeUpdateEvent"
 			@beforeDeleteEvent="onBeforeDeleteEvent"
-			@afterRenderEvent="onAfterRenderEvent"
-			@clickDayName="onClickDayName"
 			@clickEvent="onClickEvent"
-			@clickTimezonesCollapseBtn="onClickTimezonesCollapseBtn"
 		/>
 
 		<TextTitle5 v-if="semesters.length > 0">
@@ -79,7 +75,7 @@
 				<BaseTHead>
 					<tr>
 						<BaseTH>Local</BaseTH>
-						<BaseTH v-for="semester in summaryTable.semesters">
+						<BaseTH v-for="semester in summaryTable.semesters" :key="semester.description">
 							{{ semester.description }}
 						</BaseTH>
 					</tr>
@@ -331,7 +327,6 @@
 	/* eslint-disable no-console */
 	import ToastUICalendar from "@/components/ToastUICalendar.vue"
 	import "@toast-ui/calendar/toastui-calendar.css"
-	import { TZDate } from '@toast-ui/calendar';
 
 	import { theme } from "@/views/assets/theme.js"
 
@@ -482,10 +477,6 @@
 			...mapStores(useUserAuthInfoStore, useOrganizationInfoStore)
 		},
 		watch: {
-			selectedView(newView) {
-				this.calendarInstance.changeView(newView);
-				this.setDateRangeText();
-			},
 			campi(value) {
 				value.forEach((campus) => {
 					this.newEvent.campi.push(campus.value)
@@ -598,16 +589,18 @@
 					this.events.push({
 						id: response.data.id,
 						calendarId: this.calendar.id,
-						title: this.newEvent.description,
+						title: response.data.description,
 						category: "allday",
-						start: this.newEvent.startDate,
+						start: response.data.start_date,
 						end: response.data.end_date,
-						label: this.newEvent.label,
-						backgroundColor: this.newEvent.bgColor,
-						campi: this.newEvent.campi,
+						label: response.data.label,
+						backgroundColor: response.data.hexadecimal_color,
+						campi: response.data.campi,
 						organization: response.data.organization,
 						isAllday: true,
 					});
+
+					this.getCalendarSummary();
 				}).catch((error) => {
 					if(error.response) {
                         if(error.request.status === 401) {
@@ -730,7 +723,7 @@
 							Authorization: "Bearer " + this.userAuthInfoStore.token
 						}
 					}
-				).then((response) => {
+				).then((_) => {
 					this.eventEditModal.hide()
 
 					this.sucessToast.msg = "Evento atualizado com sucesso!"
@@ -751,6 +744,8 @@
 						title: this.selectedEvent.description,
 						backgroundColor: this.selectedEvent.bgColor,
 					});
+
+					this.getCalendarSummary();
 
 				}).catch((error) => {
 					if(error.response) {
@@ -860,6 +855,8 @@
 					this.sucessToast.msg = "O evento foi excluído com sucesso."
 
 					this.sucessToast.el.show()
+
+					this.getCalendarSummary()
 				}).catch((error) => {
 					if(error.response) {
 							if(error.request.status === 401) {
@@ -955,17 +952,21 @@
                     }
 				})
 			},
-			getTemplateForMilestone(event) {
-				return `<span style="color: #fff; background-color: ${event.backgroundColor};">${event.title}</span>`;
-			},
 			getTemplateForAllday(event) {
 				return `${event.title}`;
 			},
 			onSelectDateTime({ start, end }) {
-				this.calendarInstance.clearGridSelections();
-				console.group("onSelectDateTime");
-				console.log(`Date : ${start} ~ ${end}`);
-				console.groupEnd();
+
+				this.newEvent.startDate = start.toISOString().split("T")[0];
+				this.newEvent.endDate = end.toISOString().split("T")[0];
+				this.newEvent.description = ""
+				this.newEvent.campi = []
+				this.newEvent.bgColor = "#FFFFFF"
+
+				this.eventCreationModal.show()
+
+				this.calendarInstance.clearGridSelections()
+				
 			},
 			onBeforeCreateEvent(eventData) {
 				console.log(eventData);
@@ -995,6 +996,7 @@
 					const targetEvent = updateData.event;
 					const changes = { ...updateData.changes };
 					
+					//#TODO: por algum motivo o internalEvent não atualiza
 					var internalEvent = this.events.find((e) => e.id === targetEvent.id)
 
 					var payload = {
@@ -1025,7 +1027,7 @@
 								Authorization: "Bearer " + this.userAuthInfoStore.token
 							}
 						}
-					).then((response) => {
+					).then((_) => {
 						this.eventEditModal.hide()
 
 						this.sucessToast.msg = "Evento atualizado com sucesso!"
@@ -1036,6 +1038,8 @@
 						internalEvent.endDate = payload.end_date
 						
 						this.calendarInstance.updateEvent(targetEvent.id, this.calendar.id, changes);
+
+						this.getCalendarSummary();
 
 					}).catch((error) => {
 						if(error.response) {
@@ -1081,16 +1085,6 @@
 
 				this.calendarInstance.deleteEvent(id, calendarId);
 			},
-			onAfterRenderEvent({ title }) {
-				// console.group("onAfterRenderEvent");
-				// console.log("Event Info : ", title);
-				// console.groupEnd();
-			},
-			onClickDayName({ date }) {
-				console.group("onClickDayName");
-				console.log("Date : ", date);
-				console.groupEnd();
-			},
 			onClickEvent({ nativeEvent, event }) {
 
 				this.selectedEvent.internalEvent = this.events.find((e) => e.id === event.id)
@@ -1111,18 +1105,6 @@
 				console.log("Event Info : ", event);
 				console.log("Selected event Info : ", this.selectedEvent);
 				console.groupEnd();
-			},
-			onClickTimezonesCollapseBtn(timezoneCollapsed) {
-				console.group("onClickTimezonesCollapseBtn");
-				console.log("Is Timezone Collapsed?: ", timezoneCollapsed);
-				console.groupEnd();
-
-				const newTheme = {
-					"week.daygridLeft.width": "100px",
-					"week.timegridLeft.width": "100px",
-				};
-
-				this.calendarInstance.setTheme(newTheme);
 			},
 			onClickTodayButton() {
 				this.calendarInstance.today();
