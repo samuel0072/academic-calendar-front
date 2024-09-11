@@ -3,7 +3,12 @@
 		<TextTitle1 ref="calendarTitle">
 			{{ calendar.description }}
 		</TextTitle1>
-		<DropdownButton defaultLabel="Exportar como planilha" defaultValue="xlsx" :options="[{label: 'exportar como arquivo .csv', value: 'csv'}]" />
+		<DropdownButton 
+			defaultLabel="Exportar como planilha" 
+			defaultValue="xlsx" 
+			:options="[{label: 'exportar como arquivo .csv', value: 'csv'}]" 
+			@click="downloadCalendar($event)"/>
+
 		<nav>
 			<span>ir para</span>
 			<div class="btn-group" role="group">
@@ -319,6 +324,14 @@
                 id="fail-toast" 
                 class="text-bg-danger" />    
 
+			<BaseToast 
+                title="Aguarde" 
+                :message="infoToast.msg" 
+                id="info-toast" 
+                class="text-bg-info" 
+				data-bs-delay='50000'
+				/>    
+
         </BaseToastContainer>
 	</div>
 </template>
@@ -437,6 +450,10 @@
 					el: null,
 					msg: ""
 				},
+				infoToast: {
+					el: null,
+					msg: "Baixando seu arquivo..."
+				},
 				eCFormInputFeedbacks: {
 					description: "",
 					startDate: "",
@@ -509,6 +526,7 @@
 			this.eventExcludeModal = bootstrap.Modal.getOrCreateInstance('#deleteEvent');
 			this.sucessToast.el = bootstrap.Toast.getOrCreateInstance("#sucess-toast");
 			this.errorToast.el = bootstrap.Toast.getOrCreateInstance("#fail-toast");
+			this.infoToast.el = bootstrap.Toast.getOrCreateInstance("#info-toast");
 		},
 		methods: {
 			getEvents() {
@@ -860,7 +878,7 @@
 				}).catch((error) => {
 					if(error.response) {
 							if(error.request.status === 401) {
-								refreshUserAuthToken(this.editEvent)
+								refreshUserAuthToken(this.deleteEvent, [event])
 							}
 							else if(error.request.status === 404){
 								this.errorToast.msg = "Não foi possível se conectar com o servidor."
@@ -1145,6 +1163,117 @@
 				this.$refs.eEEndDate.resetValidation()
 				this.$refs.eEStartDate.resetValidation()
 				this.$refs.eEColor.resetValidation()
+			},
+			downloadCalendar(format) {
+				var paths = new Map()
+				paths.set("csv", '/csv')
+				paths.set("xlsx", '/excel')
+
+				var path = paths.get(format)
+
+				this.infoToast.el.show()
+
+				axios.post(`/api/academic-calendar/calendar/${this.$route.params.id}/export${path}`, undefined,
+					{
+						headers: {
+							Authorization: "Bearer " + this.userAuthInfoStore.token
+						}
+					}
+				).then((response) => {
+					this.downloadFile(response.data.url, format);
+
+				}).catch((error) => {
+					if(error.response) {
+                        if(error.request.status === 401) {
+                            refreshUserAuthToken(this.downloadCalendar, [format])
+							//TODO Exibir um toast quando o usuário for redirecionado pro login
+                        }
+                        else if(error.request.status === 500){
+                            this.errorToast.msg = "Não foi possível se conectar com o servidor."
+                            this.errorToast.el.show()
+                        }
+                    }
+                    else if(error.request) {
+                        if(error.code === "ERR_NETWORK") {
+                            this.errorToast.msg = "Esse cliente não consegue se conectar com a internet."
+                            this.errorToast.el.show()
+                        }
+                    }
+                    else {
+                        console.log(error)
+                        this.errorToast.msg = "Um erro inesperado aconteceu. Por favor, recarregue a página e tente novamente."
+                        this.errorToast.el.show()
+                    }
+				})
+			},
+			downloadFile(fileURL, fileType) {
+				axios.get(`/api${fileURL}`, 
+				{
+					headers: {
+						Authorization: "Bearer " + this.userAuthInfoStore.token
+					},
+					responseType: 'blob'
+				})
+				.then( async (res) => {
+
+					var options = {
+						suggestedName: `planilha.${fileType}`,
+						types: null
+					};
+
+					if(fileType === "csv") {
+						options.types = [{
+							description: '.csv',
+							accept: { 'text/csv' : ['.csv'] },
+						}]
+					}
+					else if(fileType === "xlsx") {
+						options.types = [{
+							description: '.xlsx',
+							accept: { 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' : ['.xlsx'] },
+						}]
+					}
+					else if(fileType === "pdf") {
+						options.suggestedName = "Arquivo PDF do calendário"
+						options.types = [{
+							description: '.pdf',
+							accept: { 'application/pdf' : ['.pdf'] },
+						}]
+					}
+
+					const handle = await window.showSaveFilePicker(options);
+					const writable = await handle.createWritable();
+					await writable.write(res.data)
+					await writable.close()
+
+					this.infoToast.el.hide()
+
+				}).catch((error) => {
+					this.infoToast.el.hide()
+					if(error.response) {
+                        if(error.request.status === 401) {
+                            refreshUserAuthToken(this.downloadFile, [fileURL, fileType])
+                        }
+                        else if(error.request.status === 500){
+                            this.errorToast.msg = "Não foi possível se conectar com o servidor."
+                            this.errorToast.el.show()
+                        }
+                    }
+                    else if(error.request) {
+                        if(error.code === "ERR_NETWORK") {
+                            this.errorToast.msg = "Esse cliente não consegue se conectar com a internet."
+                            this.errorToast.el.show()
+                        }
+                    }
+					else if(error.name !== undefined && error.name === 'AbortError') {
+						//a ideia aqui é justamente não fazer nada, mas não cair no próximo else
+						console.log("File saving aborted.")
+					}
+                    else {
+                        this.errorToast.msg = "Um erro inesperado aconteceu. Por favor, recarregue a página e tente novamente."
+                        this.errorToast.el.show()
+                    }
+				})
 			}
 		},
 		components: {
