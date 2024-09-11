@@ -1,7 +1,7 @@
 <template>
     <div>
         <TextTitle1>Edite o semestre {{ semester.description  }}</TextTitle1>
-        <BaseButton type="button" class="btn-close" aria-label="Close" @click.native="$router.go(-1)">
+        <BaseButton type="button" class="btn-close" aria-label="Close" @click.native="$router.back()">
             <IconCloseButton />
         </BaseButton>
 

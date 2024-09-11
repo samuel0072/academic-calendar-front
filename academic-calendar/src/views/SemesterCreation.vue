@@ -1,6 +1,10 @@
 <template>
     <div>
         <TextTitle1>Crie um semestre</TextTitle1>
+        <BaseButton type="button" class="btn-close" aria-label="Close" @click.native="$router.back()">
+            <IconCloseButton />
+        </BaseButton>
+
         <BaseForm @submit="createSemester" >
             <FloatingInput 
                 ref="description"
@@ -71,6 +75,7 @@
     import TextTitle1 from '@/components/text-components/TextTitle1.vue'
     import BaseToastContainer from '@/components/BaseToastContainer.vue'
     import BaseToast from '@/components/BaseToast.vue'
+    import IconCloseButton from "@/components/icons/IconCloseButton.vue"
 
     export default {
         data() {
@@ -86,6 +91,9 @@
 					el: null,
 					msg: ""
 				},
+                globalSucessToast: {
+                    el: null
+                },
                 inputFeedbacks: {
                     description: "",
                     startDate: "",
@@ -106,9 +114,9 @@
                     headers: {
 						Authorization: `Bearer ${this.userAuthInfoStore.token}`,
 					},
-                }).then((res) => {
+                }).then((_) => {
                     this.sucessToast.msg = "Semestre criado com sucesso."
-                    this.sucessToast.el.show()
+                    this.globalSucessToast.el.show()
 
                     this.$router.push({ name: 'calendar-view', params: {'id': this.$route.params.calendar_id } })
                 }).catch((error) => {
@@ -191,7 +199,8 @@
             FormInputFeedback,
             TextTitle1,
             BaseToastContainer,
-            BaseToast
+            BaseToast,
+            IconCloseButton
         },
         computed: {
             ...mapStores(useUserAuthInfoStore)
@@ -199,6 +208,7 @@
         mounted() {
             this.sucessToast.el = bootstrap.Toast.getOrCreateInstance("#sucess-toast");
 			this.errorToast.el = bootstrap.Toast.getOrCreateInstance("#fail-toast");
+            this.globalSucessToast.el = bootstrap.Toast.getOrCreateInstance("#global-sucess-toast");
         }
     }
 
