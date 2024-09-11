@@ -17,7 +17,7 @@ function refreshUserAuthToken(callback, callbackArgs = []) {
         logoutUser()
     }
     else {
-        axios.post('api/auth/jwt_token/refresh', {
+        axios.post('/api/auth/jwt_token/refresh', {
             refresh: store.refreshToken
         }).then(response  => {
             store.setAuthToken(response.data.access)
