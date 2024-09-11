@@ -25,6 +25,10 @@
 		<BaseButton data-bs-toggle="modal" data-bs-target="#createEvents" type="button">
 			Crie um evento
 		</BaseButton>
+
+		<BaseButton data-bs-toggle="modal" data-bs-target="#importEvents" type="button">
+			Importe eventos nesse calendário
+		</BaseButton>
 		
 		<h1 class="date-range">{{ dateRangeText }}</h1>
 
@@ -281,6 +285,56 @@
 			</template>
 		</BaseModal>
 
+		<BaseModal modal_id="importEvents">
+			<template v-slot:modal-title>
+				<TextTitle5>
+					Importar eventos
+				</TextTitle5>
+			</template>
+
+			<template v-slot:modal-body>
+				<div>
+					<p>
+						É possível importar vários eventos de uma única vez através de um arquivo Excel(.xlsx)
+					</p>
+					<p>
+						Baixe aqui um exemplo de uma planilha: 
+						<BaseAnchor href="/public/planilha_de_exemplo.xlsx" download>Clique aqui para baixar</BaseAnchor>
+					</p>
+					<p>
+						Explicação de cada coluna da planilha e exemplos: 
+						<router-link :to="{ name: 'event-file-explanation'}">Clique aqui acessar</router-link>
+					</p>
+				</div>
+				
+				<BaseForm @submit="importEvents" id="event-import-form" ref="eIForm" novalidate>
+					<BaseLabel for="event-file">Selecione um arquivo Excel</BaseLabel>
+					<BaseInput 
+						@change.native="handleFileChange"
+						id="event-file"
+						type="file"
+						accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+						required
+					>
+					</BaseInput>
+
+					<BaseCallout v-if="importingError.isErrored" class="callout-danger">
+						<h3>Atenção aos erros abaixo:</h3>
+						<div v-for="message in importingError.messages">
+							{{ message }}
+						</div>
+					</BaseCallout>
+					
+				</BaseForm>
+			</template>
+
+			<template v-slot:modal-footer>
+				<BaseButton type="submit" form="event-import-form"  class="btn btn-primary" :disabled="selectedFile === null || selectedFile === undefined">
+					Importar
+				</BaseButton>
+			</template>
+		</BaseModal>
+
 		<BaseModal modal_id="deleteEvent">
 			<template v-slot:modal-title>
 				<TextTitle5>
@@ -370,6 +424,9 @@
 	import BaseTHead from '@/components/BaseTHead.vue'
 	import BaseTBody from '@/components/BaseTBody.vue'
 	import BaseTH from '@/components/BaseTH.vue'
+	import BaseInput from '@/components/BaseInput.vue'
+	import BaseAnchor from "@/components/BaseAnchor.vue"
+	import BaseCallout from "@/components/BaseCallout.vue"
 
 	import refreshUserAuthToken from '@/assets/scripts/refreshUserAuthToken.js'
 
@@ -483,8 +540,14 @@
 				eventEditModal: null,
 				editRequest: null,
 				eventExcludeModal: null,
+				importingModal: null,
 				semesters: [],
-				summaryTable: {}
+				summaryTable: {},
+				selectedFile: null,
+				importingError: {
+					messages: [],
+					isErrored: false
+				}
 			}
 		},
 		computed: {
@@ -524,6 +587,7 @@
 			this.eventCreationModal = bootstrap.Modal.getOrCreateInstance('#createEvents');
 			this.eventEditModal = bootstrap.Modal.getOrCreateInstance('#editEvent');
 			this.eventExcludeModal = bootstrap.Modal.getOrCreateInstance('#deleteEvent');
+			this.importingModal = bootstrap.Modal.getOrCreateInstance('#importEvents');
 			this.sucessToast.el = bootstrap.Toast.getOrCreateInstance("#sucess-toast");
 			this.errorToast.el = bootstrap.Toast.getOrCreateInstance("#fail-toast");
 			this.infoToast.el = bootstrap.Toast.getOrCreateInstance("#info-toast");
@@ -1274,6 +1338,73 @@
                         this.errorToast.el.show()
                     }
 				})
+			},
+			handleFileChange(event) {
+				this.selectedFile = event.target.files[0];
+			},
+			importEvents() {
+				if (this.selectedFile) {
+					this.importingError.isErrored = false
+
+					const formData = new FormData();
+					formData.append('file', this.selectedFile);
+					
+					axios.post(`/api/academic-calendar/calendar/${this.calendar.id}/import_events`, formData, 
+					{
+						headers: {
+							Authorization: "Bearer " + this.userAuthInfoStore.token
+						}
+					}
+				).then((_) => {
+					this.events = []
+
+					this.getEvents()
+
+					this.importingModal.hide()
+
+					this.sucessToast.msg = "Eventos importados com sucesso!"
+
+					this.sucessToast.el.show()
+
+				}).catch((error) => {
+					if(error.response) {
+                        if(error.request.status === 401) {
+                            refreshUserAuthToken(this.importEvents)
+							//TODO Exibir um toast quando o usuário for redirecionado pro login
+                        }
+                        else if(error.request.status === 422 ){
+							this.importingError.isErrored = true
+							this.importingError.messages = error.response.data.errors
+                        }
+						else if(error.request.status === 400 ){
+							this.errorToast.msg = "Verifique se você selecionou um arquivo no formato Excel(.xlsx)."
+                            this.errorToast.el.show()
+                        }
+						else if(error.request.status === 404 ){
+							this.$router.push({ name: 'not-found' })
+                        }
+                        else if(error.request.status === 500){
+                            this.errorToast.msg = "Não foi possível se conectar com o servidor."
+                            this.errorToast.el.show()
+                        }
+                    }
+                    else if(error.request) {
+                        if(error.code === "ERR_NETWORK") {
+                            this.errorToast.msg = "Esse cliente não consegue se conectar com a internet."
+                            this.errorToast.el.show()
+                        }
+                    }
+                    else {
+                        console.log(error)
+                        this.errorToast.msg = "Um erro inesperado aconteceu. Por favor, recarregue a página e tente novamente."
+                        this.errorToast.el.show()
+                    }
+				})
+					
+				} else {
+					this.errorToast.msg = "É necessário escolher um arquivo."
+					this.errorToast.el.show()
+				}
 			}
 		},
 		components: {
@@ -1297,7 +1428,10 @@
 			BaseTable,
 			BaseTHead,
 			BaseTBody,
-			BaseTH
+			BaseTH,
+			BaseInput,
+			BaseAnchor,
+			BaseCallout
 		},
 	};
 </script>
