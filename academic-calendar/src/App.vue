@@ -6,15 +6,14 @@ import BaseToast from '@/components/BaseToast.vue'
 
 <template>
   <div id="app">
-    <div>
+    <header>
       <nav>
-        <router-link to="/">Home</router-link>
-        <router-link to="/about">About</router-link>
         <router-link to="/calendars">Calendars</router-link>
         <router-link to="/login">Login</router-link>
+        <router-link to="/configuration">Configurações</router-link>
 
       </nav>
-    </div>
+    </header>
       <div>
         <router-view />
       </div>
