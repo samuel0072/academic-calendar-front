@@ -4,22 +4,22 @@
 
         <div id="main-body" class="bd-main order-1">
             <div id="create-user">
-                <h1>Criação de Usuários</h1>
+                <TextTitle1>Criação de Usuários</TextTitle1>
             </div>
             <div id="campus-configurations">
-                <h1>Campus</h1>
+                <TextTitle1>Campus</TextTitle1>
                 <div id="create-campus">
-                    <h1>Criação de Campus</h1>
+                    <TextTitle2>Criação de Campus</TextTitle2>
                 </div>
                 <div id="list-campus">
-                    <h1>Lista de Campi</h1>
+                    <TextTitle2>Lista de Campi</TextTitle2>
                 </div>
             </div>
             <div id="import-national-holidays">
-                <h1>Importar Feriados Nacionais</h1>
+                <TextTitle1>Importar Feriados Nacionais</TextTitle1>
             </div>
             <div id="import-regional-holidays">
-                <h1>Importar Feriados Regionais</h1>
+                <TextTitle1>Importar Feriados Regionais</TextTitle1>
             </div>
         </div>
 
@@ -32,6 +32,9 @@
 </style>
 <script>
     import SideBar from '@/components/SideBar.vue';
+    import TextTitle1 from '@/components/text-components/TextTitle1.vue'
+    import TextTitle2 from '@/components/text-components/TextTitle2.vue'
+	import TextTitle5 from '@/components/text-components/TextTitle5.vue'
 
     export default {
         data: function() {
@@ -48,7 +51,10 @@
             }
         },
         components: {
-            SideBar
+            SideBar,
+            TextTitle1,
+            TextTitle5,
+            TextTitle2
         }
     }
 </script>

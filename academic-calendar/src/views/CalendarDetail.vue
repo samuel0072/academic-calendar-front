@@ -416,7 +416,7 @@
 	import FormInputFeedback from '@/components/FormInputFeedback.vue'
     import DropdownButton from '@/components/DropdownButton.vue'
 	import TextTitle1 from '@/components/text-components/TextTitle1.vue'
-	import TextTitle5 from '@/components/text-components/TextTitle1.vue'
+	import TextTitle5 from '@/components/text-components/TextTitle5.vue'
 	import MultipleSelectInput from '@/components/MultipleSelectInput.vue'
 	import BaseUnorderedList from '@/components/BaseUnorderedList.vue'
 	import BaseListItem from '@/components/BaseListItem.vue'
