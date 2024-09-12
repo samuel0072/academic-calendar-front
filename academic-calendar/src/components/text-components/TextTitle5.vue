@@ -1,5 +1,10 @@
 <template>
-    <h5 class="fw-bold">
-        <slot ref="slot"></slot>
+    <h5>
+        <slot></slot>
     </h5>
 </template>
+<style>
+    h5 {
+        font-size: 1.0rem;
+    }
+</style>
