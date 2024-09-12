@@ -107,7 +107,7 @@
 			</template>
 		</BaseTable>
 
-		<BaseModal modal_id="createEvents">
+		<BaseModal id="createEvents">
 			<template v-slot:modal-title>
 				<h5>Crie um evento</h5>
 			</template>
@@ -194,7 +194,7 @@
 			</template>
 		</BaseModal>
 
-		<BaseModal modal_id="editEvent">
+		<BaseModal id="editEvent">
 			<template v-slot:modal-title>
 				<TextTitle5>
 					{{selectedEvent.description}}
@@ -285,7 +285,7 @@
 			</template>
 		</BaseModal>
 
-		<BaseModal modal_id="importEvents">
+		<BaseModal id="importEvents">
 			<template v-slot:modal-title>
 				<TextTitle5>
 					Importar eventos
@@ -335,7 +335,7 @@
 			</template>
 		</BaseModal>
 
-		<BaseModal modal_id="deleteEvent">
+		<BaseModal id="deleteEvent">
 			<template v-slot:modal-title>
 				<TextTitle5>
 					Confirmação de exclusão

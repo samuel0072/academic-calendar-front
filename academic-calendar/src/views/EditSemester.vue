@@ -1,9 +1,7 @@
 <template>
     <div>
         <TextTitle1>Edite o semestre {{ semester.description  }}</TextTitle1>
-        <BaseButton type="button" class="btn-close" aria-label="Close" @click.native="$router.back()">
-            <IconCloseButton />
-        </BaseButton>
+        <BaseButton type="button" class="btn-close" aria-label="Close" @click.native="$router.back()" />
 
         <BaseForm @submit="updateSemester" >
             <FloatingInput 
@@ -41,14 +39,14 @@
                 </FormInputFeedback>
             </FloatingInput>
 
-            <BaseButton type="submit"> Editar </BaseButton>
+            <BaseButton type="submit"> Salvar Dados </BaseButton>
         </BaseForm>
 
         <BaseButton data-bs-toggle="modal" data-bs-target="#deleteSemester" type="button">
             Excluir
         </BaseButton>
 
-        <BaseModal modal_id="deleteSemester">
+        <BaseModal id="deleteSemester">
 			<template v-slot:modal-title>
 				<TextTitle5>
 					Confirmação de exclusão

@@ -1,28 +1,29 @@
 @import "bootstrap/scss/bootstrap";
 @import "@/assets/base.css";
 
-:root {
-    --bs-body-bg: var(--color-background);
-    --bs-border-color: var(--color-border);
-}
+// :root {
+//     --bs-body-bg: var(--color-background);
+//     --bs-border-color: var(--color-border);
+//     --bs-body-color: var(--color-text);
+// }
 
-.btn-close {
-    --bs-btn-close-bg: none;
-    --bs-btn-close-color: var(--color-text);
-    text-align : center;
-    display: flex;
-    place-items: center;
-    place-content: center;
-}
+// .btn-close {
+//     --bs-btn-close-bg: none;
+//     --bs-btn-close-color: var(--color-text);
+//     text-align : center;
+//     display: flex;
+//     place-items: center;
+//     place-content: center;
+// }
 
-.form-floating > .form-control:focus ~ label {
-    color: var(--color-text);
-}
+// .form-floating > .form-control:focus ~ label {
+//     color: var(--color-text);
+// }
 
-.form-control {
-    color: var(--color-text);
-}
+// .form-control {
+//     color: var(--color-text);
+// }
 
-.form-control:focus {
-    color: var(--color-text);
-}
+// .form-control:focus {
+//     color: var(--color-text);
+// }

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <BaseModal :modal_id="calendarCreationModalId">
+        <BaseModal :id="calendarCreationModalId">
             <template v-slot:modal-title>
             <!-- TODO: criar componente title -->
                 <h5>Crie um novo calendário acadêmico</h5>
