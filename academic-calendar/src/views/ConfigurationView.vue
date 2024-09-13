@@ -13,7 +13,7 @@
                 </div>
                 <div id="list-campus">
                     <TextTitle2>Lista de Campi</TextTitle2>
-                    <BaseUnorderedList>
+                    <BaseUnorderedList v-if="organizationInfoStore.campi.length > 0">
                         <BaseListItem v-for="campus in organizationInfoStore.campi" :key="`campus-${campus.id}`">
                             <FloatingInput 
                                 :id="`campus-${campus.id}`"
@@ -30,6 +30,9 @@
                             </template>
                         </BaseListItem>
                     </BaseUnorderedList>
+
+                    <EmptyState v-else
+                        msg="Não há campus para exibir"/>
                 </div>
             </div>
             <div id="import-national-holidays">
@@ -96,6 +99,7 @@
     import BaseToastContainer from '@/components/BaseToastContainer.vue'
     import BaseToast from '@/components/BaseToast.vue'
     import BaseModal from '@/components/BaseModal.vue'
+    import EmptyState from '@/components/EmptyState.vue'
 
     import * as bootstrap from 'bootstrap'
     import axios from 'axios'
@@ -144,7 +148,8 @@
             FloatingInput,
             BaseToastContainer,
             BaseToast,
-            BaseModal
+            BaseModal,
+            EmptyState
         },
         mounted: function() {
             if(!this.userAuthInfoStore.isAuthenticated) {

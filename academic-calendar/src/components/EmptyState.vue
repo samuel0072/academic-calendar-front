@@ -23,7 +23,8 @@
             },
             displayButton: {
                 type: Boolean,
-                required: true
+                required: false,
+                default: false
             },
             buttonLabel: {
                 type: String,
