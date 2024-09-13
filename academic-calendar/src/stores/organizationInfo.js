@@ -11,6 +11,9 @@ export const useOrganizationInfoStore = defineStore({
         deleteCampus(campusId) {
             var index = this.campi.findIndex((campus) => campus.id === campusId)
             this.campi.splice(index, 1);
+        },
+        addCampus(campus) {
+            this.campi.push(campus)
         }
     }
 })

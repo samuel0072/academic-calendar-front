@@ -10,6 +10,16 @@
                 <TextTitle1>Campus</TextTitle1>
                 <div id="create-campus">
                     <TextTitle2>Criação de Campus</TextTitle2>
+                    <BaseForm @submit="createCampus" id="campus-creation-form" >
+                        <FloatingInput 
+                                id="new-campus-name"
+                                v-model="newCampus.name" 
+                                label="Nome do campus"
+                                type="text"
+                                maxlength="150"
+                        />
+                        <BaseButton type="submit">Criar</BaseButton>
+				    </BaseForm>
                 </div>
                 <div id="list-campus">
                     <TextTitle2>Lista de Campi</TextTitle2>
@@ -20,7 +30,7 @@
                                 v-model="campus.name" 
                                 label="Nome do campus"
                                 type="text"
-                                maxlength="500"
+                                maxlength="150"
                             />
                             <template name:post-item-section>
                                 <ButtonGroup>
@@ -100,6 +110,7 @@
     import BaseToast from '@/components/BaseToast.vue'
     import BaseModal from '@/components/BaseModal.vue'
     import EmptyState from '@/components/EmptyState.vue'
+    import BaseForm from '@/components/BaseForm.vue'
 
     import * as bootstrap from 'bootstrap'
     import axios from 'axios'
@@ -130,7 +141,10 @@
                     msg: ""
                 },
                 selectedCampus: null,
-                deleteCampusModal: null
+                deleteCampusModal: null,
+                newCampus: {
+                    name: ""
+                }
             }
         },
         computed: {
@@ -149,7 +163,8 @@
             BaseToastContainer,
             BaseToast,
             BaseModal,
-            EmptyState
+            EmptyState,
+            BaseForm
         },
         mounted: function() {
             if(!this.userAuthInfoStore.isAuthenticated) {
@@ -246,7 +261,53 @@
                     }
                     
                 })
-            }
+            },
+            createCampus() {
+                axios.post(`api/academic-calendar/campus/create`, {
+                    name: this.newCampus.name
+                }, 
+                {
+                    headers: {
+                        'Authorization': 'Bearer ' + this.userAuthInfoStore.token
+                    }
+                }).then( (res) => {
+                    this.organizationInfoStore.addCampus(res.data)
+                    this.successToast.msg = "O campus foi criado com sucesso!"
+                    this.successToast.el.show();
+                }).catch( (error) => {
+                    
+                    if(error.response) {
+                        if(error.request.status === 401) {
+                            refreshUserAuthToken(this.editCampus, [campus])
+                        }
+                        else if(error.request.status === 422 ){
+                            if(Object.hasOwn(error.response.data, 'name')) {
+                                this.errorToast.msg = ""
+                                error.response.data["name"].forEach( (msg) => {
+									this.errorToast.msg += `${msg}\n`
+								})
+                                this.errorToast.el.show()
+                            }
+                        }
+                        else if(error.request.status === 500){
+                            this.errorToast.msg  = "Não foi possível se conectar com o servidor."
+                            this.errorToast.el.show()
+                        }
+                    }
+                    else if(error.request) {
+                        if(error.code === "ERR_NETWORK") {
+                            this.errorToast.msg  = "Esse cliente não consegue se conectar com a internet."
+                            this.errorToast.el.show()
+                        }
+                    }
+                    else {
+                        console.log(error)
+                        this.errorToast.msg  = "Um erro inesperado aconteceu. Por favor, recarregue a página e tente novamente."
+                        this.errorToast.el.show()
+                    }
+                    
+                })
+            },
         }
     }
 </script>
