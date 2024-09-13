@@ -7,7 +7,9 @@
             :placeholder="placeholder"
             :maxlength="maxlength" 
             :id="id" 
-            :type="type"/>
+            :type="type"
+            :disabled="disabled"
+             />
         <BaseLabel :for="id">
             {{label}}
         </BaseLabel>
@@ -51,6 +53,11 @@
             type: {
                 required: true,
                 type: String
+            },
+            disabled: {
+                required: false,
+                type: Boolean,
+                default: false
             },
             customValue: String
         },

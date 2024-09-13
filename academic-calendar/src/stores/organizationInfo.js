@@ -6,5 +6,11 @@ export const useOrganizationInfoStore = defineStore({
         campi: [ ],
         id: Number,
         name: String
-    })
+    }),
+    actions: {
+        deleteCampus(campusId) {
+            var index = this.campi.findIndex((campus) => campus.id === campusId)
+            this.campi.splice(index, 1);
+        }
+    }
 })
