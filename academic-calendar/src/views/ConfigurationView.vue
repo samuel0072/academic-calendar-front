@@ -216,6 +216,7 @@
                     this.successToast.msg = "O campus foi excluído com sucesso!"
                     this.successToast.el.show()
                     this.deleteCampusModal.hide()
+                    this.selectedCampus = null;
 
                 }).catch( (error) => {
                     if(error.response) {
