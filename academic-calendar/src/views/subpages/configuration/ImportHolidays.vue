@@ -53,6 +53,21 @@
                     </SimpleText>
             </BaseCallout>
         </PageSection>
+
+        <BaseToastContainer class="position-fixed bottom-0 end-0 p-3">
+            <BaseToast 
+                title="Sucesso" 
+                :message="successToast.msg" 
+                id="importing-holiday-sucess-toast" 
+                class="text-bg-success" />
+
+            <BaseToast 
+                title="Erro" 
+                :message="errorToast.msg" 
+                id="importing-holiday-fail-toast" 
+                class="text-bg-danger" />    
+
+        </BaseToastContainer>
     </div>
 </template>
 
@@ -69,6 +84,8 @@
     import BaseLabel from '@/components/BaseLabel.vue'
     import PageSection from '@/components/PageSection.vue'
     import MultipleSelectInput from '@/components/MultipleSelectInput.vue'
+    import BaseToastContainer from '@/components/BaseToastContainer.vue'
+    import BaseToast from '@/components/BaseToast.vue'
 
     import * as bootstrap from 'bootstrap'
     import axios from 'axios'
@@ -135,11 +152,13 @@
             TextTitle3,
             SimpleText,
             PageSection,
-            MultipleSelectInput
+            MultipleSelectInput,
+            BaseToastContainer,
+            BaseToast
         },
         mounted: function() {
-            this.successToast.el = bootstrap.Toast.getOrCreateInstance("#sucess-toast");
-            this.errorToast.el = bootstrap.Toast.getOrCreateInstance("#fail-toast");
+            this.successToast.el = bootstrap.Toast.getOrCreateInstance("#importing-holiday-sucess-toast");
+            this.errorToast.el = bootstrap.Toast.getOrCreateInstance("#importing-holiday-fail-toast");
         },
         methods: {
             handleHolidayFileChange(event) {

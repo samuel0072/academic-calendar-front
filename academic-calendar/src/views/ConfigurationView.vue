@@ -3,8 +3,8 @@
         <SideBar :options="options"/>
 
         <PageSection id="main-body" class="bd-main order-1">
-            <PageSection id="create-user">
-                <TextTitle1>Criação de Usuários</TextTitle1>
+            <PageSection id="user-configurations">
+                <UserPage />
             </PageSection>
             <PageSection id="campus-configurations">
                 <CampusPage />
@@ -13,21 +13,6 @@
                 <ImportHolidayPage />
             </PageSection>
         </PageSection>
-
-        <BaseToastContainer class="position-fixed bottom-0 end-0 p-3">
-            <BaseToast 
-                title="Sucesso" 
-                :message="successToast.msg" 
-                id="sucess-toast" 
-                class="text-bg-success" />
-
-            <BaseToast 
-                title="Erro" 
-                :message="errorToast.msg" 
-                id="fail-toast" 
-                class="text-bg-danger" />    
-
-        </BaseToastContainer>
     </div>
 </template>
 <style>
@@ -38,12 +23,11 @@
 <script>
     import SideBar from '@/components/SideBar.vue';
     import TextTitle1 from '@/components/text-components/TextTitle1.vue'
-    import BaseToastContainer from '@/components/BaseToastContainer.vue'
-    import BaseToast from '@/components/BaseToast.vue'
     import PageSection from '@/components/PageSection.vue'
 
     import CampusPage from "@/views/subpages/configuration/Campus.vue"
     import ImportHolidayPage from "@/views/subpages/configuration/ImportHolidays.vue"
+    import UserPage from "@/views/subpages/configuration/User.vue"
 
     import * as bootstrap from 'bootstrap'
 
@@ -55,7 +39,10 @@
         data: function() {
             return {
                 options: [
-                    {link: "#create-user", display: "Criar Usuários"},
+                    {link: "#user-configurations", display: "Usuários", subMenu: [
+                    {link: "#user-creation", display: "Criação de Usuários"},
+                    {link: "#user-list", display: "Lista de Usuários"}
+                    ]},
                     {link: "#campus-configurations", display: "Campus", subMenu: [
                         {link: "#create-campus", display: "Criação de Campus"},
                         {link: "#list-campus", display: "Lista de Campi"}
@@ -69,22 +56,6 @@
                 errorToast: {
                     el: null,
                     msg: ""
-                },
-                selectedCampus: null,
-                deleteCampusModal: null,
-                newCampus: {
-                    name: ""
-                },
-                holidayTypes: [
-                    { label: "Regional", value: "RH"},
-                    { label: "Nacional", value: "H"},
-                ],
-                holidayImportingInfo: {
-                    holidayType: "H",
-                    file: null,
-                    isErrored: false,
-                    errorMsgs: [],
-                    campi: []
                 }
             }
         },
@@ -112,11 +83,10 @@
         components: {
             SideBar,
             TextTitle1,
-            BaseToastContainer,
-            BaseToast,
             PageSection,
             CampusPage,
-            ImportHolidayPage
+            ImportHolidayPage,
+            UserPage
         },
         mounted: function() {
             if(!this.userAuthInfoStore.isAuthenticated) {
