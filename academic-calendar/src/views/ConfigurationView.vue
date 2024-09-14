@@ -1,18 +1,23 @@
 <template>
     <div class="container-xxl bd-gutter mt-3 my-md-4 bd-layout">
-        <SideBar :options="options"/>
-
-        <PageSection id="main-body" class="bd-main order-1">
-            <PageSection id="user-configurations">
-                <UserPage />
-            </PageSection>
-            <PageSection id="campus-configurations">
-                <CampusPage />
-            </PageSection>
-            <PageSection id="import-holidays">
-                <ImportHolidayPage />
-            </PageSection>
-        </PageSection>
+        <div class="row">
+            <div class="col-4">
+                <SideBar id="config-nav"  :options="options"/>
+            </div>
+            <div class="col-8">
+                <div id="main-body" class="bd-main order-1 scrollspy-example-2" data-bs-spy="scroll" data-bs-target="#config-nav" data-bs-smooth-scroll="true" tabindex="0">
+                    <Card id="user-configurations">
+                        <UserPage />
+                    </Card>
+                    <Card id="campus-configurations">
+                        <CampusPage />
+                    </Card>
+                    <Card id="import-holidays">
+                        <ImportHolidayPage />
+                    </Card>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 <style>
@@ -23,7 +28,7 @@
 <script>
     import SideBar from '@/components/SideBar.vue';
     import TextTitle1 from '@/components/text-components/TextTitle1.vue'
-    import PageSection from '@/components/PageSection.vue'
+    import Card from '@/components/Card.vue'
 
     import CampusPage from "@/views/subpages/configuration/Campus.vue"
     import ImportHolidayPage from "@/views/subpages/configuration/ImportHolidays.vue"
@@ -83,7 +88,7 @@
         components: {
             SideBar,
             TextTitle1,
-            PageSection,
+            Card,
             CampusPage,
             ImportHolidayPage,
             UserPage

@@ -1,7 +1,7 @@
 <template>
     <div>
         <TextTitle1>Campus</TextTitle1>
-        <PageSection id="create-campus">
+        <div id="create-campus">
             <TextTitle2>Criação de Campus</TextTitle2>
             <BaseForm @submit="createCampus" id="campus-creation-form" >
                 <FloatingInput 
@@ -13,8 +13,8 @@
                 />
                 <BaseButton type="submit">Criar</BaseButton>
             </BaseForm>
-        </PageSection>
-        <PageSection id="list-campus">
+        </div>
+        <div id="list-campus">
             <TextTitle2>Lista de Campi</TextTitle2>
             <BaseUnorderedList v-if="organizationInfoStore.campi.length > 0">
                 <BaseListItem v-for="campus in organizationInfoStore.campi" :key="`campus-${campus.id}`">
@@ -36,7 +36,7 @@
 
             <EmptyState v-else
                 msg="Não há campus para exibir"/>
-        </PageSection>
+        </div>
 
         <BaseToastContainer class="position-fixed bottom-0 end-0 p-3">
             <BaseToast 
@@ -96,7 +96,6 @@
     import BaseModal from '@/components/BaseModal.vue'
     import EmptyState from '@/components/EmptyState.vue'
     import BaseForm from '@/components/BaseForm.vue'
-    import PageSection from '@/components/PageSection.vue'
 
     import * as bootstrap from 'bootstrap'
     import axios from 'axios'
@@ -273,7 +272,6 @@
             BaseModal,
             EmptyState,
             BaseForm,
-            PageSection
         }
     }
 </script>

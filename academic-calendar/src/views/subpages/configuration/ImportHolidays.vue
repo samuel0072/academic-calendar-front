@@ -1,8 +1,8 @@
 <template>
     <div>
         <TextTitle1>Importar Feriados</TextTitle1>
-        <PageSection>
-            <PageSection>
+        <div>
+            <div>
                 <p>
                     <SimpleText>É possível importar vários feriados de uma única vez através de um arquivo Excel(.xlsx)</SimpleText>
                 </p>
@@ -14,7 +14,7 @@
                     <SimpleText>Explicação de cada coluna da planilha e exemplos: </SimpleText>
                     <router-link :to="{ name: 'holiday-file-explanation'}">Clique aqui acessar</router-link>
                 </p>
-            </PageSection>
+            </div>
         
             <BaseForm @submit="importHolidays" id="holiday-import-form" novalidate>
                 <div class="mb-3">
@@ -52,7 +52,7 @@
                         {{ message }}
                     </SimpleText>
             </BaseCallout>
-        </PageSection>
+        </div>
 
         <BaseToastContainer class="position-fixed bottom-0 end-0 p-3">
             <BaseToast 
@@ -82,7 +82,6 @@
 	import BaseCallout from "@/components/BaseCallout.vue"
     import BaseSelectInput from '@/components/BaseSelectInput.vue'
     import BaseLabel from '@/components/BaseLabel.vue'
-    import PageSection from '@/components/PageSection.vue'
     import MultipleSelectInput from '@/components/MultipleSelectInput.vue'
     import BaseToastContainer from '@/components/BaseToastContainer.vue'
     import BaseToast from '@/components/BaseToast.vue'
@@ -151,7 +150,6 @@
             BaseLabel,
             TextTitle3,
             SimpleText,
-            PageSection,
             MultipleSelectInput,
             BaseToastContainer,
             BaseToast
