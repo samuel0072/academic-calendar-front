@@ -12,6 +12,7 @@ import Error404 from '../views/Error404.vue'
 import SemesterCreation from '../views/SemesterCreation.vue'
 import EditSemester from '../views/EditSemester.vue'
 import EventFileExplanation from '../views/EventFileExplanation.vue'
+import HolidayFileExplanation from '../views/HolidayFileExplanation.vue'
 import ConfigurationView from '../views/ConfigurationView.vue'
 
 Vue.use(VueRouter)
@@ -77,6 +78,11 @@ const router = new VueRouter({
       path: '/event-file/explanation',
       name: 'event-file-explanation',
       component: EventFileExplanation
+    },
+    {
+      path: '/holiday-file/explanation',
+      name: 'holiday-file-explanation',
+      component: HolidayFileExplanation
     },
     {
       path: '/configuration',

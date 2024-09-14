@@ -1,11 +1,13 @@
 <script setup>
     import BaseUnorderedList from '@/components/BaseUnorderedList.vue'
 	import BaseListItem from '@/components/BaseListItem.vue'
+    import TextTitle1 from '@/components/text-components/TextTitle1.vue'
+	import TextTitle5 from '@/components/text-components/TextTitle5.vue'
 </script>
 <template>
     <div>
         <p>
-            <h1>A planilha deve conter as colunas</h1>
+            <TextTitle1>A planilha deve conter as colunas</TextTitle1>
             <BaseUnorderedList>
                 <BaseListItem>
                     descricao
@@ -25,22 +27,22 @@
             </BaseUnorderedList>
         </p>
         <p>
-            <h1>Explicação de cada coluna</h1>
-            <h5>descricao</h5>
+            <TextTitle1>Explicação de cada coluna</TextTitle1>
+            <TextTitle5>descricao</TextTitle5>
             <span>Essa coluna deve conter o nome do evento. Deve conter no máximo 500 caracteres.</span>
-            <h5>data_inicio</h5>
+            <TextTitle5>data_inicio</TextTitle5>
             <span>A data em que o evento se inicia. Deve estar no formato DD/MM/AAAA.</span>
-            <h5>duracao</h5>
+            <TextTitle5>duracao</TextTitle5>
             <span>A quantidade de dias que o evento dura.</span>
-            <h5>espaco</h5>
+            <TextTitle5>espaco</TextTitle5>
             <span>A quantidade de dias que o próximo evento se inicia após o fim do evento atual.</span>
-            <h5>data_fim</h5>
+            <TextTitle5>data_fim</TextTitle5>
             <span>A data em que o evento finaliza. Deve estar no formato DD/MM/AAAA.</span>
             
         </p>
 
         <p>
-            <h1>Observações</h1>
+            <TextTitle1>Observações</TextTitle1>
             <BaseUnorderedList>
                 <BaseListItem>
                     A data inicial da primeira linha é obrigatória.
@@ -55,7 +57,7 @@
         </p>
 
         <p>
-            <h1>Exemplos</h1>
+            <TextTitle1>Exemplos</TextTitle1>
             <div>
                 <p>Exemplo 1:</p>
                 <img src="/public/exemplo1.png" alt="tabela com 6 linhas. 1 linha é o cabeçalho. 
