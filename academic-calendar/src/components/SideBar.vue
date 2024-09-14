@@ -1,6 +1,6 @@
 <template>
     <aside>
-        <ul>
+        <ul class="main-list">
             <li v-for="option in options" :key="option.link">
                 <a 
                 :href="option.link" 
@@ -10,7 +10,7 @@
                     {{ option.display }} 
                 </a>
 
-                <ul v-if="option.hasOwnProperty('subMenu')">
+                <ul v-if="option.hasOwnProperty('subMenu')" class="sublist">
                     <li v-for="subOption in option.subMenu" :key="subOption.link" >
                         <a 
                         :href="subOption.link" 
@@ -44,6 +44,14 @@
 
     .active {
         border-color: white;
+    }
+    
+    .main-list {
+        padding-left: 0;
+    }
+
+    .sublist {
+        padding-left: 1rem;
     }
 </style>
 <script>
