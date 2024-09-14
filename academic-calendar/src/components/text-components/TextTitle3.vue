@@ -1,12 +1,12 @@
 <template>
-    <h2 class="h2">
+    <h3 class="h3">
         <slot>
 
         </slot>
-    </h2>
+    </h3>
 </template>
 <style scoped>
-    .h2 {
-        font-size: 1.3rem;
+    .h3 {
+        font-size: 1.1rem;
     }
 </style>

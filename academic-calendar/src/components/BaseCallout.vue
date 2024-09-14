@@ -3,7 +3,7 @@
         <slot></slot>
     </div>
 </template>
-<style>
+<style scoped>
     .callout {
         --bs-link-color-rgb: var(--bd-callout-link);
         --bs-code-color: var(--bd-callout-code-color);

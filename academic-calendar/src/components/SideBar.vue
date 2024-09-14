@@ -26,11 +26,13 @@
         </ul>
     </aside>
 </template>
-<style>
+<style scoped>
     aside {
         float: left;
         padding: .125rem .125rem .125rem .125rem;
         margin: 0.2rem 0.2rem 0.2rem 0.2rem;
+        position: -webkit-sticky;
+        position: sticky;
     }
     li {
         list-style-type: none;

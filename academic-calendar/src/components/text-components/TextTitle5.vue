@@ -1,10 +1,10 @@
 <template>
-    <h5>
+    <h5 class="h5">
         <slot></slot>
     </h5>
 </template>
-<style>
-    h5 {
+<style scoped>
+    .h5 {
         font-size: 1.0rem;
     }
 </style>
