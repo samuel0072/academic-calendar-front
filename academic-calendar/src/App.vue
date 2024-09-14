@@ -36,6 +36,10 @@ import BaseToast from '@/components/BaseToast.vue'
 </template>
 
 <style scoped>
+#app {
+  top: 0;
+  position: absolute;
+}
 header {
   line-height: 1.5;
   max-height: 100vh;

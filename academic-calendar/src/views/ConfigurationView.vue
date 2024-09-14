@@ -8,7 +8,7 @@
             </PageSection>
             <PageSection id="campus-configurations">
                 <TextTitle1>Campus</TextTitle1>
-                <div id="create-campus">
+                <PageSection id="create-campus">
                     <TextTitle2>Criação de Campus</TextTitle2>
                     <BaseForm @submit="createCampus" id="campus-creation-form" >
                         <FloatingInput 
@@ -20,8 +20,8 @@
                         />
                         <BaseButton type="submit">Criar</BaseButton>
 				    </BaseForm>
-                </div>
-                <div id="list-campus">
+                </PageSection>
+                <PageSection id="list-campus">
                     <TextTitle2>Lista de Campi</TextTitle2>
                     <BaseUnorderedList v-if="organizationInfoStore.campi.length > 0">
                         <BaseListItem v-for="campus in organizationInfoStore.campi" :key="`campus-${campus.id}`">
@@ -34,8 +34,8 @@
                             />
                             <template name:post-item-section>
                                 <ButtonGroup>
-                                    <BaseButton type="button" @click.native="editCampus(campus)">Alterar</BaseButton>
-                                    <BaseButton type="button" @click.native="openDeleteCampusModal(campus)">Excluir</BaseButton>
+                                    <BaseButton type="button" class="btn-outline-success" @click.native="editCampus(campus)">Alterar</BaseButton>
+                                    <BaseButton type="button" class="btn btn-outline-danger" @click.native="openDeleteCampusModal(campus)">Excluir</BaseButton>
                                 </ButtonGroup>
                             </template>
                         </BaseListItem>
@@ -43,7 +43,7 @@
 
                     <EmptyState v-else
                         msg="Não há campus para exibir"/>
-                </div>
+                </PageSection>
             </PageSection>
             <PageSection id="import-holidays">
                 <TextTitle1>Importar Feriados</TextTitle1>
