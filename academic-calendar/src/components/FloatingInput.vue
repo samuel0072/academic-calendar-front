@@ -9,6 +9,7 @@
             :id="id" 
             :type="type"
             :disabled="disabled"
+            :required="required"
              />
         <BaseLabel :for="id">
             {{label}}
@@ -55,6 +56,11 @@
                 type: String
             },
             disabled: {
+                required: false,
+                type: Boolean,
+                default: false
+            },
+            required: {
                 required: false,
                 type: Boolean,
                 default: false
