@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="container-xxl bd-gutter mt-3 my-md-4 bd-layout">
 		<TextTitle1 ref="calendarTitle">
 			{{ calendar.description }}
 		</TextTitle1>

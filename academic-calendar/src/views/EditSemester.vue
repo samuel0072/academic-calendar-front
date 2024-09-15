@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="container-xxl bd-gutter mt-3 my-md-4 bd-layout">
         <TextTitle1>Edite o semestre {{ semester.description  }}</TextTitle1>
         <BaseButton type="button" class="btn-close" aria-label="Close" @click.native="$router.back()" />
 
