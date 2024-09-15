@@ -24,8 +24,8 @@ export const useUserAuthInfoStore = defineStore({
         },
         reset() {
             this.token = null
-            this.token = null
             this.refreshToken = null
+            this.isAuthenticated = false
 
             localStorage.removeItem("authToken")
             localStorage.removeItem("refreshToken")

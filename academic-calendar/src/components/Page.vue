@@ -3,3 +3,8 @@
         <slot></slot>
     </div>
 </template>
+<style scoped>
+/* div {
+    margin-right: 0 !important;
+} */
+</style>

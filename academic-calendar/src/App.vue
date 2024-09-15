@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <NavBar id="page-header">
+        <NavBar id="page-header" v-if="userAuthInfoStore.isAuthenticated">
             <div>
                 <router-link to="/calendars">Calendarios</router-link>
             </div>
@@ -11,7 +11,7 @@
                         <router-link to="/configuration" class="dropdown-item">Configurações</router-link>
                     </DropdownItem>
                     <DropdownItem>
-                        <router-link to="/configuration" class="dropdown-item">Sair</router-link>
+                        <button @click="logout" class="dropdown-item">Sair</button>
                     </DropdownItem>
                 </template>
             </DropdownMenu>
@@ -82,7 +82,7 @@
     }
 </style>
 
-<script setup>
+<script>
 import BaseToastContainer from '@/components/BaseToastContainer.vue'
 import BaseToast from '@/components/BaseToast.vue'
 import NavBar from '@/components/NavBar.vue';
@@ -90,4 +90,28 @@ import Page from '@/components/Page.vue';
 import Avatar from '@/components/Avatar.vue';
 import DropdownMenu from '@/components/DropdownMenu.vue';
 import DropdownItem from '@/components/DropdownItem.vue';
+import logoutUser from '@/assets/scripts/logoutUser.js';
+
+import { useUserAuthInfoStore } from '@/stores/userAuthInfo.js'
+import { mapStores } from 'pinia'
+
+export default {
+    components: {
+        BaseToastContainer,
+        BaseToast,
+        NavBar,
+        Page,
+        Avatar,
+        DropdownMenu,
+        DropdownItem
+    },
+    computed: {
+        ...mapStores(useUserAuthInfoStore)
+    },
+    methods: {
+        logout() {
+            logoutUser()
+        }
+    }
+}
 </script>
