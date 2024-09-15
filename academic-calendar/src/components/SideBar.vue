@@ -33,6 +33,7 @@
         margin: 0.2rem 0.2rem 0.2rem 0.2rem;
         position: -webkit-sticky;
         position: sticky;
+        top: 0px;
     }
     li {
         list-style-type: none;
