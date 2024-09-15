@@ -5,7 +5,7 @@
                 <SideBar id="config-nav"  :options="options"/>
             </div>
             <div class="col-8">
-                <div id="main-body" class="bd-main order-1 scrollspy-example-2" data-bs-spy="scroll" data-bs-target="#config-nav" data-bs-smooth-scroll="true" tabindex="0">
+                <div id="main-body" class="bd-main">
                     <Card id="user-configurations">
                         <UserPage />
                     </Card>

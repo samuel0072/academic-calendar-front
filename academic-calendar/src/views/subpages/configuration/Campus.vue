@@ -14,6 +14,7 @@
                 <BaseButton type="submit">Criar</BaseButton>
             </BaseForm>
         </div>
+        <HorizontalLine />
         <div id="list-campus">
             <TextTitle2>Lista de Campi</TextTitle2>
             <BaseUnorderedList v-if="organizationInfoStore.campi.length > 0">
@@ -96,6 +97,7 @@
     import BaseModal from '@/components/BaseModal.vue'
     import EmptyState from '@/components/EmptyState.vue'
     import BaseForm from '@/components/BaseForm.vue'
+    import HorizontalLine from '@/components/HorizontalLine.vue'
 
     import * as bootstrap from 'bootstrap'
     import axios from 'axios'
@@ -272,6 +274,7 @@
             BaseModal,
             EmptyState,
             BaseForm,
+            HorizontalLine
         }
     }
 </script>
