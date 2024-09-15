@@ -2,12 +2,19 @@
     <div id="app">
         <NavBar id="page-header">
             <div>
-                <router-link to="/calendars">Calendars</router-link>
-                <router-link to="/configuration">Configurações</router-link>
+                <router-link to="/calendars">Calendarios</router-link>
             </div>
-            <div>
-                perfil
-            </div>
+            <DropdownMenu>
+                <Avatar/>
+                <template v-slot:options>
+                    <DropdownItem>
+                        <router-link to="/configuration" class="dropdown-item">Configurações</router-link>
+                    </DropdownItem>
+                    <DropdownItem>
+                        <router-link to="/configuration" class="dropdown-item">Sair</router-link>
+                    </DropdownItem>
+                </template>
+            </DropdownMenu>
         </NavBar>
         <Page id="main-content">
             <router-view />
@@ -38,16 +45,10 @@
         min-width: calc(100vw - 1rem);
         padding: 0;
     }
-
-    #main-content {
-        
-    }
-
     header {
-    line-height: 1.5;
-    max-height: 3rem;
-    padding: 1rem;
-    z-index: 100;
+        line-height: 1.5;
+        max-height: 3rem;
+        padding: 1rem;
 
     }
     nav {
@@ -66,15 +67,15 @@
         color: var(--color-text);
     }
 
-    nav a.router-link-exact-active:hover {
+    /* nav a.router-link-exact-active:hover {
         background-color: transparent;
-    }
+    } */
 
-    nav a {
+    /* nav a {
         display: inline-block;
         padding: 0 1rem;
         border-left: 1px solid var(--color-border);
-    }
+    } */
 
     nav a:first-of-type {
         border: 0;
@@ -86,4 +87,7 @@ import BaseToastContainer from '@/components/BaseToastContainer.vue'
 import BaseToast from '@/components/BaseToast.vue'
 import NavBar from '@/components/NavBar.vue';
 import Page from '@/components/Page.vue';
+import Avatar from '@/components/Avatar.vue';
+import DropdownMenu from '@/components/DropdownMenu.vue';
+import DropdownItem from '@/components/DropdownItem.vue';
 </script>

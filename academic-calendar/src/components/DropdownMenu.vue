@@ -1,16 +1,19 @@
 <template>
-    <ul class="dropdown-menu">
-        <li v-for="option in options" @click="$emit('click', option.value)" class="dropdown-item"> 
-            <span type="button"> {{option.label}} </span>
-        </li>
-    </ul>
+    <div class="dropdown">
+        <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <slot>
+            
+            </slot>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+            <slot name="options">
+
+            </slot>
+        </ul>
+    </div>
 </template>
-<script>
-    export default {
-        props: {
-            options: {
-                required: true
-            }
-        }
+<style scoped>
+    button {
+        border: 0;
     }
-</script>
+</style>
