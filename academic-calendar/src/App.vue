@@ -1,22 +1,14 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import BaseToastContainer from '@/components/BaseToastContainer.vue'
-import BaseToast from '@/components/BaseToast.vue'
-</script>
-
 <template>
   <div id="app">
-    <header class="navbar navbar-expand-lg bd-navbar sticky-top bg-secondary-subtle">
-      <nav class="container-xxl bd-gutter flex-wrap flex-lg-nowrap">
-        <div>
-          <router-link to="/calendars">Calendars</router-link>
-          <router-link to="/configuration">Configurações</router-link>
-        </div>
-        <div>
-          perfil
-        </div>
-      </nav>
-    </header>
+    <NavBar id="page-header">
+      <div>
+        <router-link to="/calendars">Calendars</router-link>
+        <router-link to="/configuration">Configurações</router-link>
+      </div>
+      <div>
+        perfil
+      </div>
+    </NavBar>
       <div id="main-content">
         <router-view />
       </div>
@@ -88,3 +80,9 @@ nav a:first-of-type {
   border: 0;
 }
 </style>
+
+<script setup>
+import BaseToastContainer from '@/components/BaseToastContainer.vue'
+import BaseToast from '@/components/BaseToast.vue'
+import NavBar from '@/components/NavBar.vue';
+</script>
