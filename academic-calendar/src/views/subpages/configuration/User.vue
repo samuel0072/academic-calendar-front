@@ -64,7 +64,7 @@
                     Nome: {{ user.first_name }} {{ user.last_name }} | Email: {{ user.email }}
 
                     <template name:post-item-section>
-                        <BaseButton type="button" class="btn btn-outline-danger"> Excluir </BaseButton>
+                        <BaseButton type="button" class="btn btn-outline-danger" @click.native="openDeleteModal(user)"> Excluir </BaseButton>
                     </template>
                 </BaseListItem>
             </BaseUnorderedList>
@@ -85,7 +85,7 @@
 
         </BaseToastContainer>
 
-        <!-- <BaseModal id="deleteCampus">
+        <BaseModal id="deleteUser">
 			<template v-slot:modal-title>
 				<TextTitle5>
 					Confirmação de exclusão
@@ -93,24 +93,25 @@
 			</template>
 
 			<template v-slot:modal-body>
-				Tem certeza que deseja excluir esse campus?
+				Tem certeza que deseja excluir esse usuário?
                 <br/>
                 Essa ação não é reversível.
 			</template>
 
 			<template v-slot:modal-footer>
 				<div>
-					<BaseButton type="button"  class="btn btn-danger" @click.native="deleteCampus(selectedCampus)">
+					<BaseButton type="button"  class="btn btn-danger" @click.native="deleteUser(selectedUser)">
 						Confirmar
 					</BaseButton>
 				</div>
 			</template>
-		</BaseModal> -->
+		</BaseModal>
     </div>
 </template>
 <script>
     import TextTitle1 from '@/components/text-components/TextTitle1.vue'
     import TextTitle3 from '@/components/text-components/TextTitle3.vue'
+    import TextTitle5 from '@/components/text-components/TextTitle5.vue'
     import BaseUnorderedList from '@/components/BaseUnorderedList.vue'
     import BaseListItem from '@/components/BaseListItem.vue'
     import BaseButton from "@/components/BaseButton.vue"
@@ -120,6 +121,7 @@
     import BaseToastContainer from '@/components/BaseToastContainer.vue'
     import BaseToast from '@/components/BaseToast.vue'
     import FormInputFeedback from '@/components/FormInputFeedback.vue'
+    import BaseModal from '@/components/BaseModal.vue'
 
     import * as bootstrap from 'bootstrap'
     import axios from 'axios'
@@ -150,7 +152,9 @@
                 newUserInputFeedbacks: {
                     name: "",
                     password: ""
-                }
+                },
+                selectedUser: null,
+                deleteModal: null
             }
         },
         methods: {
@@ -194,7 +198,7 @@
 
                 this.$refs.passwordInput.resetValidation()
                 this.$refs.nameInput.resetValidation()
-                
+
                 axios.post(`api/academic-calendar/user/create`, this.newUser, 
                 {
                     headers: {
@@ -246,12 +250,59 @@
                     }
                     
                 })
+            },
+            openDeleteModal(user) {
+                this.selectedUser = user
+                this.deleteModal.show()
+            },
+            deleteUser(user) {
+                axios.delete(`api/academic-calendar/user/${user.id}/delete`, {
+                    headers: {
+                        Authorization: `Bearer ${this.userAuthInfoStore.token}`
+                    }
+                }).then( (_) => {
+                    var index = this.users.findIndex((u) => user.id === u.id)
+                    this.users.splice(index, 1);
+
+                    this.successToast.msg = "O usuário foi excluído com sucesso!"
+                    this.successToast.el.show()
+                    this.deleteModal.hide()
+                    this.selectedUser = null;
+
+                }).catch( (error) => {
+                    if(error.response) {
+                        if(error.request.status === 401) {
+                            refreshUserAuthToken(this.deleteUser, [user])
+                        }
+                        if(error.request.status === 422) {
+                            this.errorToast.msg  = "Você não pode excluir seu próprio usuário."
+                            this.errorToast.el.show()
+                        }
+                        else if(error.request.status === 500){
+                            this.errorToast.msg  = "Não foi possível se conectar com o servidor."
+                            this.errorToast.el.show()
+                        }
+                    }
+                    else if(error.request) {
+                        if(error.code === "ERR_NETWORK") {
+                            this.errorToast.msg  = "Esse cliente não consegue se conectar com a internet."
+                            this.errorToast.el.show()
+                        }
+                    }
+                    else {
+                        console.log(error)
+                        this.errorToast.msg  = "Um erro inesperado aconteceu. Por favor, recarregue a página e tente novamente."
+                        this.errorToast.el.show()
+                    }
+                    
+                })
             }
         },
         mounted: function() {
             this.getUsers()
             this.successToast.el = bootstrap.Toast.getOrCreateInstance("#user-sucess-toast");
             this.errorToast.el = bootstrap.Toast.getOrCreateInstance("#user-fail-toast");
+            this.deleteModal = bootstrap.Modal.getOrCreateInstance("#deleteUser");
         },
         computed: {
             ...mapStores(useUserAuthInfoStore, useOrganizationInfoStore),
@@ -262,6 +313,7 @@
         components: {
             TextTitle1,
             TextTitle3,
+            TextTitle5,
             BaseUnorderedList,
             BaseListItem,
             BaseButton,
@@ -270,7 +322,8 @@
             HorizontalLine,
             BaseToastContainer,
             BaseToast,
-            FormInputFeedback
+            FormInputFeedback,
+            BaseModal
         }
     }
 </script>
