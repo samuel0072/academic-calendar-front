@@ -1,5 +1,5 @@
 <template>
-    <hr />
+    <hr class="d-none d-md-block"/>
 </template>
 <style scoped>
 hr {

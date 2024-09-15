@@ -1,5 +1,5 @@
 <template>
-    <div class="container-xxl bd-gutter mt-3 my-md-4 bd-layout">
+    <div>
         <BaseModal :id="calendarCreationModalId">
             <template v-slot:modal-title>
             <!-- TODO: criar componente title -->

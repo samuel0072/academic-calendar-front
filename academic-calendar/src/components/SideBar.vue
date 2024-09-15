@@ -1,5 +1,7 @@
 <template>
     <aside>
+        <TextTitle5 id="sidebar-title"> Navegação </TextTitle5>
+        <HorizontalLine />
         <ul class="main-list">
             <li v-for="option in options" :key="option.link">
                 <a 
@@ -32,7 +34,6 @@
         padding: .125rem .125rem .125rem .125rem;
         margin: 0.2rem 0.2rem 0.2rem 0.2rem;
         position: -webkit-sticky;
-        position: relative;
         position: sticky;
         top: 3rem;
     }
@@ -57,6 +58,8 @@
     }
 </style>
 <script>
+    import TextTitle5 from '@/components/text-components/TextTitle5.vue'
+    import HorizontalLine from '@/components/HorizontalLine.vue'
     export default {
         props: {
             options: {
@@ -73,6 +76,10 @@
                 var anchor = document.getElementById(`${elementId}`)
                 anchor.classList.remove('active');
             }
+        },
+        components: {
+            TextTitle5,
+            HorizontalLine
         }
     }
 </script>

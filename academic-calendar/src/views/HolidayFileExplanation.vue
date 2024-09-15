@@ -6,7 +6,7 @@
     import SimpleText from '@/components/text-components/SimpleText.vue'
 </script>
 <template>  
-    <div class="container-xxl bd-gutter mt-3 my-md-4 bd-layout">
+    <div>
         <p>
             <TextTitle1>A planilha deve conter as colunas</TextTitle1>
             <BaseUnorderedList>

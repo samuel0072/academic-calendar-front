@@ -1,5 +1,5 @@
 <template>
-    <div class="container-xxl bd-gutter mt-3 my-md-4 bd-layout">
+    <div>
         <div class="row">
             <div class="col-4">
                 <SideBar id="config-nav"  :options="options"/>
@@ -21,9 +21,6 @@
     </div>
 </template>
 <style>
-    #main-body {
-        float: right;
-    }
 </style>
 <script>
     import SideBar from '@/components/SideBar.vue';

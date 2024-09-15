@@ -5,7 +5,7 @@
 	import TextTitle5 from '@/components/text-components/TextTitle5.vue'
 </script>
 <template>
-    <div class="container-xxl bd-gutter mt-3 my-md-4 bd-layout">
+    <div>
         <p>
             <TextTitle1>A planilha deve conter as colunas</TextTitle1>
             <BaseUnorderedList>

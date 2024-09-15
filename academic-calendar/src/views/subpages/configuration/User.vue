@@ -61,11 +61,12 @@
             <TextTitle3>Lista de Usuários</TextTitle3>
             <BaseUnorderedList>
                 <BaseListItem v-for="user in users" :key="`user-${user.id}`">
-                    Nome: {{ user.first_name }} {{ user.last_name }} | Email: {{ user.email }}
+                    {{ user.first_name }} {{ user.last_name }} <VerticalRule /> {{ user.email }}
 
-                    <template name:post-item-section>
+                    <template v-slot:post-item-section>
                         <BaseButton type="button" class="btn btn-outline-danger" @click.native="openDeleteModal(user)"> Excluir </BaseButton>
                     </template>
+                    
                 </BaseListItem>
             </BaseUnorderedList>
         </div>
@@ -122,6 +123,7 @@
     import BaseToast from '@/components/BaseToast.vue'
     import FormInputFeedback from '@/components/FormInputFeedback.vue'
     import BaseModal from '@/components/BaseModal.vue'
+    import VerticalRule from '@/components/VerticalRule.vue'
 
     import * as bootstrap from 'bootstrap'
     import axios from 'axios'
@@ -323,7 +325,8 @@
             BaseToastContainer,
             BaseToast,
             FormInputFeedback,
-            BaseModal
+            BaseModal,
+            VerticalRule
         }
     }
 </script>

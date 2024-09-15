@@ -5,3 +5,6 @@
         <slot name="post-item-section"></slot>
     </li>
 </template>
+<style>
+
+</style>

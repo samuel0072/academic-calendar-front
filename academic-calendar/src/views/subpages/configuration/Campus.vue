@@ -19,19 +19,22 @@
             <TextTitle2>Lista de Campi</TextTitle2>
             <BaseUnorderedList v-if="organizationInfoStore.campi.length > 0">
                 <BaseListItem v-for="campus in organizationInfoStore.campi" :key="`campus-${campus.id}`">
-                    <FloatingInput 
-                        :id="`campus-${campus.id}`"
-                        v-model="campus.name" 
-                        label="Nome do campus"
-                        type="text"
-                        maxlength="150"
-                    />
-                    <template name:post-item-section>
-                        <ButtonGroup>
-                            <BaseButton type="button" class="btn-outline-success" @click.native="editCampus(campus)">Alterar</BaseButton>
-                            <BaseButton type="button" class="btn btn-outline-danger" @click.native="openDeleteCampusModal(campus)">Excluir</BaseButton>
-                        </ButtonGroup>
-                    </template>
+                    <div class="input-group">
+                        <FloatingInput 
+                            :id="`campus-${campus.id}`"
+                            v-model="campus.name" 
+                            label="Nome do campus"
+                            type="text"
+                            maxlength="150"
+                            
+                        />
+                        <BaseButton type="button" class="btn-outline-success text-success-emphasis" @click.native="editCampus(campus)">Alterar</BaseButton>
+                        <BaseButton type="button" class="btn btn-outline-success text-danger" @click.native="openDeleteCampusModal(campus)">Excluir</BaseButton>
+                    </div>
+                    
+                    <!-- <template v-slot:post-item-section>
+                        
+                    </template> -->
                 </BaseListItem>
             </BaseUnorderedList>
 
