@@ -32,8 +32,9 @@
         padding: .125rem .125rem .125rem .125rem;
         margin: 0.2rem 0.2rem 0.2rem 0.2rem;
         position: -webkit-sticky;
+        position: relative;
         position: sticky;
-        top: 0px;
+        top: 3rem;
     }
     li {
         list-style-type: none;

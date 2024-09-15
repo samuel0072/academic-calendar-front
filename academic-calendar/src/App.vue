@@ -6,15 +6,18 @@ import BaseToast from '@/components/BaseToast.vue'
 
 <template>
   <div id="app">
-    <header>
-      <nav>
-        <router-link to="/calendars">Calendars</router-link>
-        <router-link to="/login">Login</router-link>
-        <router-link to="/configuration">Configurações</router-link>
-
+    <header class="navbar navbar-expand-lg bd-navbar sticky-top bg-secondary-subtle">
+      <nav class="container-xxl bd-gutter flex-wrap flex-lg-nowrap">
+        <div>
+          <router-link to="/calendars">Calendars</router-link>
+          <router-link to="/configuration">Configurações</router-link>
+        </div>
+        <div>
+          perfil
+        </div>
       </nav>
     </header>
-      <div>
+      <div id="main-content">
         <router-view />
       </div>
 
@@ -36,13 +39,23 @@ import BaseToast from '@/components/BaseToast.vue'
 </template>
 
 <style scoped>
+
 #app {
   top: 0;
   position: absolute;
+  min-width: calc(100vw - 1rem);
+  padding: 0;
 }
+
+#main-content {
+  padding: 1rem;
+}
+
 header {
   line-height: 1.5;
-  max-height: 100vh;
+  max-height: 3rem;
+  padding: 1rem;
+  z-index: 100;
   
 }
 nav {
