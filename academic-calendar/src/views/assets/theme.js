@@ -1,11 +1,16 @@
+const root = document.documentElement;
+let style = getComputedStyle(root);
+let documentBgThemeColor = style.getPropertyValue('--bs-body-bg')
+let documentFontColor = style.getPropertyValue('--bs-body-color')
+
 export const theme = {
     common: {
       border: '1px solid #ddd',
-      backgroundColor: '#bdbd00',
+      backgroundColor: documentBgThemeColor,
       holiday: { color: '#f54f3d' },
       saturday: { color: '#135de6' },
-      dayName: { color: '#333' },
-      today: { color: '#009688' },
+      dayName: { color: documentFontColor },
+      today: { color: documentFontColor },
       gridSelection: {
         backgroundColor: 'rgba(19, 93, 230, 0.1)',
         border: '1px solid #135de6',
@@ -18,9 +23,9 @@ export const theme = {
       },
       holidayExceptThisMonth: { color: '#f3acac' },
       dayExceptThisMonth: { color: '#bbb' },
-      weekend: { backgroundColor: '#c7c714' },
-      moreView: { boxShadow: 'none' },
-      moreViewTitle: { backgroundColor: '#f4f4f4' },
+      weekend: { backgroundColor: documentBgThemeColor },
+      moreView: { boxShadow: 'none', backgroundColor: documentBgThemeColor },
+      moreViewTitle: { backgroundColor: "#FFFFFF" },
     },
     week: {
       dayName: {
@@ -41,7 +46,7 @@ export const theme = {
         backgroundColor: '',
         borderRight: '1px solid #ddd',
       },
-      weekend: { backgroundColor: '#bdbd00' },
+      weekend: { backgroundColor: documentBgThemeColor },
       timeGridLeft: {
         width: '100px',
         backgroundColor: '#fafafa',

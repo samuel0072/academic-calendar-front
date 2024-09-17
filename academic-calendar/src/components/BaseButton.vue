@@ -5,12 +5,6 @@
      </button>
 </template>
 
-<style scoped>
-    .btn {
-        color: var(--color-text);
-    }
-</style>
-
 <script>
     import "@/assets/main_bootstrap.scss";
     import * as bootstrap from 'bootstrap';
