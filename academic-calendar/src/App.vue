@@ -53,8 +53,8 @@
     }
     nav {
         overflow: hidden;
-        position: sticky;
-        position: -webkit-sticky;
+        /* position: sticky;
+        position: -webkit-sticky; */
         top: 0;
         margin-left: -1rem;
     }
