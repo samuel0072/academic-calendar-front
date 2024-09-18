@@ -5,19 +5,21 @@
 		</TextTitle1>
 		
 		<ToolBar>
-			<ToolBarItem class="col-4">
-				<nav>
-					<span>ir para</span>
-					<div class="btn-group" role="group">
+			<ToolBarItem class="col-3">
+					<span id="month-name">
+						{{ dateRangeText }}  
+					</span>
+					<ButtonGroup>
 						<BaseButton type="button" @click.native="onClickMoveButton(-1)">
-							<- mês anterior
+							<IconPrevArrow />
 						</BaseButton>
-						<BaseButton type="button" @click.native="onClickTodayButton"> hoje </BaseButton>
 						<BaseButton type="button" @click.native="onClickMoveButton(1)">
-							próximo mês ->
+							<IconNextArrow />
 						</BaseButton>
-					</div>
-				</nav>
+					</ButtonGroup>
+			</ToolBarItem>
+			<ToolBarItem>
+				<BaseButton type="button" @click.native="onClickTodayButton"> Hoje </BaseButton>
 			</ToolBarItem>
 			<ToolBarItem class="col-3">
 				<DropdownButton 
@@ -26,7 +28,7 @@
 					:options="[{label: 'exportar como arquivo .csv', value: 'csv'}]" 
 					@click="downloadCalendar($event)"/>
 			</ToolBarItem>
-			<ToolBarItem class="col">
+			<ToolBarItem>
 				<BaseButton data-bs-toggle="modal" data-bs-target="#createEvents" type="button">
 					Crie um evento
 				</BaseButton>
@@ -43,7 +45,7 @@
 			</ToolBarItem>
 		</ToolBar>
 		
-		<h1 class="date-range">{{ dateRangeText }}</h1>
+		<h1 class="date-range"></h1>
 
 		<ToastUICalendar
 			ref="calendar"
@@ -127,9 +129,6 @@
 				</BaseListItem>
 			</BaseUnorderedList>
 		</Page>
-		
-		
-		
 
 		<BaseModal id="createEvents">
 			<template v-slot:modal-title>
@@ -413,7 +412,11 @@
         </BaseToastContainer>
 	</div>
 </template>
-
+<style scoped>
+	#month-name {
+		min-width: 50%;
+	}
+</style>
 <script>
 	/* eslint-disable no-console */
 	import ToastUICalendar from "@/components/ToastUICalendar.vue"
@@ -455,6 +458,9 @@
 	import ToolBarItem from "@/components/ToolBarItem.vue"
 	import Page from "@/components/Page.vue"
 	import EmptyState from "@/components/EmptyState.vue"
+	import ButtonGroup from "@/components/ButtonGroup.vue"
+	import IconNextArrow from "@/components/icons/IconNextArrow.vue"
+	import IconPrevArrow from "@/components/icons/IconPrevArrow.vue"
 
 	import refreshUserAuthToken from '@/assets/scripts/refreshUserAuthToken.js'
 
@@ -1468,7 +1474,10 @@
 			ToolBar,
 			ToolBarItem,
 			Page,
-			EmptyState
+			EmptyState,
+			ButtonGroup,
+			IconNextArrow,
+			IconPrevArrow
 		},
 	};
 </script>

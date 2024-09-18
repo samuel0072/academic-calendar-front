@@ -1,5 +1,5 @@
 <template>
-    <aside>
+    <aside class="sticky-top">
         <TextTitle5 id="sidebar-title"> Navegação </TextTitle5>
         <HorizontalLine />
         <ul class="main-list">
@@ -33,9 +33,6 @@
         float: left;
         padding: .125rem .125rem .125rem .125rem;
         margin: 0.2rem 0.2rem 0.2rem 0.2rem;
-        position: -webkit-sticky;
-        position: sticky;
-        top: 3rem;
     }
     li {
         list-style-type: none;
