@@ -2,7 +2,7 @@
     <div id="app">
         <NavBar id="page-header" v-if="userAuthInfoStore.isAuthenticated">
             <div>
-                <router-link to="/calendars">Calendarios</router-link>
+                <router-link to="/calendars">Calendários</router-link>
             </div>
             <DropdownMenu>
                 <Avatar/>
