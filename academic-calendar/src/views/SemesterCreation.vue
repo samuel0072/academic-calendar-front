@@ -1,7 +1,14 @@
 <template>
     <div>
-        <TextTitle1>Crie um semestre</TextTitle1>
-        <BaseButton type="button" class="btn-close" aria-label="Close" @click.native="$router.back()" />
+        <div class="row">
+            <div class="col">
+                <TextTitle1>Crie um semestre</TextTitle1>
+            </div>
+            <div class="col d-flex justify-content-end">
+                <BaseButton type="button" class="btn-close" aria-label="Close" @click.native="$router.back()" />
+            </div>
+        </div>
+        
 
         <BaseForm @submit="createSemester" >
             <FloatingInput 
@@ -39,15 +46,10 @@
                 </FormInputFeedback>
             </FloatingInput>
 
-            <BaseButton type="submit"> Criar </BaseButton>
+            <BaseButton type="submit" class="btn-outline-primary"> <i class="bi bi-plus-lg"></i> Criar </BaseButton>
         </BaseForm>
 
         <BaseToastContainer class="position-fixed bottom-0 end-0 p-3">
-            <BaseToast 
-                title="Sucesso" 
-                :message="sucessToast.msg" 
-                id="sucess-toast" 
-                class="text-bg-success" />
 
             <BaseToast 
                 title="Erro" 
@@ -81,10 +83,6 @@
                 description: "",
                 startDate: "",
                 endDate: "",
-                sucessToast: {
-					el: null,
-					msg: ""
-				},
 				errorToast: {
 					el: null,
 					msg: ""
@@ -113,7 +111,6 @@
 						Authorization: `Bearer ${this.userAuthInfoStore.token}`,
 					},
                 }).then((_) => {
-                    this.sucessToast.msg = "Semestre criado com sucesso."
                     this.globalSucessToast.el.show()
 
                     this.$router.push({ name: 'calendar-view', params: {'id': this.$route.params.calendar_id } })
@@ -204,7 +201,6 @@
             ...mapStores(useUserAuthInfoStore)
         },
         mounted() {
-            this.sucessToast.el = bootstrap.Toast.getOrCreateInstance("#sucess-toast");
 			this.errorToast.el = bootstrap.Toast.getOrCreateInstance("#fail-toast");
             this.globalSucessToast.el = bootstrap.Toast.getOrCreateInstance("#global-sucess-toast");
         }

@@ -1,8 +1,13 @@
 <template>
     <div>
-        <TextTitle1>Edite o semestre {{ semester.description  }}</TextTitle1>
-        <BaseButton type="button" class="btn-close" aria-label="Close" @click.native="$router.back()" />
-
+        <div class="row">
+            <div class="col">
+                <TextTitle1>Edite o semestre {{ semester.description  }}</TextTitle1>
+            </div>
+            <div class="col d-flex justify-content-end">
+                <BaseButton type="button" class="btn-close" aria-label="Close" @click.native="$router.back()" />
+            </div>
+        </div>
         <BaseForm @submit="updateSemester" >
             <FloatingInput 
                 ref="description"
@@ -38,14 +43,13 @@
                     {{ inputFeedbacks.endDate }}
                 </FormInputFeedback>
             </FloatingInput>
-
-            <BaseButton type="submit"> Salvar Dados </BaseButton>
+            <ButtonGroup>
+                <BaseButton type="submit" class="btn-outline-success"><i class="bi bi-pencil-square"></i> Salvar </BaseButton>
+                <BaseButton class="btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteSemester" type="button">
+                    <i class="bi bi-trash3"></i> Excluir
+                </BaseButton>
+            </ButtonGroup>
         </BaseForm>
-
-        <BaseButton data-bs-toggle="modal" data-bs-target="#deleteSemester" type="button">
-            Excluir
-        </BaseButton>
-
         <BaseModal id="deleteSemester">
 			<template v-slot:modal-title>
 				<TextTitle5>
@@ -102,6 +106,7 @@
     import BaseToast from '@/components/BaseToast.vue'
     import IconCloseButton from "@/components/icons/IconCloseButton.vue"
     import BaseModal from '@/components/BaseModal.vue'
+    import ButtonGroup from "@/components/ButtonGroup.vue"
 
     export default {
         data() {
@@ -290,7 +295,8 @@
             BaseToast,
             IconCloseButton,
             BaseModal,
-            TextTitle5
+            TextTitle5,
+            ButtonGroup
         },
         computed: {
             ...mapStores(useUserAuthInfoStore)
