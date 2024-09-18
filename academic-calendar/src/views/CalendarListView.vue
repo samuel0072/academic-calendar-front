@@ -57,7 +57,7 @@
             <template v-slot:modal-footer>
                 <div>
                     <BaseButton type="submit" form="calendar_creation_form"  class="btn btn-primary">
-                        Criar
+                        <i class="bi bi-plus-lg"></i> Criar
                     </BaseButton>
                 </div>
             </template>
@@ -83,28 +83,38 @@
             Obtendo os caléndários...
         </div>
         <div v-else>
-            <div class="col-4">
-                <SearchInput id="searchInput" @search-triggered="getCalendars($event)"/>
-            </div>
+            <ToolBar>
+                <ToolBarItem>
+                    <BaseButton type="button" data-bs-toggle="modal" :data-bs-target="'#' + calendarCreationModalId">
+                        <i class="bi bi-plus-lg"></i> Crie um calendário
+                    </BaseButton> 
+                </ToolBarItem>
+                <ToolBarItem class="col-10">
+                    <SearchInput id="searchInput" @search-triggered="getCalendars($event)"/>
+                </ToolBarItem>
+                
+            </ToolBar>
             <div v-if="calendars.length === 0">
                 <EmptyState 
                     msg="Não há calendários para exibir" 
-                    :displayButton="true" 
-                    buttonLabel="Crie um calendário"
-                    @btn-click="creationModal.show()"
+                    :displayButton="false" 
                 />
             </div>
             <div v-else>
                 <!-- TODO: aplicar componente basebutton -->
-                <BaseButton type="button" data-bs-toggle="modal" :data-bs-target="'#' + calendarCreationModalId">
-                    Crie um calendário
-                </BaseButton>               
-
-                <CalendarList 
-                    :calendars="calendars" 
-                    @calendar-item-view="viewCalendar($event)"
-                    @calendar-item-delete="deleteCalendar($event)"
-                />
+                              
+                <BaseUnorderedList>
+                    <BaseListItem v-for="calendar in calendars">
+                        <TextTitle5>
+                            <BaseAnchor :href="$router.resolve({ name: 'calendar-view', params: {id: calendar.id}}).href">
+                                {{ calendar.description }}
+                            </BaseAnchor>
+                        </TextTitle5>
+                        <SimpleText>
+                            Com início em {{ calendar.start_date.toLocaleDateString() }} e fim em {{ calendar.end_date.toLocaleDateString() }}
+                        </SimpleText>
+                    </BaseListItem>
+                </BaseUnorderedList>
             </div>
         </div>
     </div>
@@ -114,7 +124,6 @@
     import axios from 'axios'
     import { mapStores } from 'pinia'
     import { useUserAuthInfoStore } from '@/stores/userAuthInfo'
-    import CalendarList  from '@/components/CalendarList.vue'
     import EmptyState from '@/components/EmptyState.vue'
     import refreshUserAuthToken from '@/assets/scripts/refreshUserAuthToken.js'
     import BaseModal from '@/components/BaseModal.vue'
@@ -124,6 +133,13 @@
     import BaseInput from '@/components/BaseInput.vue'
     import SearchInput from '@/components/SearchInput.vue'
     import * as bootstrap from 'bootstrap';
+    import BaseUnorderedList from '@/components/BaseUnorderedList.vue'
+    import BaseListItem from '@/components/BaseListItem.vue'
+    import SimpleText from '@/components/text-components/SimpleText.vue'
+    import TextTitle5 from '@/components/text-components/TextTitle5.vue'
+    import BaseAnchor from '@/components/BaseAnchor.vue'
+    import ToolBar from '@/components/ToolBar.vue'
+    import ToolBarItem from '@/components/ToolBarItem.vue'
     //
     //Não foi possível criar esse calendário. Tente novamente.
 
@@ -162,13 +178,35 @@
                     }
                 }).then( (response) => {
                     this.loading = false
-                    this.calendars = response.data
+
+                    this.calendars = []
+
+                    response.data.forEach( (calendar) => {
+                        calendar.start_date = new Date(calendar.start_date )
+                        calendar.end_date = new Date(calendar.end_date )
+                        this.calendars.push(calendar)
+                    })
+
                 }).catch( (error) => {
-                    if(error.request.status == 401) {
-                        refreshUserAuthToken(this.getCalendars)
+                    if(error.response) {
+                        if(error.request.status === 401) {
+                            refreshUserAuthToken(this.getCalendars, [searchValue])
+                        }
+                        else if(error.request.status === 500){
+                            this.errorToastMsg = "Não foi possível se conectar com o servidor."
+                            toast.show()
+                        }
+                    }
+                    else if(error.request) {
+                        if(error.code === "ERR_NETWORK") {
+                            this.errorToastMsg = "Esse cliente não consegue se conectar com a internet."
+                            toast.show()
+                        }
                     }
                     else {
-                        //TODO: tratar erros que podem vim do servidor
+                        console.log(error)
+                        this.errorToastMsg = "Um erro inesperado aconteceu. Por favor, recarregue a página e tente novamente."
+                        toast.show()
                     }
                 })
                 .finally( () => {
@@ -192,6 +230,8 @@
                         'Authorization': 'Bearer ' + this.userAuthInfoStore.token
                     }
                 }).then( (response) => {
+                    response.data.start_date = new Date(response.data.start_date )
+                    response.data.end_date = new Date(response.data.end_date )
                     this.calendars.push(response.data)
 
                     var toast = bootstrap.Toast.getOrCreateInstance("#sucess-toast");
@@ -257,14 +297,20 @@
             ...mapStores(useUserAuthInfoStore)
         },
         components: {
-            'CalendarList': CalendarList,
-            'EmptyState': EmptyState,
-            'BaseModal': BaseModal,
-            'BaseButton': BaseButton,
-            'BaseToastContainer': BaseToastContainer,
-            'BaseToast': BaseToast,
-            'BaseInput': BaseInput,
-            'SearchInput': SearchInput
+            EmptyState,
+            BaseModal,
+            BaseButton,
+            BaseToastContainer,
+            BaseToast,
+            BaseInput,
+            SearchInput,
+            BaseUnorderedList,
+            BaseListItem,
+            SimpleText,
+            TextTitle5,
+            BaseAnchor,
+            ToolBar,
+            ToolBarItem
         }
     }
 </script>

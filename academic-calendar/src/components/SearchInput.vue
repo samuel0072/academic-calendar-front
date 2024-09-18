@@ -26,6 +26,9 @@ i {
     border-color: var(--color-border);
 }
 
+form {
+    min-width: 100%;
+}
 </style>
 
 
