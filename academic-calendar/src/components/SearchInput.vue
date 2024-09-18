@@ -1,7 +1,7 @@
 <template>
     <form @submit.prevent="searchTrigger">
         <div class="input-group">
-            <BaseInput :id="id" type="text" placeholder="Digite aqui para buscar..." v-model="searchValue"/>
+            <BaseInput class="search-input" :id="id" type="text" placeholder="Digite aqui para buscar..." v-model="searchValue"/>
             <!-- TODO: colocar esses title e placeholder como uma prop no no translation? -->
             <BaseButton type="submit"  title="buscar">
                 <i>
@@ -24,6 +24,10 @@ i {
 
 .btn {
     border-color: var(--color-border);
+}
+
+.search-input {
+    border: none;
 }
 
 form {
