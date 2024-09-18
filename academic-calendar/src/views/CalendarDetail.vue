@@ -3,32 +3,44 @@
 		<TextTitle1 ref="calendarTitle">
 			{{ calendar.description }}
 		</TextTitle1>
-		<DropdownButton 
-			defaultLabel="Exportar como planilha" 
-			defaultValue="xlsx" 
-			:options="[{label: 'exportar como arquivo .csv', value: 'csv'}]" 
-			@click="downloadCalendar($event)"/>
-
-		<nav>
-			<span>ir para</span>
-			<div class="btn-group" role="group">
-				<BaseButton type="button" @click.native="onClickMoveButton(-1)">
-					<- mês anterior
+		<ToolBar>
+			<ToolBarItem class="col-4">
+				<nav>
+					<span>ir para</span>
+					<div class="btn-group" role="group">
+						<BaseButton type="button" @click.native="onClickMoveButton(-1)">
+							<- mês anterior
+						</BaseButton>
+						<BaseButton type="button" @click.native="onClickTodayButton"> hoje </BaseButton>
+						<BaseButton type="button" @click.native="onClickMoveButton(1)">
+							próximo mês ->
+						</BaseButton>
+					</div>
+				</nav>
+			</ToolBarItem>
+			<ToolBarItem class="col-3">
+				<DropdownButton 
+					defaultLabel="Exportar como planilha" 
+					defaultValue="xlsx" 
+					:options="[{label: 'exportar como arquivo .csv', value: 'csv'}]" 
+					@click="downloadCalendar($event)"/>
+			</ToolBarItem>
+			<ToolBarItem class="col">
+				<BaseButton data-bs-toggle="modal" data-bs-target="#createEvents" type="button">
+					Crie um evento
 				</BaseButton>
-				<BaseButton type="button" @click.native="onClickTodayButton"> hoje </BaseButton>
-				<BaseButton type="button" @click.native="onClickMoveButton(1)">
-					próximo mês ->
+			</ToolBarItem>
+			<ToolBarItem>
+				<BaseButton data-bs-toggle="modal" data-bs-target="#importEvents" type="button">
+					Importe eventos
 				</BaseButton>
-			</div>
-			<router-link :to="{ name: 'semester-creation', params: {calendar_id: $route.params.id}}">Criar semestre</router-link>
-		</nav>
-		<BaseButton data-bs-toggle="modal" data-bs-target="#createEvents" type="button">
-			Crie um evento
-		</BaseButton>
-
-		<BaseButton data-bs-toggle="modal" data-bs-target="#importEvents" type="button">
-			Importe eventos nesse calendário
-		</BaseButton>
+			</ToolBarItem>
+			<ToolBarItem>
+				<BaseAnchor :href="$router.resolve({ name: 'semester-creation', params: {calendar_id: $route.params.id}}).href">
+					Criar semestre
+				</BaseAnchor>
+			</ToolBarItem>
+		</ToolBar>
 		
 		<h1 class="date-range">{{ dateRangeText }}</h1>
 
@@ -427,6 +439,8 @@
 	import BaseInput from '@/components/BaseInput.vue'
 	import BaseAnchor from "@/components/BaseAnchor.vue"
 	import BaseCallout from "@/components/BaseCallout.vue"
+	import ToolBar from "@/components/ToolBar.vue"
+	import ToolBarItem from "@/components/ToolBarItem.vue"
 
 	import refreshUserAuthToken from '@/assets/scripts/refreshUserAuthToken.js'
 
@@ -1431,7 +1445,9 @@
 			BaseTH,
 			BaseInput,
 			BaseAnchor,
-			BaseCallout
+			BaseCallout,
+			ToolBar,
+			ToolBarItem
 		},
 	};
 </script>
