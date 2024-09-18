@@ -11,7 +11,7 @@
                         <router-link to="/configuration" class="dropdown-item"> <i class="bi bi-gear"></i> Configurações</router-link>
                     </DropdownItem>
                     <DropdownItem>
-                        <BaseButton @click.native="logout" class="dropdown-item"><i class="bi bi-box-arrow-right"></i> Sair</BaseButton>
+                        <BaseButton type="button" @click.native="logout" class="dropdown-item"><i class="bi bi-box-arrow-right"></i> Sair</BaseButton>
                     </DropdownItem>
                 </template>
             </DropdownMenu>
@@ -22,14 +22,14 @@
 
         <BaseToastContainer class="position-fixed bottom-0 end-0 p-3" id="global-toast-container">
             <BaseToast 
-            title="Sucesso" 
-            message="" 
+            title="" 
+            message="Sucesso" 
             id="global-sucess-toast" 
             class="text-bg-success" />
 
             <BaseToast 
-            title="Erro" 
-            message="" 
+            title="" 
+            message="Erro" 
             id="global-fail-toast" 
             class="text-bg-danger" />    
 
