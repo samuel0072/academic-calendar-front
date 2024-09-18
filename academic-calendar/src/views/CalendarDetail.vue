@@ -29,8 +29,8 @@
 					@click="downloadCalendar($event)"/>
 			</ToolBarItem>
 			<ToolBarItem>
-				<BaseButton data-bs-toggle="modal" data-bs-target="#createEvents" type="button">
-					Crie um evento
+				<BaseButton data-bs-toggle="modal" data-bs-target="#createEvents" type="button" >
+					<i class="bi bi-plus-lg"></i> Evento
 				</BaseButton>
 			</ToolBarItem>
 			<ToolBarItem>
@@ -461,6 +461,7 @@
 	import ButtonGroup from "@/components/ButtonGroup.vue"
 	import IconNextArrow from "@/components/icons/IconNextArrow.vue"
 	import IconPrevArrow from "@/components/icons/IconPrevArrow.vue"
+	import PlusIcon from "@/components/icons/PlusIcon.vue"
 
 	import refreshUserAuthToken from '@/assets/scripts/refreshUserAuthToken.js'
 
@@ -1477,7 +1478,8 @@
 			EmptyState,
 			ButtonGroup,
 			IconNextArrow,
-			IconPrevArrow
+			IconPrevArrow,
+			PlusIcon
 		},
 	};
 </script>
