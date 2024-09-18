@@ -10,8 +10,9 @@
                         label="Nome do campus"
                         type="text"
                         maxlength="150"
+                        :required="true"
                 />
-                <BaseButton type="submit">Criar</BaseButton>
+                <BaseButton type="submit"  class="btn-outline-primary" ><i class="bi bi-plus-lg"></i> Criar Campus</BaseButton>
             </BaseForm>
         </div>
         <HorizontalLine />
@@ -19,22 +20,20 @@
             <TextTitle2>Lista de Campi</TextTitle2>
             <BaseUnorderedList v-if="organizationInfoStore.campi.length > 0">
                 <BaseListItem v-for="campus in organizationInfoStore.campi" :key="`campus-${campus.id}`">
-                    <div class="input-group">
-                        <FloatingInput 
-                            :id="`campus-${campus.id}`"
-                            v-model="campus.name" 
-                            label="Nome do campus"
-                            type="text"
-                            maxlength="150"
-                            
-                        />
-                        <BaseButton type="button" class="btn-outline-success text-success-emphasis" @click.native="editCampus(campus)">Alterar</BaseButton>
-                        <BaseButton type="button" class="btn btn-outline-success text-danger" @click.native="openDeleteCampusModal(campus)">Excluir</BaseButton>
-                    </div>
-                    
-                    <!-- <template v-slot:post-item-section>
-                        
-                    </template> -->
+                    <BaseForm @submit="editCampus(campus)">
+                        <div class="input-group">
+                            <FloatingInput 
+                                :id="`campus-${campus.id}`"
+                                v-model="campus.name" 
+                                label="Nome do campus"
+                                type="text"
+                                maxlength="150"
+                                :required="true"
+                            />
+                            <BaseButton type="submit" class="btn-outline-success text-success-emphasis" ><i class="bi bi-pencil-square"></i></BaseButton>
+                            <BaseButton type="button" class="btn btn-outline-success text-danger" @click.native="openDeleteCampusModal(campus)"><i class="bi bi-trash3"></i></BaseButton>
+                        </div>
+                    </BaseForm>
                 </BaseListItem>
             </BaseUnorderedList>
 
@@ -217,50 +216,57 @@
                 })
             },
             createCampus() {
-                axios.post(`api/academic-calendar/campus/create`, {
-                    name: this.newCampus.name
-                }, 
-                {
-                    headers: {
-                        'Authorization': 'Bearer ' + this.userAuthInfoStore.token
-                    }
-                }).then( (res) => {
-                    this.organizationInfoStore.addCampus(res.data)
-                    this.successToast.msg = "O campus foi criado com sucesso!"
-                    this.successToast.el.show();
-                }).catch( (error) => {
-                    
-                    if(error.response) {
-                        if(error.request.status === 401) {
-                            refreshUserAuthToken(this.createCampus, [campus])
+                if(this.newCampus.name.length === 0) {
+                    this.errorToast.msg = "O nome do campus não pode ficar em branco."
+                    this.errorToast.el.show()
+                }
+                else {
+                    axios.post(`api/academic-calendar/campus/create`, {
+                            name: this.newCampus.name
+                        }, 
+                        {
+                            headers: {
+                                'Authorization': 'Bearer ' + this.userAuthInfoStore.token
                         }
-                        else if(error.request.status === 422 ){
-                            if(Object.hasOwn(error.response.data, 'name')) {
-                                this.errorToast.msg = ""
-                                error.response.data["name"].forEach( (msg) => {
-									this.errorToast.msg += `${msg}\n`
-								})
+                    }).then( (res) => {
+                        this.organizationInfoStore.addCampus(res.data)
+                        this.successToast.msg = "O campus foi criado com sucesso!"
+                        this.successToast.el.show();
+                    }).catch( (error) => {
+                        
+                        if(error.response) {
+                            if(error.request.status === 401) {
+                                refreshUserAuthToken(this.createCampus, [campus])
+                            }
+                            else if(error.request.status === 422 ){
+                                if(Object.hasOwn(error.response.data, 'name')) {
+                                    this.errorToast.msg = ""
+                                    error.response.data["name"].forEach( (msg) => {
+                                        this.errorToast.msg += `${msg}\n`
+                                    })
+                                    this.errorToast.el.show()
+                                }
+                            }
+                            else if(error.request.status === 500){
+                                this.errorToast.msg  = "Não foi possível se conectar com o servidor."
                                 this.errorToast.el.show()
                             }
                         }
-                        else if(error.request.status === 500){
-                            this.errorToast.msg  = "Não foi possível se conectar com o servidor."
+                        else if(error.request) {
+                            if(error.code === "ERR_NETWORK") {
+                                this.errorToast.msg  = "Esse cliente não consegue se conectar com a internet."
+                                this.errorToast.el.show()
+                            }
+                        }
+                        else {
+                            console.log(error)
+                            this.errorToast.msg  = "Um erro inesperado aconteceu. Por favor, recarregue a página e tente novamente."
                             this.errorToast.el.show()
                         }
-                    }
-                    else if(error.request) {
-                        if(error.code === "ERR_NETWORK") {
-                            this.errorToast.msg  = "Esse cliente não consegue se conectar com a internet."
-                            this.errorToast.el.show()
-                        }
-                    }
-                    else {
-                        console.log(error)
-                        this.errorToast.msg  = "Um erro inesperado aconteceu. Por favor, recarregue a página e tente novamente."
-                        this.errorToast.el.show()
-                    }
-                    
-                })
+                        
+                    })
+                }
+                
             },
         },
         components: {

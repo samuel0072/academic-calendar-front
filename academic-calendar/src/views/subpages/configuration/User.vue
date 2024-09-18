@@ -53,7 +53,7 @@
                     maxlength="150"
                     :required="true"
                 />
-                <BaseButton type="submit" class="btn btn-outline-success"> Criar </BaseButton>
+                <BaseButton type="submit" class="btn-outline-primary" ><i class="bi bi-plus-lg"></i> Criar Usuário</BaseButton>
             </BaseForm>
         </div>
         <HorizontalLine />
@@ -64,7 +64,7 @@
                     {{ user.first_name }} {{ user.last_name }} <VerticalRule /> {{ user.email }}
 
                     <template v-slot:post-item-section>
-                        <BaseButton type="button" class="btn btn-outline-danger" @click.native="openDeleteModal(user)"> Excluir </BaseButton>
+                        <BaseButton type="button" class="btn btn-outline-danger" @click.native="openDeleteModal(user)"><i class="bi bi-trash3"></i> </BaseButton>
                     </template>
                     
                 </BaseListItem>

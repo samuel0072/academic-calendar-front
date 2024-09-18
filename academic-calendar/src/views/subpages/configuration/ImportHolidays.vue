@@ -44,7 +44,7 @@
                     >
                     </BaseInput>
                 </div>
-                <BaseButton type="submit">Importar feriados</BaseButton>
+                <BaseButton type="submit" class="btn-outline-primary"> <i class="bi bi-box-arrow-up"></i>  Importar feriados</BaseButton>
             </BaseForm>
             <BaseCallout v-if="holidayImportingInfo.isErrored" class="callout-danger">
                     <TextTitle3>Atenção aos erros abaixo:</TextTitle3>
