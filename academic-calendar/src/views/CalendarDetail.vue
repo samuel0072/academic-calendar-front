@@ -3,6 +3,7 @@
 		<TextTitle1 ref="calendarTitle">
 			{{ calendar.description }}
 		</TextTitle1>
+		
 		<ToolBar>
 			<ToolBarItem class="col-4">
 				<nav>
@@ -72,52 +73,63 @@
 			@clickEvent="onClickEvent"
 		/>
 
-		<TextTitle5 v-if="semesters.length > 0">
-			Semestres
-		</TextTitle5>
-		<BaseUnorderedList>
-			<BaseListItem v-for="semester in semesters" :key="semester.id">
-				{{ semester.description }} | {{ semester.start_date }} - {{ semester.end_date }}
+		<Page>
+			<TextTitle5>
+				<span>DIAS LETIVOS – QUADRO SÍNTESE</span>
+			</TextTitle5>
+			<EmptyState v-if="semesters.length == 0" msg="Essa visualização só está disponível quando há semestres no calendário." />
 
-				<template v-slot:post-item-section>
-					<BaseButton @click.native="$router.push({name: 'semester-update', params: { id: semester.id }})" type="button">
-						Editar
-					</BaseButton>
+			<BaseTable v-if="semesters.length > 0">
+				<template v-slot:head>
+					<BaseTHead>
+						<tr>
+							<BaseTH>Local</BaseTH>
+							<BaseTH v-for="semester in summaryTable.semesters" :key="semester.description">
+								{{ semester.description }}
+							</BaseTH>
+						</tr>
+					</BaseTHead>
 				</template>
-			</BaseListItem>
-		</BaseUnorderedList>
 
-		<TextTitle5 v-if="semesters.length > 0">
-			<span>DIAS LETIVOS – QUADRO SÍNTESE</span>
-		</TextTitle5>
-
-		<BaseTable>
-			<template v-slot:head>
-				<BaseTHead>
-					<tr>
-						<BaseTH>Local</BaseTH>
-						<BaseTH v-for="semester in summaryTable.semesters" :key="semester.description">
-							{{ semester.description }}
-						</BaseTH>
-					</tr>
-				</BaseTHead>
-			</template>
-
-			<template  v-slot:body>
-				<BaseTBody>
-					<tr v-for="campus in campi" :key="campus.id">
-						<td> {{ campus.label }}</td>
-						<td v-for="semester in summaryTable.semesters" :key="semester.description">
-							<span v-for="c in semester.campi_school_days_count" :key="semester.description + c.id">
-								<span v-if="c.id === campus.value">
-									{{ c.school_days_count }}
+				<template  v-slot:body>
+					<BaseTBody>
+						<tr v-for="campus in campi" :key="campus.id">
+							<td> {{ campus.label }}</td>
+							<td v-for="semester in summaryTable.semesters" :key="semester.description">
+								<span v-for="c in semester.campi_school_days_count" :key="semester.description + c.id">
+									<span v-if="c.id === campus.value">
+										{{ c.school_days_count }}
+									</span>
 								</span>
-							</span>
-						</td>
-					</tr>
-				</BaseTBody>
-			</template>
-		</BaseTable>
+							</td>
+						</tr>
+					</BaseTBody>
+				</template>
+			</BaseTable>
+		</Page>
+
+		<Page>
+			<TextTitle5>
+				Semestres
+			</TextTitle5>
+
+			<EmptyState v-if="semesters.length == 0" msg="Essa visualização só está disponível quando há semestres no calendário." />
+
+			<BaseUnorderedList  v-if="semesters.length > 0">
+				<BaseListItem v-for="semester in semesters" :key="semester.id">
+					{{ semester.description }} | Inicia em {{ semester.start_date.toLocaleDateString() }} e termina em {{ semester.end_date.toLocaleDateString() }}
+
+					<template v-slot:post-item-section>
+						<BaseButton @click.native="$router.push({name: 'semester-update', params: { id: semester.id }})" type="button">
+							Editar
+						</BaseButton>
+					</template>
+				</BaseListItem>
+			</BaseUnorderedList>
+		</Page>
+		
+		
+		
 
 		<BaseModal id="createEvents">
 			<template v-slot:modal-title>
@@ -441,6 +453,8 @@
 	import BaseCallout from "@/components/BaseCallout.vue"
 	import ToolBar from "@/components/ToolBar.vue"
 	import ToolBarItem from "@/components/ToolBarItem.vue"
+	import Page from "@/components/Page.vue"
+	import EmptyState from "@/components/EmptyState.vue"
 
 	import refreshUserAuthToken from '@/assets/scripts/refreshUserAuthToken.js'
 
@@ -991,8 +1005,13 @@
 						Authorization: "Bearer " + this.userAuthInfoStore.token,
 					},
 				}).then((res) => {
-					//console.log(res);
-					this.semesters = res.data;
+
+					this.semesters = [];
+					res.data.forEach((semester) => {
+						semester.start_date = new Date(semester.start_date)
+						semester.end_date = new Date(semester.end_date)
+						this.semesters.push(semester)
+					})
 
 				}).catch((error) => {
 					if(error.response) {
@@ -1447,7 +1466,9 @@
 			BaseAnchor,
 			BaseCallout,
 			ToolBar,
-			ToolBarItem
+			ToolBarItem,
+			Page,
+			EmptyState
 		},
 	};
 </script>
