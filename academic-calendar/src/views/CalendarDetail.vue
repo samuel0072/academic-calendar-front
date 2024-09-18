@@ -19,14 +19,7 @@
 					</ButtonGroup>
 			</ToolBarItem>
 			<ToolBarItem>
-				<BaseButton type="button" @click.native="onClickTodayButton"> Hoje </BaseButton>
-			</ToolBarItem>
-			<ToolBarItem class="col-3">
-				<DropdownButton 
-					defaultLabel="Exportar como planilha" 
-					defaultValue="xlsx" 
-					:options="[{label: 'exportar como arquivo .csv', value: 'csv'}]" 
-					@click="downloadCalendar($event)"/>
+				<BaseButton type="button" @click.native="onClickTodayButton"> <i class="bi bi-calendar4-event"></i> Hoje </BaseButton>
 			</ToolBarItem>
 			<ToolBarItem>
 				<BaseButton data-bs-toggle="modal" data-bs-target="#createEvents" type="button" >
@@ -34,15 +27,33 @@
 				</BaseButton>
 			</ToolBarItem>
 			<ToolBarItem>
-				<BaseButton data-bs-toggle="modal" data-bs-target="#importEvents" type="button">
-					Importe eventos
-				</BaseButton>
-			</ToolBarItem>
-			<ToolBarItem>
 				<BaseAnchor :href="$router.resolve({ name: 'semester-creation', params: {calendar_id: $route.params.id}}).href">
-					Criar semestre
+					<i class="bi bi-plus-lg"></i> Semestre
 				</BaseAnchor>
 			</ToolBarItem>
+			<ToolBarItem class="col-2">
+				<DropdownMenu> 
+					<ButtonGroup>
+						<BaseButton type="button"  @click.native="downloadCalendar('xlsx')">
+							<i class="bi bi-download"></i>  Exportar planilha 
+						</BaseButton>
+						<BaseButton type="button" class="dropdown-toggle dropdown-toggle-split">
+							<span class="visually-hidden">Ativar Dropdown</span>
+						</BaseButton>
+					</ButtonGroup>
+					<template v-slot:options>
+						<DropdownItem>
+							<BaseButton type="button" @click.native="downloadCalendar('csv')"> Exportar arquivo .csv</BaseButton>
+						</DropdownItem>
+					</template>
+				</DropdownMenu>
+			</ToolBarItem>
+			<ToolBarItem>
+				<BaseButton data-bs-toggle="modal" data-bs-target="#importEvents" type="button">
+					<i class="bi bi-box-arrow-up"></i> Importe eventos
+				</BaseButton>
+			</ToolBarItem>
+			
 		</ToolBar>
 		
 		<h1 class="date-range"></h1>
@@ -122,8 +133,9 @@
 					{{ semester.description }} | Inicia em {{ semester.start_date.toLocaleDateString() }} e termina em {{ semester.end_date.toLocaleDateString() }}
 
 					<template v-slot:post-item-section>
-						<BaseButton @click.native="$router.push({name: 'semester-update', params: { id: semester.id }})" type="button">
-							Editar
+						<BaseButton @click.native="$router.push({name: 'semester-update', params: { id: semester.id }})" type="button" class="btn-outline-success">
+							<i class="bi bi-pencil-square"></i>
+							<span class="visually-hidden">Editar semestre</span>
 						</BaseButton>
 					</template>
 				</BaseListItem>
@@ -209,11 +221,9 @@
 			</template>
 
 			<template v-slot:modal-footer>
-				<div>
-					<BaseButton type="submit" form="event-creation-form"  class="btn btn-primary">
-						Criar
-					</BaseButton>
-				</div>
+				<BaseButton type="submit" form="event-creation-form"  class="btn btn-primary">
+					<i class="bi bi-plus-lg"></i> Criar
+				</BaseButton>
 			</template>
 		</BaseModal>
 
@@ -297,14 +307,14 @@
 			</template>
 
 			<template v-slot:modal-footer>
-				<div>
-					<BaseButton data-bs-toggle="modal" data-bs-target="#deleteEvent" type="button">
-						Excluir
+				<ButtonGroup>
+					<BaseButton class="btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteEvent" type="button">
+						<i class="bi bi-trash3"></i> Excluir
 					</BaseButton>
-					<BaseButton type="submit" form="event-edit-form"  class="btn btn-primary">
-						Editar
+					<BaseButton class="btn-outline-success" type="submit" form="event-edit-form" >
+						<i class="bi bi-check2"></i> Editar
 					</BaseButton>
-				</div>
+				</ButtonGroup>
 			</template>
 		</BaseModal>
 
@@ -353,7 +363,7 @@
 
 			<template v-slot:modal-footer>
 				<BaseButton type="submit" form="event-import-form"  class="btn btn-primary" :disabled="selectedFile === null || selectedFile === undefined">
-					Importar
+					<i class="bi bi-box-arrow-up"></i> Importar
 				</BaseButton>
 			</template>
 		</BaseModal>
@@ -462,6 +472,8 @@
 	import IconNextArrow from "@/components/icons/IconNextArrow.vue"
 	import IconPrevArrow from "@/components/icons/IconPrevArrow.vue"
 	import PlusIcon from "@/components/icons/PlusIcon.vue"
+	import DropdownMenu from "@/components/DropdownMenu.vue"
+	import DropdownItem from "@/components/DropdownItem.vue"
 
 	import refreshUserAuthToken from '@/assets/scripts/refreshUserAuthToken.js'
 
@@ -1479,7 +1491,9 @@
 			ButtonGroup,
 			IconNextArrow,
 			IconPrevArrow,
-			PlusIcon
+			PlusIcon,
+			DropdownMenu,
+			DropdownItem
 		},
 	};
 </script>

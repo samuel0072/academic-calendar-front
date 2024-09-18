@@ -1,10 +1,10 @@
 <template>
     <div class="dropdown">
-        <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <div data-bs-toggle="dropdown" aria-expanded="false">
             <slot>
             
             </slot>
-        </button>
+        </div>
         <ul class="dropdown-menu dropdown-menu-end">
             <slot name="options">
 
