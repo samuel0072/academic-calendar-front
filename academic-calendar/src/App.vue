@@ -8,10 +8,10 @@
                 <Avatar/>
                 <template v-slot:options>
                     <DropdownItem>
-                        <router-link to="/configuration" class="dropdown-item">Configurações</router-link>
+                        <router-link to="/configuration" class="dropdown-item"> <i class="bi bi-gear"></i> Configurações</router-link>
                     </DropdownItem>
                     <DropdownItem>
-                        <button @click="logout" class="dropdown-item">Sair</button>
+                        <BaseButton @click.native="logout" class="dropdown-item"><i class="bi bi-box-arrow-right"></i> Sair</BaseButton>
                     </DropdownItem>
                 </template>
             </DropdownMenu>
@@ -43,6 +43,7 @@
         top: 0;
         position: absolute;
         min-width: calc(100vw - 1rem);
+        max-width: calc(100vw - 1rem);
         padding: 0;
     }
     header {
@@ -91,6 +92,7 @@ import Avatar from '@/components/Avatar.vue';
 import DropdownMenu from '@/components/DropdownMenu.vue';
 import DropdownItem from '@/components/DropdownItem.vue';
 import logoutUser from '@/assets/scripts/logoutUser.js';
+import BaseButton from './components/BaseButton.vue';
 
 import { useUserAuthInfoStore } from '@/stores/userAuthInfo.js'
 import { mapStores } from 'pinia'
@@ -103,7 +105,8 @@ export default {
         Page,
         Avatar,
         DropdownMenu,
-        DropdownItem
+        DropdownItem,
+        BaseButton
     },
     computed: {
         ...mapStores(useUserAuthInfoStore)

@@ -12,9 +12,3 @@
         </ul>
     </div>
 </template>
-<style scoped>
-    button {
-        border: 0;
-    }
-    
-</style>
