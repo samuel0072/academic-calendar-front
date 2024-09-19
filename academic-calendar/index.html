@@ -2,24 +2,28 @@
 <html lang="en" >
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" href="/favicon.ico" />
+    <!-- link rel="icon" href="/favicon.ico" /> < -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
+    <title>Sistema de Gerenciamento de Calendários</title>
   </head>
   <body>
     <div id="app"></div>
     <script type="module" src="/src/main.js"></script>
   </body>
   <script>
+      const darkThemeMq = window.matchMedia("(prefers-color-scheme: dark)");
+
+      darkThemeMq.addEventListener('change', (e) => {
+        var theme = e.matches ? 'dark' : 'light';
+        setTheme(theme);
+      })
+
       const getPreferredTheme = () => {
-        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+        return darkThemeMq.matches ? 'dark' : 'light'
       }
+
       const setTheme = theme => {
-        if (theme === 'auto') {
-          document.documentElement.setAttribute('data-bs-theme', (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'))
-        } else {
-          document.documentElement.setAttribute('data-bs-theme', theme)
-        }
+        document.documentElement.setAttribute('data-bs-theme', theme)
       }
 
     setTheme(getPreferredTheme())
