@@ -18,7 +18,19 @@
         </NavBar>
         <Page id="main-content">
             <router-view />
+            
         </Page>
+        
+        
+        <BaseButton 
+            type="button" 
+            id="navigate-to-top" 
+            class="bg-secondary" 
+            @click.native="scrollPageToTop"
+            v-if="userAuthInfoStore.isAuthenticated"> 
+            <i class="bi bi-chevron-up"></i> 
+            <span class="visually-hidden">Ir para o topo da página</span>
+        </BaseButton>
 
         <BaseToastContainer class="position-fixed bottom-0 end-0 p-3" id="global-toast-container">
             <BaseToast 
@@ -68,18 +80,15 @@
         color: var(--color-text);
     }
 
-    /* nav a.router-link-exact-active:hover {
-        background-color: transparent;
-    } */
-
-    /* nav a {
-        display: inline-block;
-        padding: 0 1rem;
-        border-left: 1px solid var(--color-border);
-    } */
-
     nav a:first-of-type {
         border: 0;
+    }
+
+    #navigate-to-top {
+        position: fixed !important;
+        bottom: 5% !important;
+        right: 5% !important;
+        border-radius: 100%;
     }
 </style>
 
@@ -114,6 +123,11 @@ export default {
     methods: {
         logout() {
             logoutUser()
+        },
+        scrollPageToTop() {
+            window.document.documentElement.scroll({
+                top: 0
+            })
         }
     }
 }
