@@ -3,7 +3,11 @@
         <slot></slot>
     </form>
 </template>
-
+<style scoped>
+ form {
+    width: 100%;
+ }
+</style>
 <script>
     export default {
         props: {
