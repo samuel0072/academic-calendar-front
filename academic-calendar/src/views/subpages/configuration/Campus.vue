@@ -30,8 +30,8 @@
                                 maxlength="150"
                                 :required="true"
                             />
-                            <BaseButton type="submit" class="btn-outline-success text-success-emphasis" ><i class="bi bi-pencil-square"></i></BaseButton>
-                            <BaseButton type="button" class="btn btn-outline-success text-danger" @click.native="openDeleteCampusModal(campus)"><i class="bi bi-trash3"></i></BaseButton>
+                            <BaseButton type="submit" class="btn-outline-primary" ><i class="bi bi-pencil-square"></i></BaseButton>
+                            <BaseButton type="button" class="btn-outline-danger" @click.native="openDeleteCampusModal(campus)"><i class="bi bi-trash3"></i></BaseButton>
                         </div>
                     </BaseForm>
                 </BaseListItem>
