@@ -64,7 +64,7 @@
 			</template>
 
 			<template v-slot:modal-body>
-				Tem certeza que deseja excluir esse campus?
+				Ao excluir esse campus todos os eventos serão desassociados dele em todos os calendários.
                 <br/>
                 Essa ação não é reversível.
 			</template>
@@ -77,6 +77,23 @@
 				</div>
 			</template>
 		</BaseModal>
+
+        <BaseModal id="campus-delete-failure">
+            <template v-slot:modal-title>
+				<TextTitle1 class="text-danger text-center">
+					Erro ao excluir
+				</TextTitle1>
+			</template>
+
+			<template v-slot:modal-body>
+                <p>
+                    Não foi possível excluir esse campus, pois existem eventos associados a ele.
+                </p>
+				<p>
+                    Desassocie esses eventos primeiro e depois exclua o campus.
+                </p>
+			</template>
+        </BaseModal>
     </div>
 </template>
 
@@ -118,13 +135,16 @@
                     el: null,
                     msg: ""
                 },
-                selectedCampus: null
+                selectedCampus: null,
+                deleteCampusModal: null,
+                campusDeleteFailureModal: null
             }
         },
         mounted: function() {
             this.successToast.el = bootstrap.Toast.getOrCreateInstance("#sucess-toast");
             this.errorToast.el = bootstrap.Toast.getOrCreateInstance("#fail-toast");
             this.deleteCampusModal = bootstrap.Modal.getOrCreateInstance("#deleteCampus");
+            this.campusDeleteFailureModal = bootstrap.Modal.getOrCreateInstance("#campus-delete-failure");
         },
         computed: {
             ...mapStores(useUserAuthInfoStore, useOrganizationInfoStore),
@@ -195,6 +215,10 @@
                     if(error.response) {
                         if(error.request.status === 401) {
                             refreshUserAuthToken(this.deleteCampus, [campus])
+                        }
+                        if(error.request.status === 400) {
+                            this.deleteCampusModal.hide()
+                            this.campusDeleteFailureModal.show();
                         }
                         else if(error.request.status === 500){
                             this.errorToast.msg  = "Não foi possível se conectar com o servidor."
