@@ -104,7 +104,7 @@
                 <!-- TODO: aplicar componente basebutton -->
                               
                 <BaseUnorderedList>
-                    <BaseListItem v-for="calendar in calendars">
+                    <BaseListItem v-for="calendar in calendars" :key="calendar.id">
                         <TextTitle5>
                             <BaseAnchor :href="$router.resolve({ name: 'calendar-view', params: {id: calendar.id}}).href">
                                 {{ calendar.description }}
