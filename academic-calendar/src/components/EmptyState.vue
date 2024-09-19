@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <div>
+    <div class="empty-state rounded border d-flex align-items-center justify-content-center">
+        <div class="text-center">
             {{ msg }}
         </div>
         <div v-if="displayButton">
@@ -11,7 +11,13 @@
         </div>
     </div>
 </template>
-
+<style scoped>
+    .empty-state {
+        width: 500px;
+        height: 200px;
+        border-style: dashed !important;
+    }
+</style>
 <script>
     import BaseButton from "@/components/BaseButton.vue"
     
