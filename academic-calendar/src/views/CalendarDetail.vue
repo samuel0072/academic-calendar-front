@@ -603,14 +603,6 @@
 			},
 			...mapStores(useUserAuthInfoStore, useOrganizationInfoStore)
 		},
-		watch: {
-			campi(value) {
-				value.forEach((campus) => {
-					this.newEvent.campi.push(campus.value)
-				})
-				
-			}
-		},
 		mounted() {
 			this.calendar.id = this.$route.params.id;
 
@@ -659,7 +651,9 @@
 							title: event.description,
 							category: "allday",
 							start: event.start_date,
+							startDate: event.start_date,
 							end: event.end_date,
+							endDate: event.end_date,
 							label: event.label,
 							backgroundColor: event.hexadecimal_color,
 							campi: event.campi,
@@ -709,18 +703,23 @@
 						}
 					}
 				).then((response) => {
-					this.eventCreationModal.hide()
-
-					this.sucessToast.msg = "Evento criado com sucesso!"
-
-					this.sucessToast.el.show()
+					this.newEvent = {
+						description: "",
+						startDate: "",
+						endDate: "",
+						label: "SD",
+						bgColor: "#3473b7",
+						campi: []
+					},
 
 					this.events.push({
 						id: response.data.id,
 						calendarId: this.calendar.id,
 						title: response.data.description,
 						category: "allday",
+						startDate: response.data.start_date,
 						start: response.data.start_date,
+						endDate: response.data.end_date,
 						end: response.data.end_date,
 						label: response.data.label,
 						backgroundColor: response.data.hexadecimal_color,
@@ -728,6 +727,12 @@
 						organization: response.data.organization,
 						isAllday: true,
 					});
+
+					this.eventCreationModal.hide()
+
+					this.sucessToast.msg = "Evento criado com sucesso!"
+
+					this.sucessToast.el.show()
 
 					this.getCalendarSummary();
 				}).catch((error) => {
@@ -1087,7 +1092,7 @@
 				})
 			},
 			getTemplateForAllday(event) {
-				return `${event.title}`;
+				return `<span style="text-shadow: 0 0 9px #fff !important;">${event.title}</span>`;
 			},
 			onSelectDateTime({ start, end }) {
 
@@ -1123,14 +1128,10 @@
 			onBeforeUpdateEvent(updateData) {
 				//coloquei esse if aqui por que o TUI chama esse evento 6 vezes quando atualiza a data final
 				if(this.editRequest === null) {
-					console.group("onBeforeUpdateEvent");
-					console.log(updateData);
-					console.groupEnd();
 
 					const targetEvent = updateData.event;
 					const changes = { ...updateData.changes };
 					
-					//#TODO: por algum motivo o internalEvent não atualiza
 					var internalEvent = this.events.find((e) => e.id === targetEvent.id)
 
 					var payload = {
@@ -1138,22 +1139,18 @@
 						'label': internalEvent.label,
 						'description': internalEvent.title,
 						'hexadecimal_color': internalEvent.backgroundColor,
-						'start_date': internalEvent.start,
+						'start_date': internalEvent.startDate,
 						'campi': internalEvent.campi,
-						'end_date': internalEvent.end
+						'end_date': internalEvent.endDate
 					}
 
 					if(Object.hasOwn(changes, 'start')) {
-						var isoString = changes.start.toDate().toISOString()
-						payload.start_date = isoString.substring(0, isoString.indexOf('T'))
+						payload.start_date = this.formatDate(changes.start.toDate())
 					}
 
 					if(Object.hasOwn(changes, 'end')) {
-						var isoString = changes.end.toDate().toISOString()
-						payload.end_date = isoString.substring(0, isoString.indexOf('T'))
+						payload.end_date = this.formatDate(changes.end.toDate())
 					}
-
-					console.log(payload)
 
 					this.editRequest = axios.put(`/api/academic-calendar/event/${internalEvent.id}/edit`, payload, 
 						{
@@ -1162,23 +1159,26 @@
 							}
 						}
 					).then((_) => {
+						var index = this.events.findIndex((ev) => ev.id === internalEvent.id)
+						this.events[index].startDate = payload.start_date
+						this.events[index].start = changes.start
+						this.events[index].endDate = payload.end_date
+						this.events[index].end = changes.end
+						
+						this.calendarInstance.updateEvent(targetEvent.id, this.calendar.id, changes);
+
 						this.eventEditModal.hide()
 
 						this.sucessToast.msg = "Evento atualizado com sucesso!"
 
 						this.sucessToast.el.show()
 
-						internalEvent.startDate = payload.start_date
-						internalEvent.endDate = payload.end_date
-						
-						this.calendarInstance.updateEvent(targetEvent.id, this.calendar.id, changes);
-
 						this.getCalendarSummary();
 
 					}).catch((error) => {
 						if(error.response) {
 							if(error.request.status === 401) {
-								refreshUserAuthToken(this.editEvent)
+								refreshUserAuthToken(this.onBeforeUpdateEvent, [updateData])
 							}
 							else if(error.request.status === 422 ){
 								this.errorToast.msg = "Não foi possível atualizar esse evento. Por favor tente novamente."
@@ -1219,26 +1219,20 @@
 
 				this.calendarInstance.deleteEvent(id, calendarId);
 			},
-			onClickEvent({ nativeEvent, event }) {
+			onClickEvent({ event }) {
 
 				this.selectedEvent.internalEvent = this.events.find((e) => e.id === event.id)
 				
 				this.selectedEvent.description = this.selectedEvent.internalEvent.title
 				this.selectedEvent.label = this.selectedEvent.internalEvent.label
-				this.selectedEvent.startDate = this.selectedEvent.internalEvent.start
-				this.selectedEvent.endDate = this.selectedEvent.internalEvent.end
+				this.selectedEvent.startDate = this.selectedEvent.internalEvent.startDate
+				this.selectedEvent.endDate = this.selectedEvent.internalEvent.endDate
 				this.selectedEvent.bgColor = this.selectedEvent.internalEvent.backgroundColor
 				this.selectedEvent.campi = this.selectedEvent.internalEvent.campi
 				this.selectedEvent.id = this.selectedEvent.internalEvent.id
 
 				this.resetEditForm()
 				this.eventEditModal.show()
-
-				console.group("onClickEvent");
-				console.log("MouseEvent : ", nativeEvent);
-				console.log("Event Info : ", event);
-				console.log("Selected event Info : ", this.selectedEvent);
-				console.groupEnd();
 			},
 			onClickTodayButton() {
 				this.calendarInstance.today();
@@ -1457,6 +1451,12 @@
 					this.errorToast.msg = "É necessário escolher um arquivo."
 					this.errorToast.el.show()
 				}
+			},
+			formatDate(date) {
+				const year = date.getFullYear(); 
+				const month = String(date.getMonth() + 1).padStart(2, '0'); 
+				const day = String(date.getDate()).padStart(2, '0');
+				return `${year}-${month}-${day}`
 			}
 		},
 		components: {
