@@ -182,8 +182,8 @@
                     this.calendars = []
 
                     response.data.forEach( (calendar) => {
-                        calendar.start_date = new Date(calendar.start_date )
-                        calendar.end_date = new Date(calendar.end_date )
+                        calendar.start_date = new Date(`${calendar.start_date}T00:00:00` )
+                        calendar.end_date = new Date(`${calendar.end_date}T00:00:00` )
                         this.calendars.push(calendar)
                     })
 

@@ -1029,11 +1029,10 @@
 						Authorization: "Bearer " + this.userAuthInfoStore.token,
 					},
 				}).then((res) => {
-
 					this.semesters = [];
 					res.data.forEach((semester) => {
-						semester.start_date = new Date(semester.start_date)
-						semester.end_date = new Date(semester.end_date)
+						semester.start_date = new Date(`${semester.start_date}T00:00:00`)
+						semester.end_date = new Date(`${semester.end_date}T00:00:00`)
 						this.semesters.push(semester)
 					})
 
