@@ -69,6 +69,29 @@ const router = new VueRouter({
   ]
 })
 
+router.beforeEach((to, from, next) => {
+  //Esse trecho de código trata o caso em que o usuário abriu um modal e de alguma forma foi redirecionado para outra página
+  //O backdrop permanece nos redirects
+  //remove as classes de backdrop e os inline styles que o bootstrap coloca
+
+  //casos em que isso acontece: links dentro de modals e quando a sessão do usuário se expira
+
+  var body = document.body
+  var modalBackdrop = document.getElementsByClassName("modal-backdrop")
+
+  body.classList.remove("modal-open")
+  body.style.overflow = null;
+  body.style.paddingRight = null;
+
+  for(var i = 0; i < modalBackdrop.length; i++) {
+    var el = modalBackdrop.item(i)
+    el.classList.remove("modal-backdrop")
+    el.classList.remove("show")
+  }
+
+  next()
+})
+
 export default router
 
 export function useRouter() {
