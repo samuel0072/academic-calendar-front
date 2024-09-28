@@ -526,7 +526,7 @@
 				eventLabels: [
 					{value: 'H', label: 'Feriado Nacional'},
 					{value: 'RH', label: 'Feriado Local'},
-					{value: 'NSS', label: 'Sábado não-letivo'},
+					{value: 'SS', label: 'Sábado Letivo'},
 					{value: 'NSD', label: 'Dia(s) não-letivo(s)'},
 					{value: 'SD', label: 'Dia(s) letivo(s)', selected: true},
 				],
