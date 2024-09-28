@@ -743,36 +743,42 @@
                         }
                         else if(error.request.status === 422 ){
 							if(Object.hasOwn(error.response.data, 'description')) {
+								this.eCFormInputFeedbacks.description = ""
 								error.response.data["description"].forEach( (msg) => {
 									this.eCFormInputFeedbacks.description += `${msg}\n`
 								})
 								this.$refs.eCDescription.validate("invalid")
                             }
 							if(Object.hasOwn(error.response.data, 'label')) {
+								this.eCFormInputFeedbacks.label = ""
 								error.response.data["label"].forEach( (msg) => {
 									this.eCFormInputFeedbacks.label += `${msg}\n`
 								})
 								this.$refs.ecLabel.validate("invalid")
                             }
                             if(Object.hasOwn(error.response.data, 'campi')) {
+								this.eCFormInputFeedbacks.campi = ""
 								error.response.data["campi"].forEach( (msg) => {
 									this.eCFormInputFeedbacks.campi += `${msg}\n`
 								})
 								this.$refs.eCCampi.validate("invalid")
                             }
                             if(Object.hasOwn(error.response.data, 'end_date')) {
+								this.eCFormInputFeedbacks.endDate = ""
 								error.response.data["end_date"].forEach( (msg) => {
 									this.eCFormInputFeedbacks.endDate += `${msg}\n`
 								})
 								this.$refs.eCEndDate.validate("invalid")
                             }
                             if(Object.hasOwn(error.response.data, 'start_date')) {
+								this.eCFormInputFeedbacks.startDate = ""
 								error.response.data["start_date"].forEach( (msg) => {
 									this.eCFormInputFeedbacks.startDate += `${msg}\n`
 								})
 								this.$refs.eCStartDate.validate("invalid")
                             }
 							if(Object.hasOwn(error.response.data, 'hexadecimal_color')) {
+								this.eCFormInputFeedbacks.bgColor = ""
 								error.response.data["hexadecimal_color"].forEach( (msg) => {
 									this.eCFormInputFeedbacks.bgColor += `${msg}\n`
 								})
