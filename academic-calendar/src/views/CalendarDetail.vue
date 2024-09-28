@@ -204,19 +204,19 @@
 						</FormInputFeedback>
 					</FloatingInput>
 
-					<div v-if="newEvent.label != 'H'">
-						<BaseLabel for="event-campi"> Esse evento é válido para os campi: </BaseLabel>
-						<MultipleSelectInput 
-							id="event-campi" 
-							:options="campi" 
-							v-model="newEvent.campi"
-							:multiple="true"
-							ref="eCCampi"
-						/>
-						<FormInputFeedback type="invalid">
-							{{ eCFormInputFeedbacks.campi }}
-						</FormInputFeedback>
-					</div>
+					
+					<BaseLabel for="event-campi"> Esse evento é válido para os campi: </BaseLabel>
+					<MultipleSelectInput 
+						id="event-campi" 
+						:options="campi" 
+						v-model="newEvent.campi"
+						:disabled="newEvent.label == 'H'"
+						:multiple="true"
+						ref="eCCampi"
+					/>
+					<FormInputFeedback type="invalid">
+						{{ eCFormInputFeedbacks.campi }}
+					</FormInputFeedback>
 				</BaseForm>
 			</template>
 
@@ -291,18 +291,18 @@
 						</FormInputFeedback>
 					</FloatingInput>
 
-					<div v-if="selectedEvent.label != 'H'">
-						<BaseLabel for="selected-event-campi"> Esse evento é válido para os campi: </BaseLabel>
-						<MultipleSelectInput 
-							id="selected-event-campi" 
-							:options="campi" 
-							v-model="selectedEvent.campi"
-							ref="eECampi"
-						/>
-						<FormInputFeedback type="invalid">
-							{{ eEFormInputFeedbacks.campi }}
-						</FormInputFeedback>
-					</div>
+					
+					<BaseLabel for="selected-event-campi"> Esse evento é válido para os campi: </BaseLabel>
+					<MultipleSelectInput 
+						id="selected-event-campi" 
+						:options="campi" 
+						:disabled="selectedEvent.label == 'H'"
+						v-model="selectedEvent.campi"
+						ref="eECampi"
+					/>
+					<FormInputFeedback type="invalid">
+						{{ eEFormInputFeedbacks.campi }}
+					</FormInputFeedback>
 				</BaseForm>
 			</template>
 

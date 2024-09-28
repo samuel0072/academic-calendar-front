@@ -3,6 +3,7 @@
         class="form-select" 
         v-model="selectedValues"
         ref="mainSelect"
+        :disabled="disabled"
         multiple >
         
         <option v-for="option in options" 
@@ -28,7 +29,11 @@
                 required: true,
                 type: Array
             },
-            value: Array
+            value: Array,
+            disabled: {
+                required: false,
+                default: false
+            }
         },
         model: {
             prop: 'value',
