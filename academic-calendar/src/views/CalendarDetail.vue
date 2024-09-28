@@ -60,7 +60,7 @@
 
 		<ToastUICalendar
 			ref="calendar"
-			style="height: 800px; width: 1200px"
+			style="height: 1200px; width: 100%"
 			:view="'month'"
 			:use-form-popup="false"
 			:use-detail-popup="false"
@@ -70,7 +70,7 @@
 				eventView: true,
 				taskView: true,
 			}"
-			:month="{ startDayOfWeek: 7 }"
+			:month="{ startDayOfWeek: 7, visibleEventCount: 10, visibleWeeksCount: 5, dayNames: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'sáb'] }"
 			:timezone="{  }"
 			:theme="theme"
 			:template="{

@@ -1,5 +1,5 @@
 <template>
-  <div ref="container" />
+  <div ref="container"></div>
 </template>
 <script>
    
@@ -108,33 +108,6 @@
                 template: {
                     monthGridHeaderExceed(hiddenEvents) {
                         return `<span> mais ${hiddenEvents}</span>`;
-                    },
-                    monthDayName(model) {
-                        var label = ""
-                        switch(model.day){
-                            case 0:
-                                label = "Dom"
-                                break
-                            case 1:
-                                label = "Seg"
-                                break
-                            case 2:
-                                label = "Ter"
-                                break
-                            case 3:
-                                label = "Qua"
-                                break
-                            case 4:
-                                label = "Qui"
-                                break
-                            case 5:
-                                label = "Sex"
-                                break
-                            case 6:
-                                label = "Sáb"
-                                break
-                        }
-                        return label;
                     },
                     // monthMoreTitleDate(moreTitle) {
                     //     const { date } = moreTitle;
