@@ -70,7 +70,7 @@
 				eventView: true,
 				taskView: true,
 			}"
-			:month="{ startDayOfWeek: 7, visibleEventCount: 10, visibleWeeksCount: 5, dayNames: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'sáb'] }"
+			:month="{ startDayOfWeek: 7, visibleEventCount: 10, dayNames: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'sáb'] }"
 			:timezone="{  }"
 			:theme="theme"
 			:template="{
