@@ -86,7 +86,7 @@
 			@clickEvent="onClickEvent"
 		/>
 
-		<Page>
+		<Card>
 			<TextTitle5>
 				<span>DIAS LETIVOS – QUADRO SÍNTESE</span>
 			</TextTitle5>
@@ -119,9 +119,10 @@
 					</BaseTBody>
 				</template>
 			</BaseTable>
-		</Page>
+		</Card>
 
-		<Page>
+		<Card>
+			
 			<TextTitle5>
 				Semestres
 			</TextTitle5>
@@ -130,17 +131,37 @@
 
 			<BaseUnorderedList  v-if="semesters.length > 0">
 				<BaseListItem v-for="semester in semesters" :key="semester.id">
-					{{ semester.description }} | Inicia em {{ semester.start_date.toLocaleDateString() }} e termina em {{ semester.end_date.toLocaleDateString() }}
-
-					<template v-slot:post-item-section>
-						<BaseButton @click.native="$router.push({name: 'semester-update', params: { id: semester.id }})" type="button" class="btn-outline-success">
-							<i class="bi bi-pencil-square"></i>
-							<span class="visually-hidden">Editar semestre</span>
-						</BaseButton>
-					</template>
+					<TextTitle5>
+						<BaseAnchor :href="$router.resolve({name: 'semester-update', params: { id: semester.id }}).href">
+							{{ semester.description }}
+						</BaseAnchor>
+					</TextTitle5>
+					<BaseTable class="table-borderless table-sm">
+						<template v-slot:head>
+							<BaseTHead>
+								<tr>
+									<BaseTH>Início</BaseTH>
+									<BaseTH>Fim</BaseTH>
+									<BaseTH>Início das aulas</BaseTH>
+									<BaseTH>Fim das aulas</BaseTH>
+								</tr>
+							</BaseTHead>
+						</template>
+						<template  v-slot:body>
+							<BaseTBody>
+								<tr>
+									<td> {{ semester.start_date.toLocaleDateString() }} </td>
+									<td>  {{ semester.end_date.toLocaleDateString() }} </td>
+									<td>  {{ semester.lessons_start_date.toLocaleDateString() }} </td>
+									<td>  {{ semester.lessons_end_date.toLocaleDateString() }} </td>
+								</tr>
+							</BaseTBody>
+						</template>
+					</BaseTable>
+					
 				</BaseListItem>
 			</BaseUnorderedList>
-		</Page>
+		</Card>
 
 		<BaseModal id="createEvents">
 			<template v-slot:modal-title>
@@ -474,6 +495,7 @@
 	import PlusIcon from "@/components/icons/PlusIcon.vue"
 	import DropdownMenu from "@/components/DropdownMenu.vue"
 	import DropdownItem from "@/components/DropdownItem.vue"
+	import Card from '@/components/Card.vue'
 
 	import refreshUserAuthToken from '@/assets/scripts/refreshUserAuthToken.js'
 
@@ -1039,6 +1061,8 @@
 					res.data.forEach((semester) => {
 						semester.start_date = new Date(`${semester.start_date}T00:00:00`)
 						semester.end_date = new Date(`${semester.end_date}T00:00:00`)
+						semester.lessons_start_date = new Date(`${semester.lessons_start_date}T00:00:00`)
+						semester.lessons_end_date = new Date(`${semester.lessons_end_date}T00:00:00`)
 						this.semesters.push(semester)
 					})
 
@@ -1498,7 +1522,8 @@
 			IconPrevArrow,
 			PlusIcon,
 			DropdownMenu,
-			DropdownItem
+			DropdownItem,
+			Card
 		},
 	};
 </script>

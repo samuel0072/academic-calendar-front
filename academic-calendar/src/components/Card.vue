@@ -9,5 +9,6 @@
 <style scoped>
     .page-section {
         margin-bottom: 1.6rem;
+        margin-top: 1.6rem;
     }
 </style>
