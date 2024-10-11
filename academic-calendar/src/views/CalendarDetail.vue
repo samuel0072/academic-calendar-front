@@ -86,82 +86,9 @@
 			@clickEvent="onClickEvent"
 		/>
 
-		<Card>
-			<TextTitle5>
-				<span>DIAS LETIVOS – QUADRO SÍNTESE</span>
-			</TextTitle5>
-			<EmptyState v-if="semesters.length == 0" msg="Essa visualização só está disponível quando há semestres no calendário." />
+		<SummaryTable :summary-data="summaryTable" :campi="campi" />
 
-			<BaseTable v-if="semesters.length > 0">
-				<template v-slot:head>
-					<BaseTHead>
-						<tr>
-							<BaseTH>Local</BaseTH>
-							<BaseTH v-for="semester in summaryTable.semesters" :key="semester.description">
-								{{ semester.description }}
-							</BaseTH>
-						</tr>
-					</BaseTHead>
-				</template>
-
-				<template  v-slot:body>
-					<BaseTBody>
-						<tr v-for="campus in campi" :key="campus.id">
-							<td> {{ campus.label }}</td>
-							<td v-for="semester in summaryTable.semesters" :key="semester.description">
-								<span v-for="c in semester.campi_school_days_count" :key="semester.description + c.id">
-									<span v-if="c.id === campus.value">
-										{{ c.school_days_count }}
-									</span>
-								</span>
-							</td>
-						</tr>
-					</BaseTBody>
-				</template>
-			</BaseTable>
-		</Card>
-
-		<Card>
-			
-			<TextTitle5>
-				Semestres
-			</TextTitle5>
-
-			<EmptyState v-if="semesters.length == 0" msg="Essa visualização só está disponível quando há semestres no calendário." />
-
-			<BaseUnorderedList  v-if="semesters.length > 0">
-				<BaseListItem v-for="semester in semesters" :key="semester.id">
-					<TextTitle5>
-						<BaseAnchor :href="$router.resolve({name: 'semester-update', params: { id: semester.id }}).href">
-							{{ semester.description }}
-						</BaseAnchor>
-					</TextTitle5>
-					<BaseTable class="table-borderless table-sm">
-						<template v-slot:head>
-							<BaseTHead>
-								<tr>
-									<BaseTH>Início</BaseTH>
-									<BaseTH>Fim</BaseTH>
-									<BaseTH>Início das aulas</BaseTH>
-									<BaseTH>Fim das aulas</BaseTH>
-								</tr>
-							</BaseTHead>
-						</template>
-						<template  v-slot:body>
-							<BaseTBody>
-								<tr>
-									<td> {{ semester.start_date.toLocaleDateString() }} </td>
-									<td>  {{ semester.end_date.toLocaleDateString() }} </td>
-									<td>  {{ semester.lessons_start_date.toLocaleDateString() }} </td>
-									<td>  {{ semester.lessons_end_date.toLocaleDateString() }} </td>
-								</tr>
-							</BaseTBody>
-						</template>
-					</BaseTable>
-					
-				</BaseListItem>
-			</BaseUnorderedList>
-		</Card>
+		<SemesterPage :semesters="semesters"/>
 
 		<BaseModal id="createEvents">
 			<template v-slot:modal-title>
@@ -497,6 +424,9 @@
 	import DropdownItem from "@/components/DropdownItem.vue"
 	import Card from '@/components/Card.vue'
 
+	import SemesterPage from '@/views/subpages/calendarDetail/Semester.vue'
+	import SummaryTable from "@/views/subpages/calendarDetail/SummaryTable.vue"
+
 	import refreshUserAuthToken from '@/assets/scripts/refreshUserAuthToken.js'
 
 	export default {
@@ -611,7 +541,7 @@
 				eventExcludeModal: null,
 				importingModal: null,
 				semesters: [],
-				summaryTable: {},
+				summaryTable: { semesters: [] },
 				selectedFile: null,
 				importingError: {
 					messages: [],
@@ -1058,7 +988,8 @@
 					},
 				}).then((res) => {
 					this.semesters = [];
-					res.data.forEach((semester) => {
+					
+                    res.data.forEach((semester) => {
 						semester.start_date = new Date(`${semester.start_date}T00:00:00`)
 						semester.end_date = new Date(`${semester.end_date}T00:00:00`)
 						semester.lessons_start_date = new Date(`${semester.lessons_start_date}T00:00:00`)
@@ -1523,7 +1454,9 @@
 			PlusIcon,
 			DropdownMenu,
 			DropdownItem,
-			Card
+			Card,
+			SemesterPage,
+			SummaryTable
 		},
 	};
 </script>
