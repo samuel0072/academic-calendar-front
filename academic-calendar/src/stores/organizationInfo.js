@@ -5,7 +5,9 @@ export const useOrganizationInfoStore = defineStore({
     state: () => ({
         campi: [ ],
         id: Number,
-        name: String
+        name: String,
+        minutesPerLesson: Number,
+        minMinutesPerDay: Number
     }),
     actions: {
         deleteCampus(campusId) {
