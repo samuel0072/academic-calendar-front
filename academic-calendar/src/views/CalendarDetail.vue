@@ -429,6 +429,10 @@
 
 	import refreshUserAuthToken from '@/assets/scripts/refreshUserAuthToken.js'
 
+	import SchoolDaysSummaryService from "@/services/schoolDaysSummary"
+
+	import SchoolDaysSummary from "@/models/schoolDaysSummary"
+
 	export default {
 		data() {
 			return {
@@ -546,7 +550,8 @@
 				importingError: {
 					messages: [],
 					isErrored: false
-				}
+				},
+				sDSummaryService : null
 			}
 		},
 		computed: {
@@ -557,6 +562,8 @@
 		},
 		mounted() {
 			this.calendar.id = this.$route.params.id;
+
+			this.sDSummaryService = new SchoolDaysSummaryService(this.calendar.id)
 
 			this.parseCampiFromStore(this.organizationInfoStore.campi);
 
@@ -574,7 +581,6 @@
 				this.campi = [];
 				this.parseCampiFromStore(state.campi);
 			})
-
 			this.eventCreationModal = bootstrap.Modal.getOrCreateInstance('#createEvents');
 			this.eventEditModal = bootstrap.Modal.getOrCreateInstance('#editEvent');
 			this.eventExcludeModal = bootstrap.Modal.getOrCreateInstance('#deleteEvent');
@@ -1021,14 +1027,9 @@
 				})
 			},
 			getCalendarSummary(){
-				axios.get(`/api//academic-calendar/${this.$route.params.id}/school_days_count`, {
-					headers: {
-						Authorization: "Bearer " + this.userAuthInfoStore.token,
-					},
-				}).then((res) => {
-					this.summaryTable = res.data;
-
-				}).catch((error) => {
+				this.sDSummaryService.getSummary()
+				.then((summary) => { this.summaryTable = summary  })
+				.catch((error) => {
 					if(error.response) {
                         if(error.request.status === 401) {
                             refreshUserAuthToken(this.getSemesters)

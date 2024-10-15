@@ -1,5 +1,5 @@
 <template>
-    <Card>
+    <Page>
         <TextTitle5>
             <span>DIAS LETIVOS – QUADRO SÍNTESE</span>
         </TextTitle5>
@@ -7,35 +7,63 @@
             v-if="summaryData.semesters.length == 0" 
             msg="Essa visualização só está disponível quando há semestres no calendário." 
         />
+        <div v-else>
+            <Card v-for="semesterInfo in summaryData.semesters" :key="semesterInfo.description">
+                <TextTitle5 style="text-align: center;"> {{ semesterInfo.description }} </TextTitle5>
+                <BaseTable>
+                    <template v-slot:head>
+                        <BaseTHead>
+                            <BaseTH>Local</BaseTH>
+                            <BaseTH>Qnt. Dias Letivos</BaseTH>
+                            <BaseTH>Seg.</BaseTH>
+                            <BaseTH>Ter.</BaseTH>
+                            <BaseTH>Qua.</BaseTH>
+                            <BaseTH>Qui.</BaseTH>
+                            <BaseTH>Sex.</BaseTH>
+                            <BaseTH>Sáb.</BaseTH>
+                        </BaseTHead>
+                    </template>
+                    <template v-slot:body>
+                        <BaseTBody>
+                            <tr v-for="campusSummary in semesterInfo.campiSummary" :key="campusSummary.id">
+                                <td>
+                                    {{ campusSummary.name }} 
+                                </td>
+                                <td>
+                                    {{ campusSummary.schoolDaysCount }} 
+                                </td>
+                                <td :class="dayInfoClass(campusSummary.schoolWeekDays.monday)">
+                                    {{ campusSummary.schoolWeekDays.monday }} 
+                                    | {{  dateFormater.toHoursAndMinutes(calcTimeForDay(campusSummary.schoolWeekDays.monday))  }}
+                                </td>
+                                <td :class="dayInfoClass(campusSummary.schoolWeekDays.tuesday)">
+                                    {{ campusSummary.schoolWeekDays.tuesday }} 
+                                    | {{  dateFormater.toHoursAndMinutes(calcTimeForDay(campusSummary.schoolWeekDays.tuesday))  }}
+                                </td>
+                                <td :class="dayInfoClass(campusSummary.schoolWeekDays.wednesday)">
+                                    {{ campusSummary.schoolWeekDays.wednesday }} 
+                                    | {{  dateFormater.toHoursAndMinutes(calcTimeForDay(campusSummary.schoolWeekDays.wednesday))  }}
+                                </td>
+                                <td :class="dayInfoClass(campusSummary.schoolWeekDays.thursday)">
+                                    {{ campusSummary.schoolWeekDays.thursday }} 
+                                    | {{  dateFormater.toHoursAndMinutes(calcTimeForDay(campusSummary.schoolWeekDays.thursday))  }}
+                                </td>
+                                <td :class="dayInfoClass(campusSummary.schoolWeekDays.friday)">
+                                    {{ campusSummary.schoolWeekDays.friday }} 
+                                    | {{  dateFormater.toHoursAndMinutes(calcTimeForDay(campusSummary.schoolWeekDays.friday))  }}
+                                </td>
+                                <td :class="dayInfoClass(campusSummary.schoolWeekDays.saturday)">
+                                    {{ campusSummary.schoolWeekDays.saturday }} 
+                                    | {{  dateFormater.toHoursAndMinutes(calcTimeForDay(campusSummary.schoolWeekDays.saturday))  }}
+                                </td>
+                            </tr>
+                        </BaseTBody>
+                    </template>
+                </BaseTable>
 
-        <BaseTable v-if="summaryData.semesters.length > 0">
-            <template v-slot:head>
-                <BaseTHead>
-                    <tr>
-                        <BaseTH>Local</BaseTH>
-                        <BaseTH v-for="semester in summaryData.semesters" :key="semester.description">
-                            {{ semester.description }}
-                        </BaseTH>
-                    </tr>
-                </BaseTHead>
-            </template>
-
-            <template  v-slot:body>
-                <BaseTBody>
-                    <tr v-for="campus in campi" :key="campus.id">
-                        <td> {{ campus.label }}</td>
-                        <td v-for="semester in summaryData.semesters" :key="semester.description">
-                            <span v-for="c in semester.campi_school_days_count" :key="semester.description + c.id">
-                                <span v-if="c.id === campus.value">
-                                    {{ c.school_days_count }}
-                                </span>
-                            </span>
-                        </td>
-                    </tr>
-                </BaseTBody>
-            </template>
-        </BaseTable>
-    </Card>
+            </Card>
+        </div>
+    </Page>
 </template>
 
 <script>
@@ -46,6 +74,12 @@
 	import BaseTH from '@/components/BaseTH.vue'
     import TextTitle5 from '@/components/text-components/TextTitle5.vue'
     import EmptyState from "@/components/EmptyState.vue"
+    import Page from '@/components/Page.vue'
+
+    import DateFormater from '@/helpers/dateFormater.js'
+
+    import { mapStores } from "pinia"
+	import { useOrganizationInfoStore } from "@/stores/organizationInfo"
 
     export default {
         props: {
@@ -58,6 +92,22 @@
                 default: { semesters: [] }
             }
         },
+        data() {
+            return {
+                dateFormater: new DateFormater()
+            }
+        },
+        computed: {
+			...mapStores(useOrganizationInfoStore)
+		},
+        methods: {
+            calcTimeForDay(day) {
+                return day * this.organizationInfoStore.minutesPerLesson
+            },
+            dayInfoClass(day) {
+                return this.calcTimeForDay(day) <  this.organizationInfoStore.minMinutesPerDay ? 'text-danger' : ''
+            }
+        },
         components: {
             TextTitle5,
             BaseTH,
@@ -65,7 +115,8 @@
             BaseTHead,
             BaseTable,
             Card,
-            EmptyState
+            EmptyState,
+            Page
         }
     }
 </script>
