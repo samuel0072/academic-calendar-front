@@ -10,7 +10,7 @@
                     label="Email do usuário"
                     type="email"
                     maxlength="150"
-                    :required="true"
+                    required
                 />
 
                 <FloatingInput 
@@ -19,7 +19,7 @@
                     label="Nome completo do usuário"
                     type="text"
                     maxlength="150"
-                    :required="true"
+                    required
                     ref="nameInput"
                 >
                     <FormInputFeedback type="invalid">
@@ -35,7 +35,7 @@
                     label="Senha do usuário"
                     type="password"
                     maxlength="150"
-                    :required="true"
+                    required
                     ref="passwordInput"
                 >
                     <FormInputFeedback type="invalid">
@@ -51,7 +51,7 @@
                     label="Confirme a senha"
                     type="password"
                     maxlength="150"
-                    :required="true"
+                    required
                 />
                 <BaseButton type="submit" class="btn-outline-primary" ><i class="bi bi-plus-lg"></i> Criar Usuário</BaseButton>
             </BaseForm>

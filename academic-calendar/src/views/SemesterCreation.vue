@@ -17,7 +17,7 @@
                 label="Nome para o semestre"
                 type="text"
                 maxlength="500"
-                :required="true"
+                required
                 id="semester-description">
                 <FormInputFeedback type="invalid">
                     {{ inputFeedbacks.description }}
@@ -29,7 +29,7 @@
                 v-model="startDate"
                 label="Data de início"
                 type="date"
-                :required="true"
+                required
                 id="semester-start-date">
                 <FormInputFeedback type="invalid">
                     {{ inputFeedbacks.startDate }}
@@ -41,7 +41,7 @@
                 v-model="endDate"
                 label="Data de fim"
                 type="date"
-                :required="true"
+                required
                 id="semester-end-date">
                 <FormInputFeedback type="invalid">
                     {{ inputFeedbacks.endDate }}
@@ -53,7 +53,7 @@
                 v-model="lessonsStartDate"
                 label="Data que as aulas começam"
                 type="date"
-                :required="true"
+                required
                 id="semester-lessons-start-date">
                 <FormInputFeedback type="invalid">
                     {{ inputFeedbacks.lessonsStartDate }}
@@ -65,7 +65,7 @@
                 v-model="lessonsEndDate"
                 label="Data que as aulas terminam"
                 type="date"
-                :required="true"
+                required
                 id="semester-lessons-end-date">
                 <FormInputFeedback type="invalid">
                     {{ inputFeedbacks.lessonsEndDate }}

@@ -10,7 +10,7 @@
                         label="Nome do campus"
                         type="text"
                         maxlength="150"
-                        :required="true"
+                        required
                 />
                 <BaseButton type="submit"  class="btn-outline-primary" ><i class="bi bi-plus-lg"></i> Criar Campus</BaseButton>
             </BaseForm>
@@ -28,7 +28,7 @@
                                 label="Nome do campus"
                                 type="text"
                                 maxlength="150"
-                                :required="true"
+                                required
                             />
                             <BaseButton type="submit" class="btn-outline-primary" ><i class="bi bi-pencil-square"></i></BaseButton>
                             <BaseButton type="button" class="btn-outline-danger" @click.native="openDeleteCampusModal(campus)"><i class="bi bi-trash3"></i></BaseButton>

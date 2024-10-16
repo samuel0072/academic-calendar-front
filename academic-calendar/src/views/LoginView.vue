@@ -12,7 +12,7 @@
                         label="Digite seu e-mail"
                         type="email"
                         v-model="username"
-                        :required="true"
+                        required
                         maxlength="150"
                         />
                 </InputGroup>
@@ -26,7 +26,7 @@
                         label="Digite sua senha"
                         type="password"
                         v-model="password"
-                        :required="true"
+                        required
                         />
                 </InputGroup>
 
