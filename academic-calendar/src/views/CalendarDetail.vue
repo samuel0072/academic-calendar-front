@@ -280,7 +280,7 @@
 					</p>
 					<p>
 						Baixe aqui um exemplo de uma planilha: 
-						<BaseAnchor href="/public/planilha_de_exemplo.xlsx" download>Clique aqui para baixar</BaseAnchor>
+						<BaseAnchor href="/planilha_de_exemplo.xlsx" download>Clique aqui para baixar</BaseAnchor>
 					</p>
 					<p>
 						Explicação de cada coluna da planilha e exemplos: 
