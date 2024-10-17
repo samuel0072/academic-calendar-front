@@ -240,6 +240,8 @@
                     toast.show();
                     calendarCreationModal.hide();
 
+                    this.$router.push({ name: 'calendar-view', params: { id: response.data.id} })
+
                 }).catch( (error) => {
                     var toast = bootstrap.Toast.getOrCreateInstance("#fail-toast");
                     if(error.response) {
