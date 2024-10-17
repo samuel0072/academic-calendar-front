@@ -107,8 +107,8 @@
             this.successToast.el = bootstrap.Toast.getOrCreateInstance("#org-config-sucess-toast");
             this.errorToast.el = bootstrap.Toast.getOrCreateInstance("#org-config-fail-toast");
 
-            this.organization = Organization.fromStore();
             this.orgService = new OrganizationService();
+            this.orgService.getOrgInfo().then( (org) => { this.organization = org} )
         },
         methods: {
             async updateData() {
