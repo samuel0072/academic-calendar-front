@@ -34,27 +34,27 @@
                                 </td>
                                 <td :class="dayInfoClass(campusSummary.schoolWeekDays.monday)">
                                     {{ campusSummary.schoolWeekDays.monday }} 
-                                    | {{  dateFormater.toHoursAndMinutes(calcTimeForDay(campusSummary.schoolWeekDays.monday))  }}
+                                    | {{  calcPercentMinutesPerDay(calcTimeForDay(campusSummary.schoolWeekDays.monday)) }} %
                                 </td>
                                 <td :class="dayInfoClass(campusSummary.schoolWeekDays.tuesday)">
                                     {{ campusSummary.schoolWeekDays.tuesday }} 
-                                    | {{  dateFormater.toHoursAndMinutes(calcTimeForDay(campusSummary.schoolWeekDays.tuesday))  }}
+                                    | {{  calcPercentMinutesPerDay(calcTimeForDay(campusSummary.schoolWeekDays.tuesday))  }} %
                                 </td>
                                 <td :class="dayInfoClass(campusSummary.schoolWeekDays.wednesday)">
                                     {{ campusSummary.schoolWeekDays.wednesday }} 
-                                    | {{  dateFormater.toHoursAndMinutes(calcTimeForDay(campusSummary.schoolWeekDays.wednesday))  }}
+                                    | {{ calcPercentMinutesPerDay(calcTimeForDay(campusSummary.schoolWeekDays.wednesday))  }} %
                                 </td>
                                 <td :class="dayInfoClass(campusSummary.schoolWeekDays.thursday)">
                                     {{ campusSummary.schoolWeekDays.thursday }} 
-                                    | {{  dateFormater.toHoursAndMinutes(calcTimeForDay(campusSummary.schoolWeekDays.thursday))  }}
+                                    | {{ calcPercentMinutesPerDay(calcTimeForDay(campusSummary.schoolWeekDays.thursday))  }} %
                                 </td>
                                 <td :class="dayInfoClass(campusSummary.schoolWeekDays.friday)">
                                     {{ campusSummary.schoolWeekDays.friday }} 
-                                    | {{  dateFormater.toHoursAndMinutes(calcTimeForDay(campusSummary.schoolWeekDays.friday))  }}
+                                    | {{  calcPercentMinutesPerDay(calcTimeForDay(campusSummary.schoolWeekDays.friday))  }} %
                                 </td>
                                 <td :class="dayInfoClass(campusSummary.schoolWeekDays.saturday)">
                                     {{ campusSummary.schoolWeekDays.saturday }} 
-                                    | {{  dateFormater.toHoursAndMinutes(calcTimeForDay(campusSummary.schoolWeekDays.saturday))  }}
+                                    | {{  calcPercentMinutesPerDay(calcTimeForDay(campusSummary.schoolWeekDays.saturday))  }} %
                                 </td>
                             </tr>
                         </BaseTBody>
@@ -106,6 +106,9 @@
             },
             dayInfoClass(day) {
                 return this.calcTimeForDay(day) <  this.organizationInfoStore.minMinutesPerDay ? 'text-danger' : ''
+            },
+            calcPercentMinutesPerDay(time) {
+                return ((time / this.organizationInfoStore.minMinutesPerDay) * 100).toFixed(2)
             }
         },
         components: {
