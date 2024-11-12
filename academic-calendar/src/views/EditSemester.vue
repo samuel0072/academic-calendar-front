@@ -15,6 +15,7 @@
                 label="Nome para o semestre"
                 type="text"
                 maxlength="500"
+                required
                 id="semester-description">
                 <FormInputFeedback type="invalid">
                     {{ inputFeedbacks.description }}
@@ -26,7 +27,7 @@
                 v-model="semester.start_date"
                 label="Data de início"
                 type="date"
-                maxlength="500"
+                required
                 id="semester-start-date">
                 <FormInputFeedback type="invalid">
                     {{ inputFeedbacks.startDate }}
@@ -38,11 +39,37 @@
                 v-model="semester.end_date"
                 label="Data de fim"
                 type="date"
+                required
                 id="semester-end-date">
                 <FormInputFeedback type="invalid">
                     {{ inputFeedbacks.endDate }}
                 </FormInputFeedback>
             </FloatingInput>
+
+            <FloatingInput 
+                ref="lessonsStartDate"
+                v-model="semester.lessons_start_date"
+                label="Data que as aulas começam"
+                type="date"
+                required
+                id="semester-lessons-start-date">
+                <FormInputFeedback type="invalid">
+                    {{ inputFeedbacks.lessonsStartDate }}
+                </FormInputFeedback>
+            </FloatingInput>
+
+            <FloatingInput 
+                ref="lessonsEndDate"
+                v-model="semester.lessons_end_date"
+                label="Data que as aulas terminam"
+                type="date"
+                required
+                id="semester-lessons-end-date">
+                <FormInputFeedback type="invalid">
+                    {{ inputFeedbacks.lessonsEndDate }}
+                </FormInputFeedback>
+            </FloatingInput>
+
             <ButtonGroup>
                 <BaseButton type="submit" class="btn-outline-success"><i class="bi bi-pencil-square"></i> Salvar </BaseButton>
                 <BaseButton class="btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteSemester" type="button">
@@ -122,12 +149,16 @@
                 inputFeedbacks: {
                     description: "",
                     startDate: "",
-                    endDate: ""
+                    endDate: "",
+                    lessonsStartDate: "",
+                    lessonsEndDate: ""
                 },
                 semester: {
                     description: "",
                     start_date: "",
-                    end_date: ""
+                    end_date: "",
+                    lessons_start_date: "",
+                    lessons_end_date: ""
                 },
                 globalSucessToast: {
                     el: null
@@ -156,10 +187,14 @@
                             this.inputFeedbacks.description = ""
                             this.inputFeedbacks.startDate = ""
                             this.inputFeedbacks.endDate = ""
+                            this.inputFeedbacks.lessonsEndDate = ""
+                            this.inputFeedbacks.lessonsStartDate = ""
                             
                             this.$refs.description.resetValidation()
                             this.$refs.startDate.resetValidation()
                             this.$refs.endDate.resetValidation()
+                            this.$refs.lessonsStartDate.resetValidation()
+                            this.$refs.lessonsEndDate.resetValidation()
 
                             if(Object.hasOwn(error.response.data, 'non_field_errors')) {
                                 this.errorToast.msg = "";
@@ -196,6 +231,24 @@
 								})
                                 
                                 this.$refs.endDate.validate('invalid')
+                            }
+
+                            if(Object.hasOwn(error.response.data, 'lessons_start_date')) {
+
+                                error.response.data["lessons_start_date"].forEach( (msg) => {
+                                    this.inputFeedbacks.lessonsStartDate += `${msg}\n`
+                                })
+
+                                this.$refs.lessonsStartDate.validate('invalid')
+                            }
+
+                            if(Object.hasOwn(error.response.data, 'lessons_end_date')) {
+
+                                error.response.data["lessons_end_date"].forEach( (msg) => {
+                                    this.inputFeedbacks.lessonsEndDate += `${msg}\n`
+                                })
+
+                                this.$refs.lessonsEndDate.validate('invalid')
                             }
                         }
                         else if(error.request.status === 404) {

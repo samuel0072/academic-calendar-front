@@ -15,6 +15,9 @@
                     <Card id="import-holidays">
                         <ImportHolidayPage />
                     </Card>
+                    <Card id="organization-config">
+                        <Organization />
+                    </Card>
                 </div>
             </div>
         </div>
@@ -30,6 +33,7 @@
     import CampusPage from "@/views/subpages/configuration/Campus.vue"
     import ImportHolidayPage from "@/views/subpages/configuration/ImportHolidays.vue"
     import UserPage from "@/views/subpages/configuration/User.vue"
+    import Organization from '@/views/subpages/configuration/Organization.vue';
 
     import * as bootstrap from 'bootstrap'
 
@@ -49,7 +53,8 @@
                         {link: "#create-campus", display: "Criação de Campus"},
                         {link: "#list-campus", display: "Lista de Campi"}
                     ]},
-                    {link: "#import-holidays", display: "Importar Feriados"}
+                    {link: "#import-holidays", display: "Importar Feriados"},
+                    {link: "#organization-config", display: "Organização"}
                 ],
                 successToast: {
                     el: null,
@@ -88,7 +93,8 @@
             Card,
             CampusPage,
             ImportHolidayPage,
-            UserPage
+            UserPage,
+            Organization
         },
         mounted: function() {
             if(!this.userAuthInfoStore.isAuthenticated) {

@@ -8,7 +8,7 @@
                 </p>
                 <p>
                     <SimpleText>Baixe aqui um exemplo de uma planilha: </SimpleText>
-                    <BaseAnchor href="/public/feriados_planilha_exemplo.xlsx" download>Clique aqui para baixar</BaseAnchor>
+                    <BaseAnchor href="/feriados_planilha_exemplo.xlsx" download>Clique aqui para baixar</BaseAnchor>
                 </p>
                 <p>
                     <SimpleText>Explicação de cada coluna da planilha e exemplos: </SimpleText>

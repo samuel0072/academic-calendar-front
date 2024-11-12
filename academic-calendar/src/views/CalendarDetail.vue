@@ -60,7 +60,7 @@
 
 		<ToastUICalendar
 			ref="calendar"
-			style="height: 800px; width: 1200px"
+			style="height: 1200px; width: 100%"
 			:view="'month'"
 			:use-form-popup="false"
 			:use-detail-popup="false"
@@ -70,7 +70,7 @@
 				eventView: true,
 				taskView: true,
 			}"
-			:month="{ startDayOfWeek: 7 }"
+			:month="{ startDayOfWeek: 7, visibleEventCount: 10, dayNames: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'sáb'] }"
 			:timezone="{  }"
 			:theme="theme"
 			:template="{
@@ -86,61 +86,9 @@
 			@clickEvent="onClickEvent"
 		/>
 
-		<Page>
-			<TextTitle5>
-				<span>DIAS LETIVOS – QUADRO SÍNTESE</span>
-			</TextTitle5>
-			<EmptyState v-if="semesters.length == 0" msg="Essa visualização só está disponível quando há semestres no calendário." />
+		<SummaryTable :summary-data="summaryTable" :campi="campi" />
 
-			<BaseTable v-if="semesters.length > 0">
-				<template v-slot:head>
-					<BaseTHead>
-						<tr>
-							<BaseTH>Local</BaseTH>
-							<BaseTH v-for="semester in summaryTable.semesters" :key="semester.description">
-								{{ semester.description }}
-							</BaseTH>
-						</tr>
-					</BaseTHead>
-				</template>
-
-				<template  v-slot:body>
-					<BaseTBody>
-						<tr v-for="campus in campi" :key="campus.id">
-							<td> {{ campus.label }}</td>
-							<td v-for="semester in summaryTable.semesters" :key="semester.description">
-								<span v-for="c in semester.campi_school_days_count" :key="semester.description + c.id">
-									<span v-if="c.id === campus.value">
-										{{ c.school_days_count }}
-									</span>
-								</span>
-							</td>
-						</tr>
-					</BaseTBody>
-				</template>
-			</BaseTable>
-		</Page>
-
-		<Page>
-			<TextTitle5>
-				Semestres
-			</TextTitle5>
-
-			<EmptyState v-if="semesters.length == 0" msg="Essa visualização só está disponível quando há semestres no calendário." />
-
-			<BaseUnorderedList  v-if="semesters.length > 0">
-				<BaseListItem v-for="semester in semesters" :key="semester.id">
-					{{ semester.description }} | Inicia em {{ semester.start_date.toLocaleDateString() }} e termina em {{ semester.end_date.toLocaleDateString() }}
-
-					<template v-slot:post-item-section>
-						<BaseButton @click.native="$router.push({name: 'semester-update', params: { id: semester.id }})" type="button" class="btn-outline-success">
-							<i class="bi bi-pencil-square"></i>
-							<span class="visually-hidden">Editar semestre</span>
-						</BaseButton>
-					</template>
-				</BaseListItem>
-			</BaseUnorderedList>
-		</Page>
+		<SemesterPage :semesters="semesters"/>
 
 		<BaseModal id="createEvents">
 			<template v-slot:modal-title>
@@ -204,19 +152,19 @@
 						</FormInputFeedback>
 					</FloatingInput>
 
-					<div v-if="newEvent.label != 'H'">
-						<BaseLabel for="event-campi"> Esse evento é válido para os campi: </BaseLabel>
-						<MultipleSelectInput 
-							id="event-campi" 
-							:options="campi" 
-							v-model="newEvent.campi"
-							:multiple="true"
-							ref="eCCampi"
-						/>
-						<FormInputFeedback type="invalid">
-							{{ eCFormInputFeedbacks.campi }}
-						</FormInputFeedback>
-					</div>
+					
+					<BaseLabel for="event-campi"> Esse evento é válido para os campi: </BaseLabel>
+					<MultipleSelectInput 
+						id="event-campi" 
+						:options="campi" 
+						v-model="newEvent.campi"
+						:disabled="newEvent.label == 'H'"
+						:multiple="true"
+						ref="eCCampi"
+					/>
+					<FormInputFeedback type="invalid">
+						{{ eCFormInputFeedbacks.campi }}
+					</FormInputFeedback>
 				</BaseForm>
 			</template>
 
@@ -291,18 +239,18 @@
 						</FormInputFeedback>
 					</FloatingInput>
 
-					<div v-if="selectedEvent.label != 'H'">
-						<BaseLabel for="selected-event-campi"> Esse evento é válido para os campi: </BaseLabel>
-						<MultipleSelectInput 
-							id="selected-event-campi" 
-							:options="campi" 
-							v-model="selectedEvent.campi"
-							ref="eECampi"
-						/>
-						<FormInputFeedback type="invalid">
-							{{ eEFormInputFeedbacks.campi }}
-						</FormInputFeedback>
-					</div>
+					
+					<BaseLabel for="selected-event-campi"> Esse evento é válido para os campi: </BaseLabel>
+					<MultipleSelectInput 
+						id="selected-event-campi" 
+						:options="campi" 
+						:disabled="selectedEvent.label == 'H'"
+						v-model="selectedEvent.campi"
+						ref="eECampi"
+					/>
+					<FormInputFeedback type="invalid">
+						{{ eEFormInputFeedbacks.campi }}
+					</FormInputFeedback>
 				</BaseForm>
 			</template>
 
@@ -332,7 +280,7 @@
 					</p>
 					<p>
 						Baixe aqui um exemplo de uma planilha: 
-						<BaseAnchor href="/public/planilha_de_exemplo.xlsx" download>Clique aqui para baixar</BaseAnchor>
+						<BaseAnchor href="/planilha_de_exemplo.xlsx" download>Clique aqui para baixar</BaseAnchor>
 					</p>
 					<p>
 						Explicação de cada coluna da planilha e exemplos: 
@@ -474,8 +422,16 @@
 	import PlusIcon from "@/components/icons/PlusIcon.vue"
 	import DropdownMenu from "@/components/DropdownMenu.vue"
 	import DropdownItem from "@/components/DropdownItem.vue"
+	import Card from '@/components/Card.vue'
+
+	import SemesterPage from '@/views/subpages/calendarDetail/Semester.vue'
+	import SummaryTable from "@/views/subpages/calendarDetail/SummaryTable.vue"
 
 	import refreshUserAuthToken from '@/assets/scripts/refreshUserAuthToken.js'
+
+	import SchoolDaysSummaryService from "@/services/schoolDaysSummary"
+
+	import SchoolDaysSummary from "@/models/schoolDaysSummary"
 
 	export default {
 		data() {
@@ -526,7 +482,7 @@
 				eventLabels: [
 					{value: 'H', label: 'Feriado Nacional'},
 					{value: 'RH', label: 'Feriado Local'},
-					{value: 'NSS', label: 'Sábado não-letivo'},
+					{value: 'SS', label: 'Sábado Letivo'},
 					{value: 'NSD', label: 'Dia(s) não-letivo(s)'},
 					{value: 'SD', label: 'Dia(s) letivo(s)', selected: true},
 				],
@@ -589,12 +545,13 @@
 				eventExcludeModal: null,
 				importingModal: null,
 				semesters: [],
-				summaryTable: {},
+				summaryTable: { semesters: [] },
 				selectedFile: null,
 				importingError: {
 					messages: [],
 					isErrored: false
-				}
+				},
+				sDSummaryService : null
 			}
 		},
 		computed: {
@@ -605,6 +562,8 @@
 		},
 		mounted() {
 			this.calendar.id = this.$route.params.id;
+
+			this.sDSummaryService = new SchoolDaysSummaryService(this.calendar.id)
 
 			this.parseCampiFromStore(this.organizationInfoStore.campi);
 
@@ -622,7 +581,6 @@
 				this.campi = [];
 				this.parseCampiFromStore(state.campi);
 			})
-
 			this.eventCreationModal = bootstrap.Modal.getOrCreateInstance('#createEvents');
 			this.eventEditModal = bootstrap.Modal.getOrCreateInstance('#editEvent');
 			this.eventExcludeModal = bootstrap.Modal.getOrCreateInstance('#deleteEvent');
@@ -743,36 +701,42 @@
                         }
                         else if(error.request.status === 422 ){
 							if(Object.hasOwn(error.response.data, 'description')) {
+								this.eCFormInputFeedbacks.description = ""
 								error.response.data["description"].forEach( (msg) => {
 									this.eCFormInputFeedbacks.description += `${msg}\n`
 								})
 								this.$refs.eCDescription.validate("invalid")
                             }
 							if(Object.hasOwn(error.response.data, 'label')) {
+								this.eCFormInputFeedbacks.label = ""
 								error.response.data["label"].forEach( (msg) => {
 									this.eCFormInputFeedbacks.label += `${msg}\n`
 								})
 								this.$refs.ecLabel.validate("invalid")
                             }
                             if(Object.hasOwn(error.response.data, 'campi')) {
+								this.eCFormInputFeedbacks.campi = ""
 								error.response.data["campi"].forEach( (msg) => {
 									this.eCFormInputFeedbacks.campi += `${msg}\n`
 								})
 								this.$refs.eCCampi.validate("invalid")
                             }
                             if(Object.hasOwn(error.response.data, 'end_date')) {
+								this.eCFormInputFeedbacks.endDate = ""
 								error.response.data["end_date"].forEach( (msg) => {
 									this.eCFormInputFeedbacks.endDate += `${msg}\n`
 								})
 								this.$refs.eCEndDate.validate("invalid")
                             }
                             if(Object.hasOwn(error.response.data, 'start_date')) {
+								this.eCFormInputFeedbacks.startDate = ""
 								error.response.data["start_date"].forEach( (msg) => {
 									this.eCFormInputFeedbacks.startDate += `${msg}\n`
 								})
 								this.$refs.eCStartDate.validate("invalid")
                             }
 							if(Object.hasOwn(error.response.data, 'hexadecimal_color')) {
+								this.eCFormInputFeedbacks.bgColor = ""
 								error.response.data["hexadecimal_color"].forEach( (msg) => {
 									this.eCFormInputFeedbacks.bgColor += `${msg}\n`
 								})
@@ -1030,9 +994,12 @@
 					},
 				}).then((res) => {
 					this.semesters = [];
-					res.data.forEach((semester) => {
+					
+                    res.data.forEach((semester) => {
 						semester.start_date = new Date(`${semester.start_date}T00:00:00`)
 						semester.end_date = new Date(`${semester.end_date}T00:00:00`)
+						semester.lessons_start_date = new Date(`${semester.lessons_start_date}T00:00:00`)
+						semester.lessons_end_date = new Date(`${semester.lessons_end_date}T00:00:00`)
 						this.semesters.push(semester)
 					})
 
@@ -1060,14 +1027,9 @@
 				})
 			},
 			getCalendarSummary(){
-				axios.get(`/api//academic-calendar/${this.$route.params.id}/school_days_count`, {
-					headers: {
-						Authorization: "Bearer " + this.userAuthInfoStore.token,
-					},
-				}).then((res) => {
-					this.summaryTable = res.data;
-
-				}).catch((error) => {
+				this.sDSummaryService.getSummary()
+				.then((summary) => { this.summaryTable = summary  })
+				.catch((error) => {
 					if(error.response) {
                         if(error.request.status === 401) {
                             refreshUserAuthToken(this.getSemesters)
@@ -1492,7 +1454,10 @@
 			IconPrevArrow,
 			PlusIcon,
 			DropdownMenu,
-			DropdownItem
+			DropdownItem,
+			Card,
+			SemesterPage,
+			SummaryTable
 		},
 	};
 </script>
