@@ -7,7 +7,7 @@
             <TextTitle5>Edição de cálculo de tempo</TextTitle5>
             <div class="mb-3">
                 <FloatingInput 
-                label="Tempo mínimo válido para um dia"
+                label="Carga horária de uma disciplina com 1 aula semanal"
                 type="text"
                 maxlength="6"
                 required="true"
@@ -19,7 +19,7 @@
             </div>
             <div class="mb-3">
                 <FloatingInput 
-                label="Tempo por aula"
+                label="Duração de 1 aula"
                 type="text"
                 maxlength="6"
                 required="true"
